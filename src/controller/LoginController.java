@@ -1,5 +1,5 @@
 /**
- * PhotoLogin.java
+ * LoginController.java
  *
  * Copyright (c) 2019 Gemuele Aludino, Patrick Nogaj. 
  * All rights reserved.
@@ -8,7 +8,7 @@
  * 01:198:213 Software Methodology, Spring 2019
  * Professor Seshadri Venugopal
  */
-package application;
+package controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,7 +27,7 @@ import model.User;
  * @author gemuelealudino
  *
  */
-public class PhotoLogin implements ChangeListener<User> {
+public class LoginController implements ChangeListener<User> {
 
 	@FXML AnchorPane anchorPaneMain;
 	@FXML ImageView imageViewBackground;
