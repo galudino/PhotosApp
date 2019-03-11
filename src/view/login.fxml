@@ -16,7 +16,7 @@
             <Image url="@../../imgs/project/Landscapes043-copy-1024x666-nlx1k6yqpkwi6ocd88yuh3p72z2yk1uia25ixyuwj4.jpg" />
          </image>
       </ImageView>
-      <Pane fx:id="paneUpperPane" prefHeight="274.0" prefWidth="343.0">
+      <Pane fx:id="paneUpper" prefHeight="274.0" prefWidth="343.0">
          <children>
             <ImageView fitHeight="187.0" fitWidth="218.0" layoutX="63.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -25,13 +25,13 @@
             </ImageView>
          </children>
       </Pane>
-      <Pane fx:id="paneLowerPane" layoutY="272.0" prefHeight="243.0" prefWidth="343.0">
+      <Pane fx:id="paneLower" layoutY="272.0" prefHeight="243.0" prefWidth="343.0">
          <children>
-            <Text fill="#615f5f" layoutX="35.0" layoutY="94.0" stroke="#030303" strokeType="INSIDE" strokeWidth="2.0" text="Username:" />
-            <Button fx:id="login" blendMode="SCREEN" layoutX="146.0" layoutY="182.0" mnemonicParsing="false" text="Login" />
-            <Text fill="#615f5f" layoutX="35.0" layoutY="135.0" stroke="#030303" strokeType="INSIDE" strokeWidth="2.0" text="Password:" />
-            <TextField layoutX="110.0" layoutY="76.0" opacity="0.5" prefHeight="26.0" prefWidth="198.0" style="-fx-background-color: #FFFFFF;" />
-            <PasswordField fx:id="password" layoutX="110.0" layoutY="117.0" opacity="0.5" prefHeight="26.0" prefWidth="198.0" style="-fx-background-color: #FFFFFF;" />
+            <Text fx:id="textUsername" fill="#615f5f" layoutX="35.0" layoutY="94.0" stroke="#030303" strokeType="INSIDE" strokeWidth="2.0" text="Username:" />
+            <Button fx:id="buttonLogin" blendMode="SCREEN" layoutX="146.0" layoutY="182.0" mnemonicParsing="false" text="Login" />
+            <Text fx:id="textPassword" fill="#615f5f" layoutX="35.0" layoutY="135.0" stroke="#030303" strokeType="INSIDE" strokeWidth="2.0" text="Password:" />
+            <TextField fx:id="textFieldUsername" layoutX="110.0" layoutY="76.0" opacity="0.5" prefHeight="26.0" prefWidth="198.0" style="-fx-background-color: #FFFFFF;" />
+            <PasswordField fx:id="textFieldPassword" layoutX="110.0" layoutY="117.0" opacity="0.5" prefHeight="26.0" prefWidth="198.0" style="-fx-background-color: #FFFFFF;" />
          </children>
       </Pane>
    </children>
