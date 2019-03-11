@@ -15,6 +15,11 @@ import java.io.Serializable;
 
 public class User implements Comparable<User>, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8689422424799836920L;
+	
 	private String username;
 	
 	public String getUsername() {
