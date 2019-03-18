@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar layoutY="1.0" prefHeight="29.0" prefWidth="1280.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Return to Albums" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Save &amp; Logout" />
+                  <MenuItem mnemonicParsing="false" text="Save &amp; Exit Photos" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="View">
+            <items>
+              <MenuItem mnemonicParsing="false" text="As Thumbnails" />
+                  <MenuItem mnemonicParsing="false" text="As Single Image" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Photos Help" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="About Photos" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <AnchorPane layoutY="29.0" prefHeight="646.0" prefWidth="330.0">
+         <children>
+            <AnchorPane prefHeight="57.0" prefWidth="334.0">
+               <children>
+                  <AnchorPane prefHeight="42.0" prefWidth="313.0">
+                     <children>
+                        <Pane layoutY="5.0" prefHeight="55.0" prefWidth="169.0">
+                           <children>
+                              <Label layoutX="27.0" layoutY="15.0" prefHeight="26.0" prefWidth="88.0" text="SEARCH" textFill="#aeaeae">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="165.0" layoutY="5.0" prefHeight="55.0" prefWidth="169.0" />
+                     </children>
+                  </AnchorPane>
+               </children></AnchorPane>
+            <AnchorPane layoutY="61.0" prefHeight="585.0" prefWidth="334.0">
+               <children>
+                  <Pane prefHeight="125.0" prefWidth="336.0">
+                     <children>
+                        <Label layoutX="41.0" layoutY="10.0" text="SEARCH SCOPE" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <RadioButton layoutX="66.0" layoutY="30.0" mnemonicParsing="false" text="This Album">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </RadioButton>
+                        <SplitMenuButton layoutX="90.0" layoutY="70.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="182.0" text="(Selected Album)">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="(no albums available)" />
+                          </items>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </SplitMenuButton>
+                        <RadioButton layoutX="66.0" layoutY="50.0" mnemonicParsing="false" text="Selected Album:">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton layoutX="66.0" layoutY="100.0" mnemonicParsing="false" text="All Albums">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                  </Pane>
+                  <Pane layoutY="125.0" prefHeight="125.0" prefWidth="336.0">
+                     <children>
+                        <Label layoutX="41.0" layoutY="10.0" text="DATE RANGE" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="66.0" layoutY="30.0" text="FROM" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="66.0" layoutY="73.0" text="TO" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <DatePicker layoutX="66.0" layoutY="45.0" />
+                        <DatePicker layoutX="66.0" layoutY="87.0" />
+                     </children>
+                  </Pane>
+                  <Pane layoutY="250.0" prefHeight="188.0" prefWidth="336.0">
+                     <children>
+                        <Label layoutX="41.0" layoutY="13.0" text="ADD TAGS" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <TextField layoutX="66.0" layoutY="44.0" prefHeight="27.0" prefWidth="194.0" />
+                        <Label layoutX="66.0" layoutY="30.0" text="TAG 1" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="66.0" layoutY="109.0" text="TAG 2" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <TextField layoutX="66.0" layoutY="123.0" prefHeight="27.0" prefWidth="193.0" />
+                        <RadioButton layoutX="66.0" layoutY="81.0" mnemonicParsing="false" text="and" />
+                        <RadioButton layoutX="131.0" layoutY="81.0" mnemonicParsing="false" text="or" />
+                        <RadioButton layoutX="189.0" layoutY="81.0" mnemonicParsing="false" text="not" />
+                        <Button layoutX="115.0" layoutY="154.0" mnemonicParsing="false" text="Add Tag Pair" />
+                     </children>
+                  </Pane>
+                  <Pane layoutY="429.0" prefHeight="150.0" prefWidth="336.0">
+                     <children>
+                        <Button layoutX="77.0" layoutY="109.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="182.0" text="Search Now" />
+                        <Label layoutX="41.0" layoutY="7.0" text="TAGS PROVIDED" textFill="#aeaeae">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
+                        <ScrollPane hbarPolicy="NEVER" layoutX="49.0" layoutY="21.0" prefHeight="79.0" prefWidth="238.0">
+                           <content>
+                              <TilePane prefHeight="77.0" prefWidth="238.0" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </Pane>
+               </children></AnchorPane>
+         </children></AnchorPane>
+      <AnchorPane layoutX="335.0" layoutY="29.0" prefHeight="646.0" prefWidth="617.0">
+         <children>
+            <AnchorPane layoutY="7.0" prefHeight="578.0" prefWidth="527.0">
+               <children>
+                  <AnchorPane layoutY="-2.0" prefHeight="57.0" prefWidth="618.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="16.0" prefHeight="26.0" prefWidth="220.0" text="RESULTS" textFill="#aeaeae">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
+                  <AnchorPane layoutY="55.0" prefHeight="523.0" prefWidth="428.0">
+                     <children>
+                        <ScrollPane hbarPolicy="NEVER" prefHeight="523.0" prefWidth="618.0">
+                           <content>
+                              <TilePane prefHeight="521.0" prefWidth="618.0">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </TilePane>
+                           </content>
+                           <contextMenu>
+                              <ContextMenu>
+                                <items>
+                                  <MenuItem mnemonicParsing="false" text="Edit Caption" />
+                                    <SeparatorMenuItem mnemonicParsing="false" />
+                                    <Menu mnemonicParsing="false" text="Copy Selected Photo to Album...">
+                                      <items>
+                                        <MenuItem mnemonicParsing="false" text="(no albums available)" />
+                                      </items>
+                                    </Menu>
+                                    <Menu mnemonicParsing="false" text="Move Selected Photo to Album...">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" text="(no albums available)" />
+                                       </items>
+                                    </Menu>
+                                    <MenuItem mnemonicParsing="false" text="Delete Selected Photo from this Album" />
+                                    <SeparatorMenuItem mnemonicParsing="false" />
+                                    <MenuItem mnemonicParsing="false" text="Open Photo in Viewer" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </ScrollPane>
+                        <Label layoutX="440.0" layoutY="5.0" text="New Album From Results..." textFill="#6764ff" underline="true" />
+                     </children>
+                  </AnchorPane>
+               </children></AnchorPane>
+            <AnchorPane layoutY="583.0" prefHeight="63.0" prefWidth="617.0">
+               <children>
+                  <Pane layoutX="-1.0" prefHeight="79.0" prefWidth="308.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="29.0" layoutX="26.0" layoutY="41.0" stroke="#dadada" strokeLineJoin="BEVEL" strokeType="INSIDE" width="238.0" />
+                        <ButtonBar layoutX="16.0" layoutY="41.0" prefHeight="29.0" prefWidth="238.0">
+                          <buttons>
+                              <RadioButton mnemonicParsing="false" text="Thumbnail" />
+                              <RadioButton mnemonicParsing="false" text="Single Image" />
+                          </buttons>
+                        </ButtonBar>
+                        <Label layoutX="108.0" layoutY="14.0" text="VIEW MODE" textFill="#aeaeae" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="307.0" prefHeight="74.0" prefWidth="155.0">
+                     <children>
+                        <Slider layoutX="14.0" layoutY="44.0" />
+                        <Label layoutX="57.0" layoutY="14.0" text="ZOOM" textFill="#aeaeae" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="462.0" prefHeight="74.0" prefWidth="155.0">
+                     <children>
+                        <Label layoutX="40.0" layoutY="14.0" text="NAVIGATOR" textFill="#aeaeae" />
+                        <Button layoutX="16.0" layoutY="37.0" mnemonicParsing="false" text="Back" />
+                        <Button layoutX="92.0" layoutY="37.0" mnemonicParsing="false" text="Next" />
+                     </children></Pane>
+               </children></AnchorPane>
+         </children></AnchorPane>
+      <AnchorPane layoutX="951.0" layoutY="29.0" prefHeight="662.0" prefWidth="334.0">
+         <children>
+            <AnchorPane prefHeight="551.0" prefWidth="322.0">
+               <children>
+                  <AnchorPane prefHeight="60.0" prefWidth="318.0">
+                     <children>
+                        <Pane layoutX="-5.0" layoutY="2.0" prefHeight="55.0" prefWidth="169.0">
+                           <children>
+                              <Label layoutX="27.0" layoutY="15.0" prefHeight="26.0" prefWidth="88.0" text="DETAILS" textFill="#aeaeae">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="160.0" layoutY="2.0" prefHeight="55.0" prefWidth="169.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutY="60.0" prefHeight="491.0" prefWidth="329.0">
+                     <children>
+                        <Pane layoutX="18.0" layoutY="14.0" prefHeight="207.0" prefWidth="295.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="48.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
+                              <Label layoutX="111.0" layoutY="185.0" text="(no caption)">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="18.0" layoutY="221.0" prefHeight="255.0" prefWidth="295.0">
+                           <children>
+                              <Pane layoutX="2.0" layoutY="1.0" prefHeight="195.0" prefWidth="295.0">
+                                 <children>
+                                    <Label layoutX="16.0" layoutY="14.0" text="ADD/EDIT CAPTION" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="16.0" layoutY="101.0" text="TAGS" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField layoutX="16.0" layoutY="28.0" prefHeight="18.0" prefWidth="193.0" />
+                                    <Button layoutX="214.0" layoutY="28.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
+                                    <Label layoutX="16.0" layoutY="58.0" text="ADD TAG" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField layoutX="16.0" layoutY="72.0" prefHeight="18.0" prefWidth="193.0" />
+                                    <Button layoutX="214.0" layoutY="72.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
+                                    <ScrollPane hbarPolicy="NEVER" layoutX="15.0" layoutY="115.0" prefHeight="74.0" prefWidth="266.0">
+                                       <content>
+                                          <TilePane prefHeight="73.0" prefWidth="264.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0">
+                                 <children>
+                                    <Label layoutX="43.0" layoutY="45.0" text="SIZE" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="17.0" layoutY="30.0" prefWidth="51.0" text="CREATED" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="81.0" layoutY="45.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="81.0" layoutY="30.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="35.0" prefHeight="14.0" prefWidth="40.0" text="NAME" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="81.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="38.0" layoutY="15.0" prefHeight="14.0" prefWidth="30.0" text="PATH" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="81.0" layoutY="15.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+               </children></AnchorPane>
+            <AnchorPane layoutY="549.0" prefHeight="115.0" prefWidth="321.0">
+               <children>
+                  <ButtonBar layoutX="36.0" layoutY="84.0" prefHeight="29.0" prefWidth="244.0">
+                    <buttons>
+                      <Button mnemonicParsing="false" prefHeight="27.0" text="Copy">
+                           <tooltip>
+                              <Tooltip text="Makes a duplicate of this Photo and moves the duplicate to another Album." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" text="Move">
+                           <tooltip>
+                              <Tooltip text="Relocates this Photo from this Album to another Album." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" text="Delete">
+                           <tooltip>
+                              <Tooltip text="Removes this Photo from this Album." />
+                           </tooltip>
+                        </Button>
+                    </buttons>
+                  </ButtonBar>
+                  <Label layoutX="14.0" layoutY="7.0" text="IMAGE FILE MANAGEMENT" textFill="#aeaeae">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Label>
+                  <CheckBox layoutX="14.0" layoutY="29.0" mnemonicParsing="false" text="Delete removes photos from disk" />
+                  <CheckBox layoutX="14.0" layoutY="56.0" mnemonicParsing="false" text="Prompt before delete" />
+               </children>
+            </AnchorPane>
+         </children></AnchorPane>
+      <HBox layoutY="691.0" prefHeight="29.0" prefWidth="1280.0">
+         <children>
+            <Pane prefHeight="29.0" prefWidth="426.0" />
+            <Pane prefHeight="29.0" prefWidth="426.0">
+               <children>
+                  <Label layoutX="103.0" layoutY="8.0" text="123 albums - 12345 photos - 1.23 GB total" textFill="#a4a4a4">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Pane prefHeight="29.0" prefWidth="428.0" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
