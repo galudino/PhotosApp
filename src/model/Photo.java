@@ -11,6 +11,42 @@
 
 package model;
 
-public class Photo {
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
+public class Photo {
+	
+	private static final int THUMBNAIL_W = 120;
+	private static final int THUMBNAIL_H = 120;
+	
+	private String fileName;
+	private String caption;
+	private long datePhoto;
+	
+	private ObservableList<Tag> tagList;
+
+	public Photo(Photo photo) {
+		this.fileName = photo.fileName;
+		this.caption = photo.caption;
+		this.datePhoto = photo.datePhoto;
+		tagList = FXCollections.observableArrayList();
+		for(Tag t : photo.tagList) {
+			tagList.add(new Tag(t));
+		}
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+	
+	public String getCaption() { 
+		return caption;
+	}
+	
+	public long getDatePhoto() { 
+		return datePhoto;
+	}
+	
+	//need to create image for thumbnail
+	//need to create method to grab date/time from the photo
 }

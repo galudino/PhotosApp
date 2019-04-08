@@ -36,11 +36,12 @@ public class UserController {
 	@FXML
 	public void initialize() {
 		ObservableList<Album> aList = model.getCurrentUser().getAlbumList();
-		System.out.println("Current user logged on is: " + model.getCurrentUser());
+		System.out.println("Current user logged on is: " + model.getCurrentUser().getUsername());
 		System.out.println(aList);
 		//albumView.setItems(aList);
 	}
 	
+	//does not work properly.
 	public void doLogOff() throws IOException {
 		model.write();
 		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
@@ -52,6 +53,7 @@ public class UserController {
 		currentStage.show();
 	}
 	
+	//functions as it should.
 	public void doQuit() {
 		LoginController.exit();
 	}

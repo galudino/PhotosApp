@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class Album implements Comparable<Album>, Serializable {
 
-	
 	private static final long serialVersionUID = -6862414900620876387L;
 	private String albumName;
 	
@@ -43,6 +42,10 @@ public class Album implements Comparable<Album>, Serializable {
 	
 	public String toString() {
 		return albumName;
+	}
+	
+	public void setAlbumName(String albumName) {
+		this.albumName = albumName;
 	}
 
 }
