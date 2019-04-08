@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPaneAdmin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anchorPaneAdmin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminController">
    <children>
       <Pane fx:id="paneUpper" prefHeight="193.0" prefWidth="500.0">
          <children>
@@ -18,7 +18,7 @@
                <children>
                   <TextField fx:id="textFieldPassword" layoutX="131.0" layoutY="70.0" />
                   <TextField fx:id="textFieldUsername" layoutX="131.0" layoutY="36.0" />
-                  <Button fx:id="buttonConfirmAdd" layoutX="114.0" layoutY="109.0" mnemonicParsing="false" text="Confirm Add" />
+                  <Button fx:id="buttonConfirmAdd" onAction="#doAdd" layoutX="114.0" layoutY="109.0" mnemonicParsing="false" text="Confirm Add" />
                   <Text fx:id="textUsername" layoutX="50.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" />
                   <Text fx:id="textPassword" layoutX="51.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
                   <Text fx:id="textAddNewUser" fill="#797979" layoutX="31.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ADD NEW USER" />
@@ -33,19 +33,17 @@
       </Pane>
       <Pane fx:id="paneTableView" layoutY="200.0" prefHeight="318.0" prefWidth="500.0">
          <children>
-            <Text fx:id="textActiveUserView" fill="#797979" layoutX="354.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ACTIVE USER VIEW" />
+            <Text fx:id="textActiveUserView" fill="#797979" layoutX="194.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ACTIVE USER VIEW" />
             <TableView fx:id="tableViewUsers" layoutY="40.0" prefHeight="202.0" prefWidth="500.0">
               <columns>
-                <TableColumn prefWidth="154.0" text="Username" />
-                <TableColumn prefWidth="86.0" text="field2" />
-                  <TableColumn prefWidth="85.0" text="field3" />
-                  <TableColumn prefWidth="174.0" text="field4" />
+                <TableColumn fx:id="userColumn" prefWidth="250.0" text="Username" />
+                <TableColumn fx:id="passwordColumn" prefWidth="250.0" text="Password" />
               </columns>
             </TableView>
             <ButtonBar fx:id="buttonBarUserView" layoutX="68.0" layoutY="255.0" prefHeight="40.0" prefWidth="344.0">
               <buttons>
                   <Button fx:id="buttonEditUser" mnemonicParsing="false" text="Edit Selected User" />
-                  <Button fx:id="buttonDeleteUser" mnemonicParsing="false" text="Delete Selected User" />
+                  <Button fx:id="buttonDeleteUser" onAction="#doDelete" mnemonicParsing="false" text="Delete Selected User" />
               </buttons>
             </ButtonBar>
          </children>

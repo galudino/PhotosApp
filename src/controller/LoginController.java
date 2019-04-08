@@ -8,51 +8,118 @@
  * 01:198:213 Software Methodology, Spring 2019
  * Professor Seshadri Venugopal
  */
+
 package controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.io.IOException;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
-
+import javafx.stage.Stage;
+import model.PhotoModel;
 import model.User;
 
-/**
- * @version Mar 11, 2019
- * @author gemuelealudino
- *
- */
-public class LoginController implements ChangeListener<User> {
-
-	@FXML AnchorPane anchorPaneMain;
-	@FXML ImageView imageViewBackground;
-	@FXML Pane paneUpper;
+public class LoginController {
 	
-	@FXML Pane paneLower;
-	@FXML Text textUsername;
-	@FXML Text textPassword;
+	public final static String DAT_FILE_PATH = "photos.dat";
+	
+	static PhotoModel model;
+	
 	@FXML Button buttonLogin;
 	@FXML TextField textFieldUsername;
 	@FXML TextField textFieldPassword;
 	
-	/* (non-Javadoc)
-	 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
+	/**
+	 * Initialization process to ensure everything is set to null including user model.
 	 */
-	@Override
-	public void changed(ObservableValue<? extends User> observable, User oldValue,
-			User newValue) {
-		if (textFieldUsername.getText().length() > 0 && textFieldPassword.getText().length() > 0) {
-			// if user types in data in textFieldUsername and textFieldPassword,
-			// then enable the login button.
-			
-			
-		}
+	@FXML
+	public void initialize() {
+		model = new PhotoModel();
+		textFieldUsername.clear();
+		textFieldPassword.clear();
+	}
+
+	/**
+	 * Login method -- obtains the information from the textfields, and attempts to map a user object.
+	 * @throws IOException: will throw an IOException if file is not found (FXML).
+	 */
+	public void doLogin() throws IOException {
+		String username = textFieldUsername.getText().trim();
+		String password = textFieldPassword.getText().trim();
 		
+		User user = model.getUser(username);
+		System.out.println(user);
+		
+		if(user != null) {
+			if(username.equals("admin")) {
+				if(password.equals("admin")) {
+					Parent adminLogin = FXMLLoader.load(getClass().getResource("/view/admin.fxml"));
+					Scene adminScene = new Scene(adminLogin);
+					Stage currentStage = (Stage) (buttonLogin.getScene().getWindow());
+					currentStage.hide();
+					currentStage.setScene(adminScene);
+					currentStage.setTitle("Photos -- Admin Tool");
+					currentStage.show();
+				} else {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Unsuccessful Login");
+					alert.setContentText("Invalid password.");
+					alert.showAndWait();
+					textFieldUsername.setText(username);
+					textFieldPassword.setText("");
+				}
+			} else {
+				if(password.equals(user.getPassword())) {
+					model.setCurrentUser(user);
+					Parent userLogin = FXMLLoader.load(getClass().getResource("/view/user.fxml"));
+					Scene userScene = new Scene(userLogin);
+					Stage currentStage = (Stage) (buttonLogin.getScene().getWindow());
+					currentStage.hide();
+					currentStage.setScene(userScene);
+					currentStage.setTitle("Photos V1.0 - Welcome " + user.getUsername());
+					currentStage.show();
+				} else {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Unsuccessful Login");
+					alert.setContentText("Invalid password.");
+					alert.showAndWait();
+					textFieldUsername.setText(username);
+					textFieldPassword.setText("");
+				}
+			}
+		} else {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Unsuccessful Login");
+				alert.setContentText("Invalid username or password.");
+				alert.showAndWait();
+				textFieldUsername.setText("");
+				textFieldPassword.setText("");
+		}
+	}
+	
+	/**
+	 * Grabs the model object to pass to different scenes.
+	 * @return a model object
+	 */
+	public static PhotoModel getModel() {
+		return model;
+	}
+	
+	/**
+	 * Method to exit the program.
+	 */
+	public static void exit() {
+		model.write();
+		Platform.exit();
 	}
 
 }
