@@ -13,6 +13,9 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
@@ -26,15 +29,14 @@ public class User implements Comparable<User>, Serializable {
 	private String password;
 	
 	private transient ObservableList<Album> albumList;
-	
-	private ArrayList<Album> theAlbumList;
+	private TreeMap<String, Album> albumMap;
 	private Album currentAlbum;
 	
 	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
 		albumList = FXCollections.observableArrayList();
-		theAlbumList = null;
+		albumMap = new TreeMap<String, Album>();
 		currentAlbum = null;
 	}
 	
@@ -57,23 +59,55 @@ public class User implements Comparable<User>, Serializable {
 	public Album getCurrentAlbum() {
 		return currentAlbum;
 	}
-
+	
+	public TreeMap<String, Album> getAlbumMap() { 
+		return albumMap;
+	}
+	
+	public void setAlbumList(ObservableList<Album> albumList) {
+		this.albumList = albumList;
+	}
+	
 	@Override
 	public int compareTo(User user) {
 		return this.username.compareToIgnoreCase(user.username);
 	}
 	
-	public Album addAlbum(String username) {
-		Album album = new Album(username);
+	public int addAlbum(String albumName) {
+		String albumKey = Album.makeKey(albumName);
+		Album temp = albumMap.get(albumKey);
 		
-		boolean isFound = IntStream.range(0, albumList.size()).anyMatch(i -> albumList.get(i).getAlbumName().equalsIgnoreCase(album.getAlbumName()));
-	
-		if(!isFound) {
-			albumList.add(album);
-			return album;
+		if(temp == null) {
+			temp = new Album(albumName);
+			albumMap.put(albumKey, temp);
+			return indexInsertedSorted(temp);
 		} else {
-			return null;
+			return -1;
 		}
+	}
+	
+	private int indexInsertedSorted(Album album) {
+		if(albumList.isEmpty()) {
+			albumList.add(album);
+			return 0;
+		} else {
+			for(int i = 0; i < albumList.size(); i++) {
+				if(album.compareTo(albumList.get(i)) < 0) {
+					albumList.add(i, album);
+					return i;
+				}
+			}
+			albumList.add(album);
+			return albumList.size() - 1;
+		}
+	}
+	
+	public ObservableList<Album> load() {
+		List<Album> albumLoad = new ArrayList<Album>();
+		for(Map.Entry<String, Album> a : albumMap.entrySet()) {
+			albumLoad.add(a.getValue());
+		}
+		return FXCollections.observableArrayList(albumLoad);
 	}
 	
 	public boolean equals(Object o) {

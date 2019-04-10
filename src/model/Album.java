@@ -47,5 +47,13 @@ public class Album implements Comparable<Album>, Serializable {
 	public void setAlbumName(String albumName) {
 		this.albumName = albumName;
 	}
+	
+	public static String makeKey(String albumName) {
+		return albumName.toLowerCase();
+	}
+	
+	public String getKey() {
+		return makeKey(albumName);
+	}
 
 }

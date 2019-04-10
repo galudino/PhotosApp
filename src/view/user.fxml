@@ -4,6 +4,7 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -34,8 +35,8 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem onAction="#doLogOff" mnemonicParsing="false" text="Save &amp; Logout" />
-                  <MenuItem onAction="#doQuit" mnemonicParsing="false" text="Save &amp; Exit Photos" />
+                  <MenuItem mnemonicParsing="false" onAction="#doLogOff" text="Save &amp; Logout" />
+                  <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Save &amp; Exit Photos" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
@@ -57,9 +58,9 @@
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="Photos Help" />
+              <MenuItem mnemonicParsing="false" onAction="#doHelp" text="Help" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="About Photos" />
+                  <MenuItem mnemonicParsing="false" onAction="#doAbout" text="About Photos" />
             </items>
           </Menu>
         </menus>
@@ -81,7 +82,7 @@
                         </Pane>
                         <Pane layoutX="165.0" layoutY="5.0" prefHeight="55.0" prefWidth="169.0">
                            <children>
-                              <Label layoutX="44.0" layoutY="19.0" text="New Album..." textFill="#6764ff" underline="true" />
+                              <Hyperlink id="addAlbumHL" layoutX="44.0" layoutY="17.0" onAction="#doAddAlbum" text="New Album...." />
                            </children>
                         </Pane>
                      </children>
@@ -89,25 +90,7 @@
                </children></AnchorPane>
             <AnchorPane layoutY="61.0" prefHeight="585.0" prefWidth="334.0">
                <children>
-                  <ListView id="albumView" layoutX="25.0" layoutY="1.0" prefHeight="584.0" prefWidth="295.0">
-                     <contextMenu>
-                        <ContextMenu>
-                          <items>
-                              <MenuItem mnemonicParsing="false" text="Import Photos" />
-                              <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem mnemonicParsing="false" text="Rename Album" />
-                              <MenuItem mnemonicParsing="false" text="Search Album" />
-                              <SeparatorMenuItem mnemonicParsing="false" />
-                              <Menu mnemonicParsing="false" text="Delete...">
-                                <items>
-                                  <MenuItem mnemonicParsing="false" text="Album" />
-                                    <MenuItem mnemonicParsing="false" text="Images Only" />
-                                </items>
-                              </Menu>
-                          </items>
-                        </ContextMenu>
-                     </contextMenu>
-                  </ListView>
+                  <ListView fx:id="albumView" layoutX="22.0" prefHeight="585.0" prefWidth="308.0" />
                </children></AnchorPane>
          </children></AnchorPane>
       <AnchorPane layoutX="335.0" layoutY="29.0" prefHeight="646.0" prefWidth="617.0">

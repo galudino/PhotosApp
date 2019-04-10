@@ -136,11 +136,10 @@ public class PhotoModel implements Serializable {
 		}		
 		User admin = new User("admin", "admin");
 		User stock = new User("stock", "stock");
-		
 		stock.addAlbum("test");
+		stock.addAlbum("test2");
 		
-		ObservableList<User> newList = FXCollections.observableArrayList(admin, stock);
-		return newList;
+		return FXCollections.observableArrayList(admin, stock);
 	}
 	
 	/**
