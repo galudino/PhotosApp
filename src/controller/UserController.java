@@ -11,9 +11,6 @@
 package controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,9 +24,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Album;
@@ -52,6 +48,11 @@ public class UserController {
 	@FXML Button createAlbum;
 	@FXML TextField createAlbumName;
 	
+	@FXML Button editAlbum;
+	@FXML Button cancelEdit;
+	@FXML TextField renameAlbumName;
+	@FXML Text oldName;
+	
 	@FXML
 	public void initialize() {
 		ObservableList<Album> albumList = FXCollections.observableArrayList(currentUser.load());
@@ -62,9 +63,7 @@ public class UserController {
 	}
 	
 	public void doCreate() {
-		if(createAlbumName.getText().isEmpty() == false) {
-			Album temp = new Album(createAlbumName.getText().trim());
-			
+		if(createAlbumName.getText().isEmpty() == false) {			
 			String albumName = createAlbumName.getText().trim();
 			
 			if(currentUser.addAlbum(albumName) == - 1) {
@@ -78,6 +77,31 @@ public class UserController {
 		} else {
 			Alert error = new Alert(AlertType.ERROR, "Please provide an album name.", ButtonType.OK);
 			error.showAndWait();
+		}
+	}
+	
+	public void doRenameAlbum() { 
+		int selectedIndex = albumView.getSelectionModel().getSelectedIndex();
+		
+		if(selectedIndex < 0) {
+			Alert error = new Alert(Alert.AlertType.ERROR, "There are no albums to be edited.", ButtonType.OK);
+			error.showAndWait();
+			return;
+		}
+		
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this album?", ButtonType.YES, ButtonType.NO);
+		alert.showAndWait();
+		
+		if(alert.getResult() != ButtonType.YES)
+			return;
+		
+		if(selectedIndex >= 0) {
+			System.out.println("Selected Index: " + selectedIndex);
+			currentUser.edit(selectedIndex, renameAlbumName.getText().trim());
+			
+			if(selectedIndex <= model.getItemCount() - 1) {
+				albumView.getSelectionModel().select(selectedIndex);
+			}
 		}
 	}
 	
@@ -143,12 +167,30 @@ public class UserController {
 		window.initModality(Modality.APPLICATION_MODAL);
 		Scene scene = new Scene(root);
 		window.setScene(scene);
-		window.setTitle("Help");
+		window.setTitle("Photos -- Add Album");
 		window.setResizable(false);
 		window.show();
 	}
 	
-	//does not work properly.
+	public void doEditAlbum() throws IOException {	
+		if(albumView.getSelectionModel().getSelectedIndex() < 0) {
+			return;
+		} else {
+			Stage window = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("/view/edit_album.fxml"));
+			loader.setController(this);
+			Parent root = loader.load();
+			window.initModality(Modality.APPLICATION_MODAL);
+			Scene scene = new Scene(root);
+			window.setScene(scene);
+			window.setTitle("Photos -- Edit Album");
+			window.setResizable(false);
+			window.show();
+			oldName.setText(albumView.getSelectionModel().getSelectedItem().getAlbumName());
+		}
+	}
+
 	public void doLogOff() throws IOException {
 		model.write();
 		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
@@ -160,7 +202,6 @@ public class UserController {
 		currentStage.show();
 	}
 	
-	//functions as it should.
 	public void doQuit() {
 		LoginController.exit();
 	}

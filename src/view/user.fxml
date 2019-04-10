@@ -96,7 +96,7 @@
                           <items>
                             <MenuItem onAction="#doAddAlbum" mnemonicParsing="false" text="Add Album" />
                               <MenuItem onAction="#doDeleteAlbum" mnemonicParsing="false" text="Delete Album" />
-                              <MenuItem mnemonicParsing="false" text="Rename Album" />
+                              <MenuItem onAction="#doEditAlbum" mnemonicParsing="false" text="Rename Album" />
                           </items>
                         </ContextMenu>
                      </contextMenu></ListView>

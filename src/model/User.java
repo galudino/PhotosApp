@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.IntStream;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -107,6 +105,31 @@ public class User implements Comparable<User>, Serializable {
 			}
 			albumList.add(album);
 			return albumList.size() - 1;
+		}
+	}
+	
+	public int edit(int index, String albumName) {
+		String oldKey = albumList.get(index).getKey();
+		String newKey = Album.makeKey(albumName);
+		
+		Album oldAlbum = albumMap.get(oldKey);
+		
+		if(oldAlbum == null || oldKey.equals(newKey)) {
+			return -1;
+		} else {
+			Album newAlbum = albumMap.get(newKey);
+			
+			if(newAlbum == null) {
+				oldAlbum.setAlbumName(albumName);
+				
+				albumMap.remove(oldKey);
+				albumMap.put(newKey, oldAlbum);
+				
+				albumList.remove(index);
+				return indexInsertedSorted(oldAlbum);
+			} else {
+				return -1;
+			}
 		}
 	}
 	

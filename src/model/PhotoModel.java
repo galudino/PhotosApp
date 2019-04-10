@@ -122,10 +122,12 @@ public class PhotoModel implements Serializable {
 	 * Reads the file from DAT_FILE_PATH to deserialize and load data.
 	 * @return an observable list that has all the old data, or a new list with admin/stock preloaded.
 	 */
+	@SuppressWarnings("resource")
 	private ObservableList<User> read() {
 		try {
 			FileInputStream fIn = new FileInputStream(DAT_FILE_PATH);
 			ObjectInputStream in = new ObjectInputStream(fIn);
+			@SuppressWarnings("unchecked")
 			List<User> readList = (List<User>) in.readObject();
 			System.out.println("User list from file: " + readList);
 			return FXCollections.observableArrayList(readList);
