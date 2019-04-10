@@ -27,6 +27,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -76,6 +78,31 @@ public class UserController {
 		} else {
 			Alert error = new Alert(AlertType.ERROR, "Please provide an album name.", ButtonType.OK);
 			error.showAndWait();
+		}
+	}
+	
+	public void doDeleteAlbum() {
+		int selectedIndex = albumView.getSelectionModel().getSelectedIndex();
+		
+		if(selectedIndex < 0) {
+			Alert error = new Alert(Alert.AlertType.ERROR, "There are no albums to be deleted.", ButtonType.OK);
+			error.showAndWait();
+			return;
+		}
+		
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this album?", ButtonType.YES, ButtonType.NO);
+		alert.showAndWait();
+		
+		if(alert.getResult() != ButtonType.YES)
+			return;
+		
+		if(selectedIndex >= 0) {
+			System.out.println("Selected Index: " + selectedIndex);
+			currentUser.deleteAlbum(selectedIndex);
+			
+			if(selectedIndex <= model.getItemCount() - 1) {
+				albumView.getSelectionModel().select(selectedIndex);
+			}
 		}
 	}
 	

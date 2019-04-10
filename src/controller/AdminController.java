@@ -10,15 +10,22 @@
  */
 package controller;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.PhotoModel;
 import model.User;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -96,7 +103,33 @@ public class AdminController {
 		}
 	}
 	
-	public void exit() {
+	public void doAbout() throws IOException {
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/about.fxml"));
+		loader.setController(this);
+		Parent root = loader.load();
+		window.initModality(Modality.NONE);
+		Scene scene = new Scene(root);
+		window.setScene(scene);
+		window.setTitle("Photos V1.0 -- About");
+		window.setResizable(false);
+		window.show();
+	}
+
+	public void doLogOff() throws IOException {
+		model.write();
+		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		Scene loginScene = new Scene(login);
+		Stage currentStage = (Stage) (tableViewUsers.getScene().getWindow());
+		currentStage.hide();
+		currentStage.setScene(loginScene);
+		currentStage.setTitle("Photos -- V1.0");
+		currentStage.show();
+	}
+	
+	//functions as it should.
+	public void doQuit() {
 		LoginController.exit();
 	}
 

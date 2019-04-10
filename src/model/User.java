@@ -40,6 +40,14 @@ public class User implements Comparable<User>, Serializable {
 		currentAlbum = null;
 	}
 	
+	public static String makeKey(String username) {
+		return username.toLowerCase();
+	}
+	
+	public String getKey() {
+		return makeKey(username);
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -102,6 +110,19 @@ public class User implements Comparable<User>, Serializable {
 		}
 	}
 	
+	public boolean deleteAlbum(int index) {
+		String key = albumList.get(index).getKey();
+		Album temp = albumMap.get(key);
+		
+		if(temp != null) {
+			albumMap.remove(key);
+			albumList.remove(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public ObservableList<Album> load() {
 		List<Album> albumLoad = new ArrayList<Album>();
 		for(Map.Entry<String, Album> a : albumMap.entrySet()) {
@@ -117,14 +138,6 @@ public class User implements Comparable<User>, Serializable {
 		
 		User other = (User) o;
 		return this.username.equalsIgnoreCase(other.username);
-	}
-	
-	public static String makeKey(String username) {
-		return username.toLowerCase();
-	}
-	
-	public String getKey() {
-		return makeKey(username);
 	}
 	
 }

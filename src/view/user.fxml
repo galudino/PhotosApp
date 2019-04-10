@@ -30,7 +30,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem onAction="#doAddAlbum" mnemonicParsing="false" text="Create New Album" />
+              <MenuItem mnemonicParsing="false" onAction="#doAddAlbum" text="Create New Album" />
                   <MenuItem mnemonicParsing="false" text="Import Images Into Selected Album" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
@@ -49,9 +49,9 @@
                <items>
                   <MenuItem mnemonicParsing="false" text="Current Album" />
                   <MenuItem mnemonicParsing="false" text="All Albums" />
-                  <Menu mnemonicParsing="false" text="Album...">
+                  <Menu fx:id="menuAlbums" mnemonicParsing="false" text="Album...">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="(no albums available)" />
+                      <MenuItem mnemonicParsing="false" />
                     </items>
                   </Menu>
                </items>
@@ -90,7 +90,16 @@
                </children></AnchorPane>
             <AnchorPane layoutY="61.0" prefHeight="585.0" prefWidth="334.0">
                <children>
-                  <ListView fx:id="albumView" layoutX="22.0" prefHeight="585.0" prefWidth="308.0" />
+                  <ListView fx:id="albumView" layoutX="22.0" prefHeight="585.0" prefWidth="308.0">
+                     <contextMenu>
+                        <ContextMenu>
+                          <items>
+                            <MenuItem onAction="#doAddAlbum" mnemonicParsing="false" text="Add Album" />
+                              <MenuItem onAction="#doDeleteAlbum" mnemonicParsing="false" text="Delete Album" />
+                              <MenuItem mnemonicParsing="false" text="Rename Album" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu></ListView>
                </children></AnchorPane>
          </children></AnchorPane>
       <AnchorPane layoutX="335.0" layoutY="29.0" prefHeight="646.0" prefWidth="617.0">
