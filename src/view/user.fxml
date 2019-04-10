@@ -30,7 +30,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Create New Album" />
+              <MenuItem onAction="#doAddAlbum" mnemonicParsing="false" text="Create New Album" />
                   <MenuItem mnemonicParsing="false" text="Import Images Into Selected Album" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
@@ -314,7 +314,7 @@
             <Pane prefHeight="29.0" prefWidth="426.0" />
             <Pane prefHeight="29.0" prefWidth="426.0">
                <children>
-                  <Label layoutX="103.0" layoutY="8.0" text="123 albums - 12345 photos - 1.23 GB total" textFill="#a4a4a4">
+                  <Label fx:id="infoData" layoutX="103.0" layoutY="8.0" text="" textFill="#a4a4a4">
                      <font>
                         <Font size="11.0" />
                      </font>

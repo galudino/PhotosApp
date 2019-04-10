@@ -20,8 +20,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Album;
@@ -40,12 +46,37 @@ public class UserController {
 	
 	@FXML ListView<Album> albumView;
 	@FXML Hyperlink addAlbumHL;
+	@FXML Label infoData;
+	@FXML Button createAlbum;
+	@FXML TextField createAlbumName;
 	
 	@FXML
 	public void initialize() {
 		ObservableList<Album> albumList = FXCollections.observableArrayList(currentUser.load());
+		currentUser.setAlbumList(albumList);
 		System.out.println("Current user logged on is: " + model.getCurrentUser().getUsername());
 		albumView.setItems(albumList);
+		infoData.setText(albumList.size() + " albums - " + " ### photos");
+	}
+	
+	public void doCreate() {
+		if(createAlbumName.getText().isEmpty() == false) {
+			Album temp = new Album(createAlbumName.getText().trim());
+			
+			String albumName = createAlbumName.getText().trim();
+			
+			if(currentUser.addAlbum(albumName) == - 1) {
+				Alert duplicate = new Alert(Alert.AlertType.ERROR, "Duplicate album found. Album not added!", ButtonType.OK);
+				duplicate.showAndWait();
+			} else {
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "User successfully added!", ButtonType.OK);
+				success.showAndWait();
+				infoData.setText(albumView.getItems().size() + " albums - " + " ### photos");
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR, "Please provide an album name.", ButtonType.OK);
+			error.showAndWait();
+		}
 	}
 	
 	public void doAbout() throws IOException {

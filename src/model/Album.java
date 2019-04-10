@@ -19,10 +19,13 @@ public class Album implements Comparable<Album>, Serializable {
 	private static final long serialVersionUID = -6862414900620876387L;
 	private String albumName;
 	
+	private int albumSize;
+	
 	private ArrayList<Photo> photoList;
 	
 	public Album(String albumName) {
 		this.albumName = albumName;
+		albumSize = 0;
 		photoList = new ArrayList<>();
 	}
 	
@@ -40,8 +43,12 @@ public class Album implements Comparable<Album>, Serializable {
 		return albumName;
 	}
 	
+	public int getAlbumSize() { 
+		return albumSize;
+	}
+	
 	public String toString() {
-		return albumName;
+		return albumName + " " + photoList.size();
 	}
 	
 	public void setAlbumName(String albumName) {
