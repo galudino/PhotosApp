@@ -11,6 +11,9 @@
 package controller;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -55,22 +58,20 @@ public class UserController {
 	
 	@FXML
 	public void initialize() {
-		ObservableList<Album> albumList = FXCollections.observableArrayList(currentUser.load());
-		currentUser.setAlbumList(albumList);
 		System.out.println("Current user logged on is: " + model.getCurrentUser().getUsername());
-		albumView.setItems(albumList);
-		infoData.setText(albumList.size() + " albums - " + " ### photos");
+		albumView.setItems(currentUser.getAlbumList());
+		//infoData.setText(albumList.size() + " albums - " + " ### photos");
 	}
 	
 	public void doCreate() {
 		if(createAlbumName.getText().isEmpty() == false) {			
 			String albumName = createAlbumName.getText().trim();
 			
-			if(currentUser.addAlbum(albumName) == - 1) {
+			if(currentUser.addAlbum(albumName) == -1) {
 				Alert duplicate = new Alert(Alert.AlertType.ERROR, "Duplicate album found. Album not added!", ButtonType.OK);
 				duplicate.showAndWait();
 			} else {
-				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "User successfully added!", ButtonType.OK);
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Album successfully added!", ButtonType.OK);
 				success.showAndWait();
 				infoData.setText(albumView.getItems().size() + " albums - " + " ### photos");
 			}
@@ -80,16 +81,10 @@ public class UserController {
 		}
 	}
 	
-	public void doRenameAlbum() { 
+	public void doRename() { 
 		int selectedIndex = albumView.getSelectionModel().getSelectedIndex();
 		
-		if(selectedIndex < 0) {
-			Alert error = new Alert(Alert.AlertType.ERROR, "There are no albums to be edited.", ButtonType.OK);
-			error.showAndWait();
-			return;
-		}
-		
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this album?", ButtonType.YES, ButtonType.NO);
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to rename this album?", ButtonType.YES, ButtonType.NO);
 		alert.showAndWait();
 		
 		if(alert.getResult() != ButtonType.YES)
@@ -101,6 +96,14 @@ public class UserController {
 			
 			if(selectedIndex <= model.getItemCount() - 1) {
 				albumView.getSelectionModel().select(selectedIndex);
+			}
+			
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Album successfully renamed!", ButtonType.OK);
+			success.showAndWait();
+			
+			if(!success.isShowing()) {
+				//set back to normal window
+				
 			}
 		}
 	}
@@ -127,6 +130,9 @@ public class UserController {
 			if(selectedIndex <= model.getItemCount() - 1) {
 				albumView.getSelectionModel().select(selectedIndex);
 			}
+			
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Album successfully removed!", ButtonType.OK);
+			success.showAndWait();
 		}
 	}
 	

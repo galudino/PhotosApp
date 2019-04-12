@@ -12,8 +12,11 @@
 package controller;
 
 import java.io.IOException;
+import java.util.Map.Entry;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +25,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Album;
 import model.PhotoModel;
 import model.User;
 
@@ -78,6 +82,11 @@ public class LoginController {
 			} else {
 				if(password.equals(user.getPassword())) {
 					model.setCurrentUser(user);
+					ObservableList<Album> aList = FXCollections.observableArrayList();
+					for(Entry<String, Album> a : user.getAlbumMap().entrySet()) {
+						aList.add(a.getValue());
+					}
+					user.setAlbumList(aList);
 					Parent userLogin = FXMLLoader.load(getClass().getResource("/view/user.fxml"));
 					Scene userScene = new Scene(userLogin);
 					Stage currentStage = (Stage) (buttonLogin.getScene().getWindow());

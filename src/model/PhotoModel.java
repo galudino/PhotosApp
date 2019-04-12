@@ -123,7 +123,7 @@ public class PhotoModel implements Serializable {
 	 * @return an observable list that has all the old data, or a new list with admin/stock preloaded.
 	 */
 	@SuppressWarnings("resource")
-	private ObservableList<User> read() {
+	public ObservableList<User> read() {
 		try {
 			FileInputStream fIn = new FileInputStream(DAT_FILE_PATH);
 			ObjectInputStream in = new ObjectInputStream(fIn);

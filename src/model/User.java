@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -144,14 +145,6 @@ public class User implements Comparable<User>, Serializable {
 		} else {
 			return false;
 		}
-	}
-	
-	public ObservableList<Album> load() {
-		List<Album> albumLoad = new ArrayList<Album>();
-		for(Map.Entry<String, Album> a : albumMap.entrySet()) {
-			albumLoad.add(a.getValue());
-		}
-		return FXCollections.observableArrayList(albumLoad);
 	}
 	
 	public boolean equals(Object o) {

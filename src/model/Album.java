@@ -34,9 +34,8 @@ public class Album implements Comparable<Album>, Serializable {
 	}
 	
 	@Override
-	public int compareTo(Album arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Album other) {
+		return this.albumName.compareToIgnoreCase(other.albumName);
 	}
 
 	public String getAlbumName() {
