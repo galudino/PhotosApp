@@ -46,6 +46,10 @@ public class Album implements Comparable<Album>, Serializable {
 		return albumSize;
 	}
 	
+	public ArrayList<Photo> getPhotoList() {
+        return photoList;
+    }
+	
 	public String toString() {
 		return albumName + " " + photoList.size();
 	}

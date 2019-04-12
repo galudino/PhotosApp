@@ -11,11 +11,6 @@
 package controller;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,10 +23,12 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Album;
+import model.Photo;
 import model.PhotoModel;
 import model.User;
 
@@ -44,6 +41,7 @@ public class UserController {
 
 	private PhotoModel model = LoginController.getModel();
 	private User currentUser = model.getCurrentUser();
+	private Photo currentPhoto = null;
 	
 	@FXML ListView<Album> albumView;
 	@FXML Hyperlink addAlbumHL;
@@ -56,11 +54,53 @@ public class UserController {
 	@FXML TextField renameAlbumName;
 	@FXML Text oldName;
 	
+	@FXML TilePane tilePaneImages;
+	
+	@FXML ListView tagList;
+	@FXML TextField tagName;
+	@FXML TextField tagValue;
+	
+	@FXML TextField captionField;
+	@FXML Label displayCaption;
+	
 	@FXML
 	public void initialize() {
 		System.out.println("Current user logged on is: " + model.getCurrentUser().getUsername());
 		albumView.setItems(currentUser.getAlbumList());
 		//infoData.setText(albumList.size() + " albums - " + " ### photos");
+	}
+	
+	public void doSelectAlbum() {
+        // get count of images from album first.
+        // store this 
+        final int imageCount = currentUser.getCurrentAlbum().getPhotoList().size();
+
+
+    }
+	
+	public void setCaption() {
+		if(captionField.getText().isEmpty() == false) {
+			currentPhoto.setCaption(captionField.getText().trim());
+			displayCaption.setText(captionField.getText().trim());
+		} else {
+			Alert error = new Alert(AlertType.ERROR, "Please provide a caption.", ButtonType.OK);
+			error.showAndWait();
+		}
+	}
+	
+	public void createTag() {
+		if(tagName.getText().isEmpty() == false && tagValue.getText().isEmpty() == false) {
+			if(currentPhoto.addTag(tagName.getText().trim(), tagValue.getText().trim()) == -1) {
+					Alert error = new Alert(AlertType.ERROR, "Duplicate tag found. Tag not added!", ButtonType.OK);
+					error.showAndWait();
+			} else {
+					Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully added!", ButtonType.OK);
+					success.showAndWait();
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR, "Please provide a tag name and value.", ButtonType.OK);
+			error.showAndWait();
+		}
 	}
 	
 	public void doCreate() {

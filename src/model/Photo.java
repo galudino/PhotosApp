@@ -47,6 +47,21 @@ public class Photo {
 		return datePhoto;
 	}
 	
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+	
+	public int addTag(String tagName, String tagValue) {
+		String tagKey = Tag.makeKey(tagName, tagValue);
+		
+		return -1;
+	}
+	
+	
+	public boolean deleteTag(int index) {
+		return false;
+	}
+	
 	//need to create image for thumbnail
 	//need to create method to grab date/time from the photo
 }

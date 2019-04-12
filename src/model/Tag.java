@@ -52,6 +52,14 @@ public class Tag implements Comparable<Tag>, Serializable {
 	public String toString() {
 		return tagName + " :: " + tagValue;
 	}
+	
+	public static String makeKey(String tagName, String tagValue) {
+		return (tagName + tagValue).toLowerCase();
+	}
+	
+	public String getKey() { 
+		return makeKey(tagName, tagValue);
+	}
 
 	/**
 	 * @param Takes in a tag object to compare with
