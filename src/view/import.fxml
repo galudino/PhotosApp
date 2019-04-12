@@ -106,15 +106,16 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="66.0" layoutY="25.0" prefHeight="27.0" prefWidth="169.0" />
+                        <TextField layoutX="41.0" layoutY="26.0" prefHeight="27.0" prefWidth="194.0" />
                         <Button layoutX="246.0" layoutY="25.0" mnemonicParsing="false" text="Browse..." />
-                        <Label layoutX="41.0" layoutY="62.0" text="ADD TAGS TO SELECTION" textFill="#aeaeae">
+                        <Label layoutX="41.0" layoutY="62.0" text="ADD TAG TO SELECTION (key, value)" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="66.0" layoutY="77.0" prefHeight="27.0" prefWidth="169.0" />
-                        <Button layoutX="246.0" layoutY="77.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="75.0" text="Add Tag" />
+                        <TextField layoutX="41.0" layoutY="78.0" prefHeight="27.0" prefWidth="96.0" />
+                        <Button layoutX="246.0" layoutY="78.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="76.0" text="Confirm" />
+                        <TextField layoutX="139.0" layoutY="78.0" prefHeight="27.0" prefWidth="96.0" />
                      </children>
                   </Pane>
                   <Pane layoutY="240.0" prefHeight="125.0" prefWidth="336.0">
@@ -160,11 +161,7 @@
                      <children>
                         <ScrollPane hbarPolicy="NEVER" prefHeight="523.0" prefWidth="618.0">
                            <content>
-                              <TilePane prefHeight="521.0" prefWidth="618.0">
-                                 <children>
-                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </TilePane>
+                              <TilePane prefHeight="521.0" prefWidth="618.0" />
                            </content>
                            <contextMenu>
                               <ContextMenu>

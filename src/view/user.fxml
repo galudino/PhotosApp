@@ -90,13 +90,13 @@
                </children></AnchorPane>
             <AnchorPane layoutY="61.0" prefHeight="585.0" prefWidth="334.0">
                <children>
-                  <ListView fx:id="albumView" layoutX="22.0" prefHeight="585.0" prefWidth="308.0">
+                  <ListView fx:id="albumView" layoutX="22.0" onMouseClicked="#doSelectAlbum" prefHeight="585.0" prefWidth="308.0">
                      <contextMenu>
                         <ContextMenu>
                           <items>
-                            <MenuItem onAction="#doAddAlbum" mnemonicParsing="false" text="Add Album" />
-                              <MenuItem onAction="#doDeleteAlbum" mnemonicParsing="false" text="Delete Album" />
-                              <MenuItem onAction="#doEditAlbum" mnemonicParsing="false" text="Rename Album" />
+                            <MenuItem mnemonicParsing="false" onAction="#doAddAlbum" text="Add Album" />
+                              <MenuItem mnemonicParsing="false" onAction="#doDeleteAlbum" text="Delete Album" />
+                              <MenuItem mnemonicParsing="false" onAction="#doEditAlbum" text="Rename Album" />
                           </items>
                         </ContextMenu>
                      </contextMenu></ListView>
@@ -118,11 +118,7 @@
                      <children>
                         <ScrollPane hbarPolicy="NEVER" prefHeight="523.0" prefWidth="618.0">
                            <content>
-                              <TilePane prefHeight="521.0" prefWidth="618.0">
-                                 <children>
-                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </TilePane>
+                              <TilePane fx:id="tilePaneImages" prefHeight="521.0" prefWidth="618.0" />
                            </content>
                            <contextMenu>
                               <ContextMenu>
@@ -222,20 +218,21 @@
                                           <Font size="11.0" />
                                        </font>
                                     </Label>
-                                    <TextField layoutX="16.0" layoutY="28.0" prefHeight="18.0" prefWidth="193.0" />
+                                    <TextField layoutX="16.0" layoutY="28.0" prefHeight="18.0" prefWidth="192.0" />
                                     <Button layoutX="214.0" layoutY="28.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
-                                    <Label layoutX="16.0" layoutY="58.0" text="ADD TAG" textFill="#aeaeae">
+                                    <Label layoutX="16.0" layoutY="58.0" text="ADD TAG (key, value)" textFill="#aeaeae">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
                                     </Label>
-                                    <TextField layoutX="16.0" layoutY="72.0" prefHeight="18.0" prefWidth="193.0" />
+                                    <TextField layoutX="16.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
                                     <Button layoutX="214.0" layoutY="72.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
                                     <ScrollPane hbarPolicy="NEVER" layoutX="15.0" layoutY="115.0" prefHeight="74.0" prefWidth="266.0">
                                        <content>
                                           <TilePane prefHeight="73.0" prefWidth="264.0" />
                                        </content>
                                     </ScrollPane>
+                                    <TextField layoutX="115.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
                                  </children>
                               </Pane>
                               <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0">

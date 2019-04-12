@@ -134,22 +134,24 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="66.0" layoutY="44.0" prefHeight="27.0" prefWidth="194.0" />
-                        <Label layoutX="66.0" layoutY="30.0" text="TAG 1" textFill="#aeaeae">
+                        <TextField layoutX="66.0" layoutY="44.0" prefHeight="27.0" prefWidth="97.0" />
+                        <Label layoutX="66.0" layoutY="30.0" text="TAG 1 (key1, value1)" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <Label layoutX="66.0" layoutY="109.0" text="TAG 2" textFill="#aeaeae">
+                        <Label layoutX="66.0" layoutY="109.0" text="TAG 2 (key2, value2)" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="66.0" layoutY="123.0" prefHeight="27.0" prefWidth="193.0" />
+                        <TextField layoutX="66.0" layoutY="123.0" prefHeight="27.0" prefWidth="97.0" />
                         <RadioButton layoutX="66.0" layoutY="81.0" mnemonicParsing="false" text="and" />
                         <RadioButton layoutX="131.0" layoutY="81.0" mnemonicParsing="false" text="or" />
                         <RadioButton layoutX="189.0" layoutY="81.0" mnemonicParsing="false" text="not" />
                         <Button layoutX="115.0" layoutY="154.0" mnemonicParsing="false" text="Add Tag Pair" />
+                        <TextField layoutX="166.0" layoutY="44.0" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField layoutX="166.0" layoutY="123.0" prefHeight="27.0" prefWidth="97.0" />
                      </children>
                   </Pane>
                   <Pane layoutY="429.0" prefHeight="150.0" prefWidth="336.0">
@@ -185,11 +187,7 @@
                      <children>
                         <ScrollPane hbarPolicy="NEVER" prefHeight="523.0" prefWidth="618.0">
                            <content>
-                              <TilePane prefHeight="521.0" prefWidth="618.0">
-                                 <children>
-                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </TilePane>
+                              <TilePane prefHeight="521.0" prefWidth="618.0" />
                            </content>
                            <contextMenu>
                               <ContextMenu>
