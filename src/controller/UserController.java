@@ -12,7 +12,10 @@ package controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -49,6 +52,9 @@ public class UserController {
 	private PhotoModel model = LoginController.getModel();
 	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
+	private Album currentAlbum = null;
+	
+	ObservableList<Photo> photoList;
 
 	//@formatter:off
 	@FXML ListView<Album> albumView;
@@ -83,6 +89,9 @@ public class UserController {
 		System.out.println();
 		debugLog("Entering " + getClass().getSimpleName());
 		debugLog("Current user logged on is: " + model.getCurrentUser().getUsername());
+		debugLog("Current user has albums: " + currentUser.getAlbumMap());
+		debugLog("Current album:" + currentUser.getCurrentAlbum());
+		debugLog("Current photo list: " + currentUser.getCurrentAlbum().getPhotoMap());
 	}
 
 	/**
@@ -301,6 +310,7 @@ public class UserController {
 	 * Executes upon selection of an album within albumView
 	 */
 	public void doSelectAlbum() {
+		
         albumView.setCellFactory(lv -> {
             ListCell<Album> cell = new ListCell<Album>() {
                 @Override
@@ -337,18 +347,23 @@ public class UserController {
                          */
                     	
                     	debugLog("Selection: " + item);
+                    		
+                    	currentAlbum = cell.getItem();
+
+                    	photoList = FXCollections.observableArrayList();
                     	
+                    	for(Map.Entry<String, Photo> test2 : currentAlbum.getPhotoMap().entrySet()) {
+                    		photoList.add(test2.getValue());
+                    		System.out.println("Adding: " + test2.getValue());
+                    	}
                     	
-                    	
-                    	Album album = cell.getItem();
-                    	
-                    	System.out.println(album.getAlbumSize());
-                    	
-                    	List<Photo> photoList = album.getPhotoList();
+                    	currentAlbum.setPhotoList(photoList);
                     	
                     	if (photoList == null) {
                     		debugLog("photoList is empty!");
                     	}
+                    	
+                    	tilePaneImages.getChildren().clear();
                     	
                     	for (Photo p : photoList) {
                     		ImageView iv = new ImageView(p.getFileName());

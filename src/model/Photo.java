@@ -38,7 +38,7 @@ public class Photo implements Serializable {
 	private String caption;
 	private long datePhoto;
 
-	private transient ObservableList<Tag> tagList;
+	private ObservableList<Tag> tagList;
 	private TreeMap<String, Tag> tagMap;
 
 	/**

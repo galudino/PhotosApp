@@ -213,8 +213,7 @@ public class PhotoModel implements Serializable {
 		User stock = new User("stock", "stock");
 
 		stock.addAlbum("test");
-		
-		stock.setCurrentAlbum("test");
+		stock.setCurrentAlbum(stock.getAlbumList().get(0));
 		
 		System.out.println(stock.getCurrentAlbum());
 
@@ -227,6 +226,8 @@ public class PhotoModel implements Serializable {
 		stock.getCurrentAlbum().addPhoto(photo2);
 		stock.getCurrentAlbum().addPhoto(photo3);
 		stock.getCurrentAlbum().addPhoto(photo4);
+		
+		
 		
 		//stockAlbum.addPhoto(photo1);
 		//stockAlbum.addPhoto(photo2);
@@ -254,6 +255,8 @@ public class PhotoModel implements Serializable {
 			ObjectOutputStream out = new ObjectOutputStream(fOut);
 
 			out.writeObject(new ArrayList<User>(userList));
+			
+			System.out.println("Saving..." + this);
 
 			out.close();
 			fOut.close();
@@ -270,5 +273,9 @@ public class PhotoModel implements Serializable {
 	public void debugLog(String message) {
 		System.out.println(
 				"[" + this.getClass().getSimpleName() + "] " + message);
+	}
+	
+	public String toString() {
+		return "User: " ;
 	}
 }

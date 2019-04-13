@@ -13,6 +13,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -110,6 +111,10 @@ public class Album implements Comparable<Album>, Serializable {
 	
 	public TreeMap<String, Photo> getPhotoMap() {
 		return photoMap;
+	}
+	
+	public void setPhotoList(ObservableList<Photo> photoList) {
+		this.photoList = photoList;
 	}
 
 	@Override
