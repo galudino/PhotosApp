@@ -11,6 +11,7 @@
 
 package model;
 
+import java.io.File;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -27,7 +28,7 @@ public class Photo {
 	private static final int THUMBNAIL_W = 120;
 	private static final int THUMBNAIL_H = 120;
 
-	private String fileName;
+	private String filepath;
 	private String caption;
 	private long datePhoto;
 
@@ -39,7 +40,7 @@ public class Photo {
 	 * @param photo
 	 */
 	public Photo(Photo photo) {
-		this.fileName = photo.fileName;
+		this.filepath = photo.filepath;
 		this.caption = photo.caption;
 		this.datePhoto = photo.datePhoto;
 
@@ -55,7 +56,7 @@ public class Photo {
 	 * @param fileName
 	 */
 	public Photo(String fileName) {
-		this.fileName = fileName;
+		this.filepath = fileName;
 		caption = "";
 		datePhoto = 0;
 		tagList = null;
@@ -66,7 +67,40 @@ public class Photo {
 	 * @return
 	 */
 	public String getFileName() {
-		return fileName;
+		return filepath;
+	}
+	
+	/**
+	 * Accessor to compute and return the target filename within filepath
+	 * 
+	 * @author Gemuele Aludino
+	 * @return substring of filepath, resultant: filename of photo
+	 */
+	public String getFilename() {
+		return filepath.substring(filepath.lastIndexOf(File.separator) + 1);
+	}
+	
+	/**
+	 * Accessor to compute and return the target filename within filepath
+	 * with no extension
+	 * 
+	 * @author Gemuele Aludino
+	 * @return substring of filepath, resultant: filename of photo, no extension
+	 */
+	public String getFilenameNoExtension() {
+		String filename = getFilename();
+		return filename.substring(0, filename.lastIndexOf("."));
+	}
+	
+	/**
+	 * Accessor to compute and return the target filename's extension
+	 * 
+	 * @author Gemuele Aludino
+	 * @return substring of filepath, resultant: extension of filename
+	 */
+	public String getFilenameExtension() {
+		String filename = getFilename();
+		return filename.substring(filename.lastIndexOf("."));
 	}
 
 	/**
@@ -161,7 +195,7 @@ public class Photo {
 
 	@Override
 	public String toString() {
-		return fileName + " (" + datePhoto + "): \"" + caption + "\"";
+		return filepath + " (" + datePhoto + "): \"" + caption + "\"";
 	}
 
 	@Override
@@ -178,7 +212,7 @@ public class Photo {
 			 *  Else return false.
 			 * Else return false.
 			 */
-			return fileName.contentEquals(p.fileName) ? ((datePhoto == p.datePhoto) ? ((caption.equals(p.caption)) ? true : false) : true) : true;
+			return filepath.contentEquals(p.filepath) ? ((datePhoto == p.datePhoto) ? ((caption.equals(p.caption)) ? true : false) : true) : true;
 		} else {
 			return false;
 		}
