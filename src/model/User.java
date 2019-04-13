@@ -115,6 +115,15 @@ public class User implements Comparable<User>, Serializable {
 	public void setCurrentAlbum(Album currentAlbum) {
 		this.currentAlbum = currentAlbum;
 	}
+	
+	public void setCurrentAlbum(String currentAlbum) {
+		String key = Album.makeKey(currentAlbum);
+		Album temp = albumMap.get(key);
+		
+		if(temp != null) {
+			this.currentAlbum = albumMap.get(key);
+		}
+	}
 
 	/**
 	 * 

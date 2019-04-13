@@ -341,9 +341,12 @@ public class UserController {
                     	
                     	
                     	Album album = cell.getItem();
+                    	
+                    	System.out.println(album.getAlbumSize());
+                    	
                     	List<Photo> photoList = album.getPhotoList();
                     	
-                    	if (photoList.isEmpty()) {
+                    	if (photoList == null) {
                     		debugLog("photoList is empty!");
                     	}
                     	

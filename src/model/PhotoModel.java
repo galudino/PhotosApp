@@ -210,23 +210,23 @@ public class PhotoModel implements Serializable {
 		}
 
 		User admin = new User("admin", "admin");
-
 		User stock = new User("stock", "stock");
 
-		//bum stockAlbum = new Album("Stock Album");
+		stock.addAlbum("test");
 		
-		//stock.addAlbum("Stock Album");
-		//stock.setCurrentAlbum(stockAlbum);
+		stock.setCurrentAlbum("test");
+		
+		System.out.println(stock.getCurrentAlbum());
 
 		//oto photo1 = new Photo("/view/stock/one.jpg");
-		//Photo photo2 = new Photo("/view/stock/two.jpg");
-		//Photo photo3 = new Photo("/view/stock/three.jpg");
-		//Photo photo4 = new Photo("/view/stock/four.jpg");
+		Photo photo2 = new Photo("/view/stock/two.jpg");
+		Photo photo3 = new Photo("/view/stock/three.jpg");
+		Photo photo4 = new Photo("/view/stock/four.jpg");
 
 		//stock.getCurrentAlbum().addPhoto(photo1);
-		//stock.getCurrentAlbum().addPhoto(photo2);
-		//stock.getCurrentAlbum().addPhoto(photo3);
-		//stock.getCurrentAlbum().addPhoto(photo4);
+		stock.getCurrentAlbum().addPhoto(photo2);
+		stock.getCurrentAlbum().addPhoto(photo3);
+		stock.getCurrentAlbum().addPhoto(photo4);
 		
 		//stockAlbum.addPhoto(photo1);
 		//stockAlbum.addPhoto(photo2);
@@ -239,7 +239,7 @@ public class PhotoModel implements Serializable {
 		
 		
 		// stock.addAlbum("NAMEOFALBUM");
-		//System.out.println(stock.getCurrentAlbum().getPhotoList());
+		System.out.println(stock.getCurrentAlbum().getPhotoList());
 
 		return FXCollections.observableArrayList(admin, stock);
 	}

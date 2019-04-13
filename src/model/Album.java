@@ -32,7 +32,7 @@ public class Album implements Comparable<Album>, Serializable {
 
 	private String albumName;
 	
-	private ObservableList<Photo> photoList;
+	private transient ObservableList<Photo> photoList;
 	private TreeMap<String, Photo> photoMap;
 
 	/**
@@ -43,7 +43,7 @@ public class Album implements Comparable<Album>, Serializable {
 		this.albumName = albumName;
 		photoList = FXCollections.observableArrayList();
 		photoMap = new TreeMap<String, Photo>();
-		albumSize = photoMap.size();
+		albumSize = 0;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class Album implements Comparable<Album>, Serializable {
 
 	@Override
 	public String toString() {
-		return albumName + " " + photoList.size();
+		return albumName;
 	}
 
 	/**

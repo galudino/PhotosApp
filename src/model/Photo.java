@@ -12,6 +12,7 @@
 package model;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -23,8 +24,13 @@ import javafx.collections.ObservableList;
  * @version Apr 12, 2019
  * @author Patrick Nogaj
  */
-public class Photo {
+public class Photo implements Serializable {
 
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2759544425727486297L;
 	private static final int THUMBNAIL_W = 120;
 	private static final int THUMBNAIL_H = 120;
 
