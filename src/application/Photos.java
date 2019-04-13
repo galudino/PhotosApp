@@ -18,32 +18,44 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Represents the client/driver class of Photos
+ * 
+ * @version Apr 12, 2019
+ * @author Patrick Nogaj
+ */
 public class Photos extends Application {
-
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		
-		loader.setLocation(getClass().getResource("/view/login.fxml"));
-		
-		Parent root = loader.load();
-		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
-		
-		primaryStage.setOnCloseRequest(e -> exit());
-		
-		primaryStage.setTitle("Photos -- V1.0");
-		primaryStage.setResizable(false);
-		
-		primaryStage.show();
-	}
-	
+	/**
+	 * Program execution begins here.
+	 * 
+	 * @param args Command line arguments
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
+	/**
+	 * Executes upon termination of program.
+	 */
 	public void exit() {
 		LoginController.exit();
 	}
 	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
+
+		loader.setLocation(getClass().getResource("/view/login.fxml"));
+
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		primaryStage.setScene(scene);
+
+		primaryStage.setOnCloseRequest(e -> exit());
+
+		primaryStage.setTitle("Photos -- V1.0");
+		primaryStage.setResizable(false);
+
+		primaryStage.show();
+	}
 }

@@ -11,6 +11,35 @@
 
 package controller;
 
-public class PhotoController {
+import javafx.fxml.FXML;
 
+/**
+ * Controller class to manage functionality of import.fxml
+ * 
+ * @version Apr 12, 2019
+ * @author Gemuele Aludino
+ */
+public class PhotoController {
+	
+	// TODO fields
+	
+	@FXML
+	public void initialize() {
+
+		/**
+		 * CONSOLE DIAGNOSTICS
+		 */
+		System.out.println();
+		debugLog("Entering " + getClass().getSimpleName());
+	}
+
+	/**
+	 * Used for console message/testing functionality/method calls
+	 * 
+	 * @param message String that denotes a message for the console
+	 */
+	public void debugLog(String message) {
+		System.out.println(
+				"[" + this.getClass().getSimpleName() + "] " + message);
+	}
 }
