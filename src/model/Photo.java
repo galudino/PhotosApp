@@ -11,6 +11,8 @@
 
 package model;
 
+import java.util.TreeMap;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -29,10 +31,8 @@ public class Photo {
 	private String caption;
 	private long datePhoto;
 
-	//private transient ObservableList<Tag> tagList;
-
-	// TODO
-	// private NavigableMap<T, Tag> tagMap;
+	private ObservableList<Tag> tagList;
+	private TreeMap<String, Tag> tagMap;
 
 	/**
 	 * 
@@ -43,11 +43,11 @@ public class Photo {
 		this.caption = photo.caption;
 		this.datePhoto = photo.datePhoto;
 
-		//tagList = FXCollections.observableArrayList();
+		tagList = FXCollections.observableArrayList();
 
-		//for (Tag t : photo.tagList) {
-		//	tagList.add(new Tag(t));
-		//}
+		for (Tag t : photo.tagList) {
+			tagList.add(new Tag(t));
+		}
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class Photo {
 		this.fileName = fileName;
 		caption = "";
 		datePhoto = 0;
-		//tagList = null;
+		tagList = null;
 	}
 
 	/**
@@ -101,8 +101,15 @@ public class Photo {
 	 */
 	public int addTag(String tagName, String tagValue) {
 		String tagKey = Tag.makeKey(tagName, tagValue);
-
-		return -1;
+		Tag temp = tagMap.get(tagKey);
+		
+		if(temp != null) {
+			temp = new Tag(tagName, tagValue);
+			tagMap.put(tagKey, temp);
+			return indexInsertedSorted(temp);
+		} else {
+			return -1;
+		}
 	}
 
 	/**
@@ -111,7 +118,37 @@ public class Photo {
 	 * @return
 	 */
 	public boolean deleteTag(int index) {
-		return false;
+		String key = tagList.get(index).getKey();
+		Tag temp = tagMap.get(key);
+		
+		if(temp != null) {
+			tagMap.remove(key);
+			tagList.remove(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Places the tag in the appropriate spot in the tagList.
+	 * @param tag
+	 * @return an index for where the Tag will be placed in the list.
+	 */
+	private int indexInsertedSorted(Tag tag) {
+		if (tagList.isEmpty()) {
+			tagList.add(tag);
+			return 0;
+		} else {
+			for (int i = 0; i < tagList.size(); i++) {
+				if (tag.compareTo(tagList.get(i)) < 0) {
+					tagList.add(i, tag);
+					return i;
+				}
+			}
+			tagList.add(tag);
+			return tagList.size() - 1;
+		}
 	}
 
 	@Override
@@ -133,11 +170,7 @@ public class Photo {
 			 *  Else return false.
 			 * Else return false.
 			 */
-			return fileName.contentEquals(p.fileName)
-					? ((datePhoto == p.datePhoto)
-							? ((caption.equals(p.caption)) ? true : false)
-							: true)
-					: true;
+			return fileName.contentEquals(p.fileName) ? ((datePhoto == p.datePhoto) ? ((caption.equals(p.caption)) ? true : false) : true) : true;
 		} else {
 			return false;
 		}

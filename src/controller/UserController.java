@@ -11,7 +11,6 @@
 package controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.fxml.FXML;
@@ -91,28 +90,37 @@ public class UserController {
 	 * Executes upon setting a caption within captionField
 	 */
 	public void setCaption() {
-		if (captionField.getText().isEmpty() == false) {
-			/**
-			 * SCENARIO 1: captionField is not empty.
-			 */
-			currentPhoto.setCaption(captionField.getText().trim());
-			displayCaption.setText(captionField.getText().trim());
-			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("caption - \"" + captionField.getText() + "\" was set");
+		if(currentPhoto != null) {
+			if (captionField.getText().isEmpty() == false) {
+				/**
+				 * SCENARIO 1: captionField is not empty.
+				 */
+				currentPhoto.setCaption(captionField.getText().trim());
+				displayCaption.setText(captionField.getText().trim());
+				
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("caption - \"" + captionField.getText() + "\" was set");
+			} else {
+				/**
+				 * SCENARIO 2: captionField is an empty string.
+				 */
+				Alert error = new Alert(AlertType.ERROR,
+						"Please provide a caption.", ButtonType.OK);
+				
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("caption provided was an empty string.");
+				
+				error.showAndWait();
+			}
 		} else {
-			/**
-			 * SCENARIO 2: captionField is an empty string.
-			 */
 			Alert error = new Alert(AlertType.ERROR,
-					"Please provide a caption.", ButtonType.OK);
+					"Please select a photo to create a caption for.", ButtonType.OK);
 			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("caption provided was an empty string.");
+			debugLog("ERROR: Please select a photo.");
 			
 			error.showAndWait();
 		}
@@ -122,45 +130,53 @@ public class UserController {
 	 * Executes upon creating a tag
 	 */
 	public void createTag() {
-		if (tagName.getText().isEmpty() == false
-				&& tagValue.getText().isEmpty() == false) {
-			/**
-			 * SCENARIO 1: tagName and tagValue are not empty
-			 */
-			if (currentPhoto.addTag(tagName.getText().trim(),
-					tagValue.getText().trim()) == -1) {
+		if(currentPhoto != null) {
+			if (tagName.getText().isEmpty() == false && tagValue.getText().isEmpty() == false) {
 				/**
-				 * SCENARIO 1a: tag entered already exists
+				 * SCENARIO 1: tagName and tagValue are not empty
 				 */
-				Alert error = new Alert(AlertType.ERROR,
-						"Duplicate tag found. Tag not added!", ButtonType.OK);
-				
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("Duplicate tag found. Tag not added!");
-				
-				error.showAndWait();
+				if (currentPhoto.addTag(tagName.getText().trim(),
+						tagValue.getText().trim()) == -1) {
+					/**
+					 * SCENARIO 1a: tag entered already exists
+					 */
+					Alert error = new Alert(AlertType.ERROR,
+							"Duplicate tag found. Tag not added!", ButtonType.OK);
+					
+					/**
+					 * CONSOLE DIAGNOSTICS
+					 */
+					debugLog("Duplicate tag found. Tag not added!");
+					
+					error.showAndWait();
+				} else {
+					/**
+					 * SCENARIO 1b: tag entered does not exist
+					 */
+					
+					Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+							"Tag successfully added!", ButtonType.OK);
+					
+					debugLog("Tag " + tagName.getText() + " was successfully added!");
+					
+					success.showAndWait();
+				}
 			} else {
 				/**
-				 * SCENARIO 1b: tag entered does not exist
+				 * SCENARIO 2: either tagName or tagValue or both are empty
 				 */
+				Alert error = new Alert(AlertType.ERROR,
+						"Please provide a tag name and value.", ButtonType.OK);
 				
-				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-						"Tag successfully added!", ButtonType.OK);
+				debugLog("ERROR: Please provide a tag name and value.");
 				
-				debugLog("Tag " + tagName.getText() + " was successfully added!");
-				
-				success.showAndWait();
+				error.showAndWait();
 			}
 		} else {
-			/**
-			 * SCENARIO 2: either tagName or tagValue or both are empty
-			 */
 			Alert error = new Alert(AlertType.ERROR,
-					"Please provide a tag name and value.", ButtonType.OK);
+					"Please select a photo to create a tag for.", ButtonType.OK);
 			
-			debugLog("ERROR: Please provide a tag name and value.");
+			debugLog("ERROR: Please select a photo.");
 			
 			error.showAndWait();
 		}
@@ -268,14 +284,6 @@ public class UserController {
 			debugLog("Album successfully renamed!");
 			
 			success.showAndWait();
-
-			if (!success.isShowing()) {
-				// set back to normal window
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("Will set back to normal window.");
-			}
 		}
 	}
 	
