@@ -13,6 +13,10 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.TreeMap;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Represents an album for a photo gallery application
@@ -27,7 +31,9 @@ public class Album implements Comparable<Album>, Serializable {
 	private int albumSize;
 
 	private String albumName;
-	private ArrayList<Photo> photoList;
+	
+	private ObservableList<Photo> photoList;
+	private TreeMap<String, Photo> photoMap;
 
 	/**
 	 * 
@@ -35,16 +41,42 @@ public class Album implements Comparable<Album>, Serializable {
 	 */
 	public Album(String albumName) {
 		this.albumName = albumName;
-		albumSize = 0;
-		photoList = new ArrayList<>();
+		photoList = FXCollections.observableArrayList();
+		photoMap = new TreeMap<String, Photo>();
+		albumSize = photoMap.size();
 	}
 
 	/**
 	 * 
 	 * @param photo
 	 */
-	public void addPhoto(Photo photo) {
-		photoList.add(photo);
+	public int addPhoto(Photo photo) {
+		String photoKey = Photo.makeKey(photo.getFileName());
+		Photo temp = photoMap.get(photoKey);
+		
+		if(temp == null) {
+			temp = new Photo(photo.getFileName());
+			photoMap.put(photoKey, temp);
+			return indexInsertedSorted(temp);
+		} else {
+			return -1;
+		}
+	}
+	
+	private int indexInsertedSorted(Photo photo) {
+		if (photoList.isEmpty()) {
+			photoList.add(photo);
+			return 0;
+		} else {
+			for (int i = 0; i < photoList.size(); i++) {
+				if (photo.compareTo(photoList.get(i)) < 0) {
+					photoList.add(i, photo);
+					return i;
+				}
+			}
+			photoList.add(photo);
+			return photoList.size() - 1;
+		}
 	}
 
 	@Override
@@ -72,8 +104,12 @@ public class Album implements Comparable<Album>, Serializable {
 	 * 
 	 * @return
 	 */
-	public ArrayList<Photo> getPhotoList() {
+	public ObservableList<Photo> getPhotoList() {
 		return photoList;
+	}
+	
+	public TreeMap<String, Photo> getPhotoMap() {
+		return photoMap;
 	}
 
 	@Override

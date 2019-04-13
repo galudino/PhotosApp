@@ -40,7 +40,7 @@ public class LoginController {
 
 	public static final String DAT_FILE_PATH = "photos.dat";
 
-	static PhotoModel model;
+	public static PhotoModel model;
 
 	//@formatter:off
 	@FXML Button buttonLogin;

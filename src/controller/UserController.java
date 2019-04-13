@@ -46,10 +46,9 @@ import model.User;
  */
 public class UserController {
 	
-	private Photo currentPhoto = null;
 	private PhotoModel model = LoginController.getModel();
-	
 	private User currentUser = model.getCurrentUser();
+	private Photo currentPhoto = null;
 
 	//@formatter:off
 	@FXML ListView<Album> albumView;
@@ -267,23 +266,34 @@ public class UserController {
 		if (selectedIndex >= 0) {
 			debugLog("Selected Index (album to be renamed): " + selectedIndex);
 			
-			currentUser.edit(selectedIndex, renameAlbumName.getText().trim());
+			if(currentUser.edit(selectedIndex, renameAlbumName.getText().trim()) == -1) {
+				Alert duplicate = new Alert(Alert.AlertType.ERROR,
+						"Duplicate album found. Album not renamed!",
+						ButtonType.OK);
+				
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("ERROR: Duplicate album found. Album not renamed!");
+				
+				duplicate.showAndWait();
+			} else {
+				if (selectedIndex <= model.getItemCount() - 1) {
+					albumView.getSelectionModel().select(selectedIndex);
+				}
+				
+				renameAlbumName.getScene().getWindow().hide();
 
-			if (selectedIndex <= model.getItemCount() - 1) {
-				albumView.getSelectionModel().select(selectedIndex);
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+						"Album successfully renamed!", ButtonType.OK);
+				
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("Album successfully renamed!");
+				
+				success.showAndWait();
 			}
-			
-			renameAlbumName.getScene().getWindow().hide();
-
-			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-					"Album successfully renamed!", ButtonType.OK);
-			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Album successfully renamed!");
-			
-			success.showAndWait();
 		}
 	}
 	

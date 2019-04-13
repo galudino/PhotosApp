@@ -195,11 +195,8 @@ public class PhotoModel implements Serializable {
 		try {
 			FileInputStream fIn = new FileInputStream(DAT_FILE_PATH);
 			ObjectInputStream in = new ObjectInputStream(fIn);
-
 			@SuppressWarnings("unchecked")
-
 			List<User> readList = (List<User>) in.readObject();
-
 			/**
 			 * CONSOLE DIAGNOSTICS
 			 */
@@ -216,15 +213,15 @@ public class PhotoModel implements Serializable {
 
 		User stock = new User("stock", "stock");
 
-		Album stockAlbum = new Album("Stock Album");
+		//bum stockAlbum = new Album("Stock Album");
 		
 		//stock.addAlbum("Stock Album");
 		//stock.setCurrentAlbum(stockAlbum);
 
-		Photo photo1 = new Photo("/view/stock/one.jpg");
-		Photo photo2 = new Photo("/view/stock/two.jpg");
-		Photo photo3 = new Photo("/view/stock/three.jpg");
-		Photo photo4 = new Photo("/view/stock/four.jpg");
+		//oto photo1 = new Photo("/view/stock/one.jpg");
+		//Photo photo2 = new Photo("/view/stock/two.jpg");
+		//Photo photo3 = new Photo("/view/stock/three.jpg");
+		//Photo photo4 = new Photo("/view/stock/four.jpg");
 
 		//stock.getCurrentAlbum().addPhoto(photo1);
 		//stock.getCurrentAlbum().addPhoto(photo2);
@@ -237,12 +234,12 @@ public class PhotoModel implements Serializable {
 		//stockAlbum.addPhoto(photo4);
 
 		
-		stock.getAlbumMap().put("Stock Album", stockAlbum);
-		stock.setCurrentAlbum(stockAlbum);
+		//stock.getAlbumMap().put("Stock Album", stockAlbum);
+		//stock.setCurrentAlbum(stockAlbum);
 		
 		
 		// stock.addAlbum("NAMEOFALBUM");
-		System.out.println(stock.getCurrentAlbum().getPhotoList());
+		//System.out.println(stock.getCurrentAlbum().getPhotoList());
 
 		return FXCollections.observableArrayList(admin, stock);
 	}

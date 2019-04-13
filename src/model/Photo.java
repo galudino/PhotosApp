@@ -31,7 +31,7 @@ public class Photo {
 	private String caption;
 	private long datePhoto;
 
-	private ObservableList<Tag> tagList;
+	private transient ObservableList<Tag> tagList;
 	private TreeMap<String, Tag> tagMap;
 
 	/**
@@ -128,6 +128,14 @@ public class Photo {
 		} else {
 			return false;
 		}
+	}
+	
+	public static String makeKey(String fileName) {
+		return fileName.toLowerCase();
+	}
+	
+	public String getKey(String fileName) {
+		return makeKey(fileName);
 	}
 	
 	/**
