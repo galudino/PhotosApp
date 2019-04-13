@@ -25,6 +25,7 @@ import javafx.stage.Stage;
  * @author Patrick Nogaj
  */
 public class Photos extends Application {
+	
 	/**
 	 * Program execution begins here.
 	 * 

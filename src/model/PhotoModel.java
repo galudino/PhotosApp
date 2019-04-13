@@ -231,10 +231,10 @@ public class PhotoModel implements Serializable {
 		//stock.getCurrentAlbum().addPhoto(photo3);
 		//stock.getCurrentAlbum().addPhoto(photo4);
 		
-		stockAlbum.addPhoto(photo1);
-		stockAlbum.addPhoto(photo2);
-		stockAlbum.addPhoto(photo3);
-		stockAlbum.addPhoto(photo4);
+		//stockAlbum.addPhoto(photo1);
+		//stockAlbum.addPhoto(photo2);
+		//stockAlbum.addPhoto(photo3);
+		//stockAlbum.addPhoto(photo4);
 
 		
 		stock.getAlbumMap().put("Stock Album", stockAlbum);

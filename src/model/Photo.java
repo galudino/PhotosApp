@@ -29,7 +29,7 @@ public class Photo {
 	private String caption;
 	private long datePhoto;
 
-	private ObservableList<Tag> tagList;
+	//private transient ObservableList<Tag> tagList;
 
 	// TODO
 	// private NavigableMap<T, Tag> tagMap;
@@ -43,11 +43,11 @@ public class Photo {
 		this.caption = photo.caption;
 		this.datePhoto = photo.datePhoto;
 
-		tagList = FXCollections.observableArrayList();
+		//tagList = FXCollections.observableArrayList();
 
-		for (Tag t : photo.tagList) {
-			tagList.add(new Tag(t));
-		}
+		//for (Tag t : photo.tagList) {
+		//	tagList.add(new Tag(t));
+		//}
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class Photo {
 		this.fileName = fileName;
 		caption = "";
 		datePhoto = 0;
-		tagList = null;
+		//tagList = null;
 	}
 
 	/**

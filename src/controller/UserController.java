@@ -145,6 +145,7 @@ public class UserController {
 				/**
 				 * SCENARIO 1b: tag entered does not exist
 				 */
+				
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
 						"Tag successfully added!", ButtonType.OK);
 				
@@ -193,6 +194,8 @@ public class UserController {
 				/**
 				 * SCENARIO 1b: album name does not exist within albumList
 				 */
+				createAlbumName.getScene().getWindow().hide();
+				
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
 						"Album successfully added!", ButtonType.OK);
 				
@@ -202,9 +205,6 @@ public class UserController {
 				debugLog("Album " + albumName + " successfully added!");
 				
 				success.showAndWait();
-				
-				infoData.setText(albumView.getItems().size() + " albums - "
-						+ " ### photos");
 			}
 		} else {
 			/**
@@ -256,6 +256,8 @@ public class UserController {
 			if (selectedIndex <= model.getItemCount() - 1) {
 				albumView.getSelectionModel().select(selectedIndex);
 			}
+			
+			renameAlbumName.getScene().getWindow().hide();
 
 			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
 					"Album successfully renamed!", ButtonType.OK);
