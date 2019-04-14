@@ -227,7 +227,14 @@
                                     <TextField fx:id="tagName" layoutX="16.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
                                     <Button layoutX="214.0" layoutY="72.0" mnemonicParsing="false" onAction="#createTag" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
                                     <TextField fx:id="tagValue" layoutX="115.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
-                                    <ListView fx:id="tagList" layoutX="19.0" layoutY="117.0" prefHeight="74.0" prefWidth="261.0" />
+                                    <ListView fx:id="tagList" layoutX="19.0" layoutY="117.0" prefHeight="74.0" prefWidth="261.0">
+                                       <contextMenu>
+                                          <ContextMenu>
+                                            <items>
+                                              <MenuItem mnemonicParsing="false" text="Remove Tag" />
+                                            </items>
+                                          </ContextMenu>
+                                       </contextMenu></ListView>
                                  </children>
                               </Pane>
                               <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0">

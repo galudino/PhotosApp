@@ -28,12 +28,12 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem onAction="#doAlbum" mnemonicParsing="false" text="Return to Albums" />
+              <MenuItem mnemonicParsing="false" onAction="#doAlbum" text="Return to Albums" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem onAction="#doLogOut" mnemonicParsing="false" text="Save &amp; Logout" />
-                  <MenuItem onAction="#doQuit" mnemonicParsing="false" text="Save &amp; Exit Photos" />
+                  <MenuItem mnemonicParsing="false" onAction="#doLogOut" text="Save &amp; Logout" />
+                  <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Save &amp; Exit Photos" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
@@ -44,9 +44,9 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem onAction="#doHelp" mnemonicParsing="false" text="Help" />
+              <MenuItem mnemonicParsing="false" onAction="#doHelp" text="Help" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem onAction="#doAbout" mnemonicParsing="false" text="About Photos" />
+                  <MenuItem mnemonicParsing="false" onAction="#doAbout" text="About Photos" />
             </items>
           </Menu>
         </menus>
@@ -125,11 +125,15 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <ScrollPane hbarPolicy="NEVER" layoutX="45.0" layoutY="29.0" prefHeight="79.0" prefWidth="266.0">
-                           <content>
-                              <TilePane prefHeight="78.0" prefWidth="264.0" />
-                           </content>
-                        </ScrollPane>
+                        <ListView layoutX="45.0" layoutY="33.0" prefHeight="79.0" prefWidth="266.0">
+                           <contextMenu>
+                              <ContextMenu>
+                                <items>
+                                  <MenuItem mnemonicParsing="false" text="Remove Tag" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </ListView>
                      </children>
                   </Pane>
                   <Pane layoutY="378.0" prefHeight="207.0" prefWidth="336.0">
