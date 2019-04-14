@@ -11,12 +11,14 @@
 
 package model;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -217,15 +219,22 @@ public class PhotoModel implements Serializable {
 		
 		System.out.println(stock.getCurrentAlbum());
 
-		//oto photo1 = new Photo("/view/stock/one.jpg");
-		Photo photo2 = new Photo("/view/stock/two.jpg");
-		Photo photo3 = new Photo("/view/stock/three.jpg");
-		Photo photo4 = new Photo("/view/stock/four.jpg");
+		try {
+			Photo photo1 = new Photo(new File("src/view/stock/one.jpg").toURI().toURL().toExternalForm());
+	        Photo photo2 = new Photo(new File("src/view/stock/two.jpg").toURI().toURL().toExternalForm());
+	        Photo photo3 = new Photo(new File("src/view/stock/three.jpg").toURI().toURL().toExternalForm());
+	        Photo photo4 = new Photo(new File("src/view/stock/four.jpg").toURI().toURL().toExternalForm());
+	        
+			stock.getCurrentAlbum().addPhoto(photo2);
+			stock.getCurrentAlbum().addPhoto(photo3);
+			stock.getCurrentAlbum().addPhoto(photo4);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//stock.getCurrentAlbum().addPhoto(new File("/view/stock/one.jpg"));
 
-		//stock.getCurrentAlbum().addPhoto(photo1);
-		stock.getCurrentAlbum().addPhoto(photo2);
-		stock.getCurrentAlbum().addPhoto(photo3);
-		stock.getCurrentAlbum().addPhoto(photo4);
 		
 		
 		

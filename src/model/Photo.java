@@ -62,12 +62,7 @@ public class Photo implements Serializable {
 		this.datePhoto = photo.datePhoto;
 
 		tagMap = new TreeMap<String, Tag>();
-		
 		tagList = FXCollections.observableArrayList();
-
-		//for (Tag t : photo.tagList) {
-		//	tagList.add(new Tag(t));
-		//}
 	}
 
 	/**
@@ -78,7 +73,7 @@ public class Photo implements Serializable {
 		this.filepath = filepath;
 		caption = "";
 		datePhoto = 0;
-		tagList = null;
+		tagList = FXCollections.observableArrayList();
 		tagMap = new TreeMap<String, Tag>();
 	}
 	
@@ -87,6 +82,7 @@ public class Photo implements Serializable {
 		filepath = imageFile.getAbsolutePath();
 		caption = "";
 		datePhoto = imageFile.lastModified();
+		tagList = FXCollections.observableArrayList();
 		tagMap = new TreeMap<String, Tag>();
 	}
 
@@ -109,6 +105,14 @@ public class Photo implements Serializable {
 	public String getExternalForm() throws MalformedURLException {
 		URL url = imageFile.toURI().toURL();
 		return url.toExternalForm();
+	}
+	
+	public TreeMap<String, Tag> getTagMap() {
+		return tagMap;
+	}
+	
+	public void setTagList(ObservableList<Tag> tagList) {
+		this.tagList = tagList;
 	}
 	
 	/**
@@ -151,11 +155,6 @@ public class Photo implements Serializable {
 		String filename = getFilename();
 		return filename.substring(filename.lastIndexOf("."));
 	}
-	
-	public String getFilePath() {
-		File file = new File(filepath);
-		return "";
-	}
 
 	/**
 	 * 
@@ -191,7 +190,9 @@ public class Photo implements Serializable {
 		String tagKey = Tag.makeKey(tagName, tagValue);
 		Tag temp = tagMap.get(tagKey);
 		
-		if(temp != null) {
+		System.out.println(temp);
+		
+		if(temp == null) {
 			temp = new Tag(tagName, tagValue);
 			tagMap.put(tagKey, temp);
 			return indexInsertedSorted(temp);
@@ -243,8 +244,8 @@ public class Photo implements Serializable {
 		return fileName.toLowerCase();
 	}
 	
-	public String getKey(String fileName) {
-		return makeKey(fileName);
+	public String getKey() {
+		return makeKey(filepath);
 	}
 
 	@Override

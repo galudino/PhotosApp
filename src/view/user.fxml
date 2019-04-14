@@ -134,7 +134,7 @@
                                           <MenuItem mnemonicParsing="false" text="(no albums available)" />
                                        </items>
                                     </Menu>
-                                    <MenuItem mnemonicParsing="false" text="Delete Selected Photo from this Album" />
+                                    <MenuItem onAction="#deletePhoto" mnemonicParsing="false" text="Delete Selected Photo from this Album" />
                                     <SeparatorMenuItem mnemonicParsing="false" />
                                     <MenuItem mnemonicParsing="false" text="Open Photo in Viewer" />
                                 </items>

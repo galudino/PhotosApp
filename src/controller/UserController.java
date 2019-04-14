@@ -12,7 +12,9 @@ package controller;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.text.View;
 import javax.swing.text.html.HTMLDocument.Iterator;
@@ -45,6 +47,7 @@ import javafx.geometry.Insets;
 import model.Album;
 import model.Photo;
 import model.PhotoModel;
+import model.Tag;
 import model.User;
 
 /**
@@ -58,10 +61,9 @@ public class UserController {
 	private PhotoModel model = LoginController.getModel();
 	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
-	private Photo previousPhoto = null;
 	private Album currentAlbum = null;
 	
-	ObservableList<Photo> photoList;
+	ObservableList<Photo> photoList = FXCollections.observableArrayList();
 
 	//@formatter:off
 	@FXML ListView<Album> albumView;
@@ -77,7 +79,7 @@ public class UserController {
 	
 	@FXML TilePane tilePaneImages;
 	
-	@FXML ListView tagList;
+	@FXML ListView<Tag> tagList;
 	@FXML TextField tagName;
 	@FXML TextField tagValue;
 	
@@ -91,13 +93,13 @@ public class UserController {
 	
 	@FXML ImageView detailView;
 	//@formatter:on
+	
+	int index = -1;
 
 	@FXML
 	public void initialize() {
 		albumView.setItems(currentUser.getAlbumList());
-		// infoData.setText(albumList.size() + " albums - " + " ### photos");
-		
-		
+		infoData.setText(currentUser.getAlbumList().size() + " albums - " + " ### photos");
 		
 		/**
 		 * CONSOLE DIAGNOSTICS
@@ -149,18 +151,74 @@ public class UserController {
 			error.showAndWait();
 		}
 	}
+	
+	public void deletePhoto() {
+		
+		int selectedIndex = index;
+
+		if(selectedIndex < 0) {
+			Alert error = new Alert(Alert.AlertType.ERROR,
+					"There are no photos to be deleted.", ButtonType.OK);
+			
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("There are no photos to be deleted.");
+			
+			error.showAndWait();
+			return;
+		}
+
+
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+				"Are you sure you want to delete this photo?", ButtonType.YES,
+				ButtonType.NO);
+		
+		alert.showAndWait();
+
+		/**
+		 * User no longer wants to delete the selected album
+		 */
+		if (alert.getResult() != ButtonType.YES) {
+			/**
+			 * CONSOLE DIAGNOSTICS 
+			 */
+			debugLog("Quit from deleting photo.");
+			return;
+		}
+		
+		/**
+		 * Photo is found within list
+		 */
+		if (selectedIndex >= 0) {
+			debugLog("Selected Index (Photo to be deleted): " + selectedIndex);
+			currentAlbum.deletePhoto(selectedIndex);
+
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+					"Photo successfully removed!", ButtonType.OK);
+			
+			tilePaneImages.getChildren().remove(selectedIndex);
+			
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("Photo successfully removed!");
+			
+			success.showAndWait();
+		}
+		
+	}
 
 	/**
 	 * Executes upon creating a tag
 	 */
 	public void createTag() {
-		if(currentPhoto != null) {
+		if(currentPhoto != null) {		
 			if (tagName.getText().isEmpty() == false && tagValue.getText().isEmpty() == false) {
 				/**
 				 * SCENARIO 1: tagName and tagValue are not empty
 				 */
-				if (currentPhoto.addTag(tagName.getText().trim(),
-						tagValue.getText().trim()) == -1) {
+				if (currentPhoto.addTag(tagName.getText().trim(), tagValue.getText().trim()) == -1) {
 					/**
 					 * SCENARIO 1a: tag entered already exists
 					 */
@@ -373,7 +431,6 @@ public class UserController {
                     	for(Map.Entry<String, Photo> test2 : currentAlbum.getPhotoMap().entrySet()) {
                     		photoList.add(test2.getValue());
                     		System.out.println("Adding: " + test2.getValue());
-                    		System.out.println("Filepath for: " + test2.getValue().getFilepath());
                     	}
                     	
                     	currentAlbum.setPhotoList(photoList);
@@ -395,7 +452,6 @@ public class UserController {
                     	
                     	for (Photo p : photoList) {
                     		ImageView iv = new ImageView(p.getFilepath());
-                    		
 
                     		/**
                     		 * These 'magic numbers' are temporary.
@@ -411,11 +467,10 @@ public class UserController {
                     			if (e.isSecondaryButtonDown()) {
                     				debugLog("Image " + p.getFilename() + " right clicked");
                     			} else {
+                    				                    				
+                    				setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
                     				
-                    				if(iv.getBoundsInParent() != null) {
-                    					iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
-                    				}
-                    				
+                    				iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
                     				currentPhoto = p;
                     				
                     				debugLog("Image " + p.getFilename() + " selected");
@@ -434,7 +489,17 @@ public class UserController {
                     				detailView.setFitWidth(200);
                     				detailView.setVisible(true);
                     				detailView.setPreserveRatio(true);
-                    				//iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+                            		
+                    				ObservableList<Tag> tList = FXCollections.observableArrayList();
+                    				
+                            		for(Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+                            			tList.add(tag.getValue());
+                            		}
+                            		
+                            		currentPhoto.setTagList(tList);
+                            		
+                            		tagList.setItems(tList);
+                    				
                     			}
                     		});
                     		
@@ -448,6 +513,13 @@ public class UserController {
                     				pathField.setText("(No image selected)");
                     				sizeField.setText("(No image selected)");
                     				createdField.setText("(No image selected)");
+                    				
+                    				tagName.setText("");
+                    				tagValue.setText("");
+                    				
+                    				tagList.setItems(null);
+                    				
+                    				currentPhoto = null;
                     			}
                     		});
                     		
@@ -468,6 +540,10 @@ public class UserController {
             return cell;
         });
     }
+	
+	private void setSelectedIndex(int selectedIndex) {
+		index = selectedIndex;
+	}
 	
 	/**
 	 * Executes upon selecting add album mechanism

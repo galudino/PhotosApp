@@ -80,6 +80,23 @@ public class Album implements Comparable<Album>, Serializable {
 			return photoList.size() - 1;
 		}
 	}
+	
+	public boolean deletePhoto(int index) {
+		String key = photoList.get(index).getKey();
+		Photo temp = photoMap.get(key);
+		
+		if(temp != null) {
+			photoMap.remove(key);
+			photoList.remove(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public int getSelectedPhoto(Photo photo) {
+		return photoList.indexOf(photo);
+	}
 
 	@Override
 	public int compareTo(Album other) {
