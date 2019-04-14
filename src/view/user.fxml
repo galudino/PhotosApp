@@ -31,7 +31,7 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#doAddAlbum" text="Create New Album" />
-                  <MenuItem mnemonicParsing="false" text="Import Images Into Selected Album" />
+                  <MenuItem mnemonicParsing="false" onAction="#importPhoto" text="Import Images Into Selected Album" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
                   <SeparatorMenuItem mnemonicParsing="false" />
@@ -108,7 +108,7 @@
                <children>
                   <AnchorPane layoutY="-2.0" prefHeight="57.0" prefWidth="618.0">
                      <children>
-                        <Label layoutY="16.0" prefHeight="26.0" prefWidth="220.0" text="(select album to begin)" textFill="#aeaeae">
+                        <Label fx:id="albumHeader" layoutY="16.0" prefHeight="26.0" prefWidth="220.0" text="(select album to begin)" textFill="#aeaeae">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -134,14 +134,14 @@
                                           <MenuItem mnemonicParsing="false" text="(no albums available)" />
                                        </items>
                                     </Menu>
-                                    <MenuItem onAction="#deletePhoto" mnemonicParsing="false" text="Delete Selected Photo from this Album" />
+                                    <MenuItem mnemonicParsing="false" onAction="#deletePhoto" text="Delete Selected Photo from this Album" />
                                     <SeparatorMenuItem mnemonicParsing="false" />
                                     <MenuItem mnemonicParsing="false" text="Open Photo in Viewer" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>
                         </ScrollPane>
-                        <Label layoutX="440.0" layoutY="5.0" text="Add Photo to This Album..." textFill="#6764ff" underline="true" />
+                        <Hyperlink fx:id="addHL" layoutX="448.0" onAction="#importPhoto" text="Add Photo to This Album..." />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
@@ -293,7 +293,7 @@
                               <Tooltip text="Relocates this Photo from this Album to another Album." />
                            </tooltip>
                         </Button>
-                        <Button mnemonicParsing="false" text="Delete">
+                        <Button mnemonicParsing="false" onAction="#deletePhoto" text="Delete">
                            <tooltip>
                               <Tooltip text="Removes this Photo from this Album." />
                            </tooltip>

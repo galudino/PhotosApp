@@ -118,6 +118,15 @@ public class Album implements Comparable<Album>, Serializable {
 	public int getAlbumSize() {
 		return albumSize;
 	}
+	
+	public int getTotalPhotos() {
+		int result = 0;
+		
+		for(Map.Entry<String, Photo> pList : photoMap.entrySet()) {
+			result++;
+		}
+		return result;
+	}
 
 	/**
 	 * 

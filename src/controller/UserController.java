@@ -92,6 +92,9 @@ public class UserController {
 	@FXML Label nameField;
 	
 	@FXML ImageView detailView;
+	
+	@FXML Label albumHeader;
+	@FXML Hyperlink addHL;
 	//@formatter:on
 	
 	int index = -1;
@@ -99,7 +102,7 @@ public class UserController {
 	@FXML
 	public void initialize() {
 		albumView.setItems(currentUser.getAlbumList());
-		infoData.setText(currentUser.getAlbumList().size() + " albums - " + " ### photos");
+		infoData.setText(currentUser.getAlbumList().size() + " albums - "  + "  photos");
 		
 		/**
 		 * CONSOLE DIAGNOSTICS
@@ -110,6 +113,21 @@ public class UserController {
 		debugLog("Current user has albums: " + currentUser.getAlbumMap());
 		debugLog("Current album:" + currentUser.getCurrentAlbum());
 		debugLog("Current photo list: " + currentUser.getCurrentAlbum().getPhotoMap());
+	}
+	
+	public void importPhoto() throws IOException {
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		
+		loader.setLocation(getClass().getResource("/view/import.fxml"));
+		loader.setController(this);
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		addHL.getScene().getWindow().hide();
+		window.setScene(scene);
+		window.setTitle("Photos -- Import");
+		window.setResizable(false);
+		window.show();
 	}
 
 	/**
@@ -153,60 +171,68 @@ public class UserController {
 	}
 	
 	public void deletePhoto() {
-		
-		int selectedIndex = index;
+		if(currentPhoto != null) {
+			int selectedIndex = index;
 
-		if(selectedIndex < 0) {
-			Alert error = new Alert(Alert.AlertType.ERROR,
-					"There are no photos to be deleted.", ButtonType.OK);
+			if(selectedIndex < 0) {
+				Alert error = new Alert(Alert.AlertType.ERROR,
+						"There are no photos to be deleted.", ButtonType.OK);
+				
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("There are no photos to be deleted.");
+				
+				error.showAndWait();
+				return;
+			}
+
+
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+					"Are you sure you want to delete this photo?", ButtonType.YES,
+					ButtonType.NO);
+			
+			alert.showAndWait();
+
+			/**
+			 * User no longer wants to delete the selected album
+			 */
+			if (alert.getResult() != ButtonType.YES) {
+				/**
+				 * CONSOLE DIAGNOSTICS 
+				 */
+				debugLog("Quit from deleting photo.");
+				return;
+			}
 			
 			/**
-			 * CONSOLE DIAGNOSTICS
+			 * Photo is found within list
 			 */
-			debugLog("There are no photos to be deleted.");
+			if (selectedIndex >= 0) {
+				debugLog("Selected Index (Photo to be deleted): " + selectedIndex);
+				currentAlbum.deletePhoto(selectedIndex);
+
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+						"Photo successfully removed!", ButtonType.OK);
+				
+				tilePaneImages.getChildren().remove(selectedIndex);
+				
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("Photo successfully removed!");
+				
+				success.showAndWait();
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR,
+					"Please select a photo to delete.", ButtonType.OK);
+			
+			debugLog("ERROR: Please select a photo.");
 			
 			error.showAndWait();
-			return;
 		}
 
-
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-				"Are you sure you want to delete this photo?", ButtonType.YES,
-				ButtonType.NO);
-		
-		alert.showAndWait();
-
-		/**
-		 * User no longer wants to delete the selected album
-		 */
-		if (alert.getResult() != ButtonType.YES) {
-			/**
-			 * CONSOLE DIAGNOSTICS 
-			 */
-			debugLog("Quit from deleting photo.");
-			return;
-		}
-		
-		/**
-		 * Photo is found within list
-		 */
-		if (selectedIndex >= 0) {
-			debugLog("Selected Index (Photo to be deleted): " + selectedIndex);
-			currentAlbum.deletePhoto(selectedIndex);
-
-			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-					"Photo successfully removed!", ButtonType.OK);
-			
-			tilePaneImages.getChildren().remove(selectedIndex);
-			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Photo successfully removed!");
-			
-			success.showAndWait();
-		}
-		
 	}
 
 	/**
@@ -425,6 +451,8 @@ public class UserController {
                     	debugLog("Selection: " + item);
                     		
                     	currentAlbum = cell.getItem();
+                    	
+                    	albumHeader.setText(currentAlbum.getAlbumName());
 
                     	photoList = FXCollections.observableArrayList();
                     	

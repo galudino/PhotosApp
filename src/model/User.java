@@ -12,6 +12,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -35,6 +36,8 @@ public class User implements Comparable<User>, Serializable {
 	private TreeMap<String, Album> albumMap;
 
 	private Album currentAlbum;
+	
+	private int totalPhotos;
 
 	/**
 	 * 
@@ -49,6 +52,8 @@ public class User implements Comparable<User>, Serializable {
 		albumMap = new TreeMap<String, Album>();
 		
 		currentAlbum = null;
+		
+		totalPhotos = 0;
 	}
 
 
