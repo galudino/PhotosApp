@@ -32,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
@@ -79,12 +80,21 @@ public class UserController {
 	
 	@FXML TextField captionField;
 	@FXML Label displayCaption;
+	
+	@FXML Label sizeField;
+	@FXML Label createdField;
+	@FXML Label pathField;
+	@FXML Label nameField;
+	
+	@FXML ImageView detailView;
 	//@formatter:on
 
 	@FXML
 	public void initialize() {
 		albumView.setItems(currentUser.getAlbumList());
 		// infoData.setText(albumList.size() + " albums - " + " ### photos");
+		
+		
 		
 		/**
 		 * CONSOLE DIAGNOSTICS
@@ -390,12 +400,25 @@ public class UserController {
                     		iv.setPreserveRatio(true);
                     		
                     		iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-   
-                    			
                     			if (e.isSecondaryButtonDown()) {
                     				debugLog("Image " + p.getFilename() + " right clicked");
                     			} else {
+                    				currentPhoto = p;
                     				debugLog("Image " + p.getFilename() + " selected");
+                    				nameField.setText(currentPhoto.getFilename());
+                    				pathField.setText(currentPhoto.getFilepath());
+                    				sizeField.setText(" KB");
+                    				createdField.setText(currentPhoto.getDatePhoto() + "");
+                    				
+                    				displayCaption.setText(p.getCaption());
+                    				
+                    				captionField.setText("");
+                    				
+                    				detailView.setImage(new Image(p.getFilepath()));
+                    				detailView.setFitHeight(150);
+                    				detailView.setFitWidth(200);
+                    				detailView.setVisible(true);
+                    				detailView.setPreserveRatio(true);
                     			}
                     		});
                     		
