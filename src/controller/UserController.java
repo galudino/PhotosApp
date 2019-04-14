@@ -111,8 +111,6 @@ public class UserController {
 		debugLog("Entering " + getClass().getSimpleName());
 		debugLog("Current user logged on is: " + model.getCurrentUser().getUsername());
 		debugLog("Current user has albums: " + currentUser.getAlbumMap());
-		debugLog("Current album:" + currentUser.getCurrentAlbum());
-		debugLog("Current photo list: " + currentUser.getCurrentAlbum().getPhotoMap());
 	}
 	
 	public void importPhoto() throws IOException {
@@ -120,7 +118,6 @@ public class UserController {
 		FXMLLoader loader = new FXMLLoader();
 		
 		loader.setLocation(getClass().getResource("/view/import.fxml"));
-		loader.setController(this);
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		addHL.getScene().getWindow().hide();
@@ -321,6 +318,8 @@ public class UserController {
 				 * SCENARIO 1b: album name does not exist within albumList
 				 */
 				createAlbumName.getScene().getWindow().hide();
+				
+				infoData.setText(currentUser.getAlbumList().size() + " albums - "  + "  photos");
 				
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
 						"Album successfully added!", ButtonType.OK);

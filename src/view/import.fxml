@@ -22,18 +22,18 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PhotoController">
    <children>
       <MenuBar layoutY="1.0" prefHeight="29.0" prefWidth="1280.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Return to Albums" />
+              <MenuItem onAction="#doAlbum" mnemonicParsing="false" text="Return to Albums" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Save &amp; Logout" />
-                  <MenuItem mnemonicParsing="false" text="Save &amp; Exit Photos" />
+                  <MenuItem onAction="#doLogOut" mnemonicParsing="false" text="Save &amp; Logout" />
+                  <MenuItem onAction="#doQuit" mnemonicParsing="false" text="Save &amp; Exit Photos" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
@@ -44,9 +44,9 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="Photos Help" />
+              <MenuItem onAction="#doHelp" mnemonicParsing="false" text="Help" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="About Photos" />
+                  <MenuItem onAction="#doAbout" mnemonicParsing="false" text="About Photos" />
             </items>
           </Menu>
         </menus>
@@ -140,7 +140,7 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <ListView layoutX="45.0" layoutY="22.0" prefHeight="125.0" prefWidth="266.0" />
+                        <ListView fx:id="imageQueueList" layoutX="45.0" layoutY="22.0" prefHeight="125.0" prefWidth="266.0" />
                      </children>
                   </Pane>
                </children></AnchorPane>
