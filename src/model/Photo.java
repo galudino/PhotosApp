@@ -13,6 +13,12 @@ package model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -40,7 +46,7 @@ public class Photo implements Serializable {
 	
 	private File imageFile;
 
-	private ObservableList<Tag> tagList;
+	private transient ObservableList<Tag> tagList;
 	private TreeMap<String, Tag> tagMap;
 
 	/**
@@ -48,15 +54,20 @@ public class Photo implements Serializable {
 	 * @param photo
 	 */
 	public Photo(Photo photo) {
+		
+		System.out.println(getDatePhoto());
+		
 		this.filepath = photo.filepath;
 		this.caption = photo.caption;
 		this.datePhoto = photo.datePhoto;
 
+		tagMap = new TreeMap<String, Tag>();
+		
 		tagList = FXCollections.observableArrayList();
 
-		for (Tag t : photo.tagList) {
-			tagList.add(new Tag(t));
-		}
+		//for (Tag t : photo.tagList) {
+		//	tagList.add(new Tag(t));
+		//}
 	}
 
 	/**
@@ -68,21 +79,36 @@ public class Photo implements Serializable {
 		caption = "";
 		datePhoto = 0;
 		tagList = null;
+		tagMap = new TreeMap<String, Tag>();
 	}
 	
 	public Photo(File imageFile) {
 		this.imageFile = imageFile;
-		filepath = this.imageFile.getAbsolutePath();
+		filepath = imageFile.getAbsolutePath();
 		caption = "";
-		datePhoto = this.imageFile.lastModified();
+		datePhoto = imageFile.lastModified();
+		tagMap = new TreeMap<String, Tag>();
 	}
 
+	public Photo createPhoto(String filepath, File imageFile) {
+		if(imageFile == null) {
+			this.imageFile = new File(filepath);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @return
 	 */
 	public String getFilepath() {
 		return filepath;
+	}
+	
+	public String getExternalForm() throws MalformedURLException {
+		URL url = imageFile.toURI().toURL();
+		return url.toExternalForm();
 	}
 	
 	/**
@@ -125,6 +151,11 @@ public class Photo implements Serializable {
 		String filename = getFilename();
 		return filename.substring(filename.lastIndexOf("."));
 	}
+	
+	public String getFilePath() {
+		File file = new File(filepath);
+		return "";
+	}
 
 	/**
 	 * 
@@ -138,8 +169,8 @@ public class Photo implements Serializable {
 	 * 
 	 * @return
 	 */
-	public long getDatePhoto() {
-		return datePhoto;
+	public String getDatePhoto() {
+		return epochToLocalTime(datePhoto);
 	}
 
 	/**
@@ -168,6 +199,27 @@ public class Photo implements Serializable {
 			return -1;
 		}
 	}
+	
+	/**
+	 * Places the tag in the appropriate spot in the tagList.
+	 * @param tag
+	 * @return an index for where the Tag will be placed in the list.
+	 */
+	private int indexInsertedSorted(Tag tag) {
+		if (tagList.isEmpty()) {
+			tagList.add(tag);
+			return 0;
+		} else {
+			for (int i = 0; i < tagList.size(); i++) {
+				if (tag.compareTo(tagList.get(i)) < 0) {
+					tagList.add(i, tag);
+					return i;
+				}
+			}
+			tagList.add(tag);
+			return tagList.size() - 1;
+		}
+	}
 
 	/**
 	 * 
@@ -193,27 +245,6 @@ public class Photo implements Serializable {
 	
 	public String getKey(String fileName) {
 		return makeKey(fileName);
-	}
-	
-	/**
-	 * Places the tag in the appropriate spot in the tagList.
-	 * @param tag
-	 * @return an index for where the Tag will be placed in the list.
-	 */
-	private int indexInsertedSorted(Tag tag) {
-		if (tagList.isEmpty()) {
-			tagList.add(tag);
-			return 0;
-		} else {
-			for (int i = 0; i < tagList.size(); i++) {
-				if (tag.compareTo(tagList.get(i)) < 0) {
-					tagList.add(i, tag);
-					return i;
-				}
-			}
-			tagList.add(tag);
-			return tagList.size() - 1;
-		}
 	}
 
 	@Override
@@ -258,6 +289,13 @@ public class Photo implements Serializable {
 			return 0;
 		}
 	}
+	
+    public String epochToLocalTime(long time) {
+        LocalDateTime datetime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return datetime.format(formatter);
+    }
+
 
 	// need to create image for thumbnail
 	// need to create method to grab date/time from the photo

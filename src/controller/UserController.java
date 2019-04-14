@@ -12,14 +12,16 @@ package controller;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import javax.swing.text.View;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -56,6 +58,7 @@ public class UserController {
 	private PhotoModel model = LoginController.getModel();
 	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
+	private Photo previousPhoto = null;
 	private Album currentAlbum = null;
 	
 	ObservableList<Photo> photoList;
@@ -168,6 +171,8 @@ public class UserController {
 					 * CONSOLE DIAGNOSTICS
 					 */
 					debugLog("Duplicate tag found. Tag not added!");
+					
+					debugLog(tagName.getText().trim() + " " + tagValue.getText().trim());
 					
 					error.showAndWait();
 				} else {
@@ -368,6 +373,7 @@ public class UserController {
                     	for(Map.Entry<String, Photo> test2 : currentAlbum.getPhotoMap().entrySet()) {
                     		photoList.add(test2.getValue());
                     		System.out.println("Adding: " + test2.getValue());
+                    		System.out.println("Filepath for: " + test2.getValue().getFilepath());
                     	}
                     	
                     	currentAlbum.setPhotoList(photoList);
@@ -375,6 +381,8 @@ public class UserController {
                     	if (photoList == null) {
                     		debugLog("photoList is empty!");
                     	}
+                    	
+                    
                     	
                     	tilePaneImages.getChildren().clear();
                     	
@@ -388,6 +396,7 @@ public class UserController {
                     	for (Photo p : photoList) {
                     		ImageView iv = new ImageView(p.getFilepath());
                     		
+
                     		/**
                     		 * These 'magic numbers' are temporary.
                     		 * They ought to be mutable values --
@@ -396,19 +405,25 @@ public class UserController {
                     		 */
                     		iv.setFitHeight(120);
                     		iv.setFitWidth(120);
-                    		
                     		iv.setPreserveRatio(true);
                     		
                     		iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
                     			if (e.isSecondaryButtonDown()) {
                     				debugLog("Image " + p.getFilename() + " right clicked");
                     			} else {
+                    				
+                    				if(iv.getBoundsInParent() != null) {
+                    					iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+                    				}
+                    				
                     				currentPhoto = p;
+                    				
                     				debugLog("Image " + p.getFilename() + " selected");
+                    				debugLog(p.getFilename() + " was created on: ");
                     				nameField.setText(currentPhoto.getFilename());
                     				pathField.setText(currentPhoto.getFilepath());
                     				sizeField.setText(" KB");
-                    				createdField.setText(currentPhoto.getDatePhoto() + "");
+                    				createdField.setText(currentPhoto.getDatePhoto());
                     				
                     				displayCaption.setText(p.getCaption());
                     				
@@ -419,12 +434,23 @@ public class UserController {
                     				detailView.setFitWidth(200);
                     				detailView.setVisible(true);
                     				detailView.setPreserveRatio(true);
+                    				//iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
                     			}
                     		});
                     		
-                    		iv.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
-
+                    		tilePaneImages.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+                    			if(e.isPrimaryButtonDown()) {
+                    				iv.setStyle(null);
+                    				
+                    				detailView.setImage(null);
+                    				displayCaption.setText(null);
+                    				nameField.setText("(No image selected)");
+                    				pathField.setText("(No image selected)");
+                    				sizeField.setText("(No image selected)");
+                    				createdField.setText("(No image selected)");
+                    			}
                     		});
+                    		
                     		              		
                     		tilePaneImages.getChildren().add(iv);
                     		
