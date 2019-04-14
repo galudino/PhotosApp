@@ -100,6 +100,8 @@ public class UserController {
 	
 	@FXML Label albumHeader;
 	@FXML Hyperlink addHL;
+	@FXML Button navigatorButtonBack;
+	@FXML Button navigatorButtonNext;
 	//@formatter:on
 	
 	int index = -1;
@@ -569,6 +571,7 @@ public class UserController {
 												"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 									}
 
+									setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
 									currentPhoto = p;
 
 									debugLog("Image " + p.getFilename()
@@ -646,50 +649,160 @@ public class UserController {
 	}
 	
 	/**
-	 * Executes upon activating navigator back button
-	 */
-	public void doNavigatorButtonBack() {
-		int currentPositionIndex = -1;
-		
-		for (ImageView iv : currentImageViewList) {
-			
-			currentPositionIndex = tilePaneImages.getChildren().indexOf(iv);
-			
-			debugLog(String.format("Reading index from current album %s: %d", 
-					currentAlbum.getAlbumName(), currentPositionIndex));
-			
-		}
-		
-
-		
-		
-
-
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Clicked navigator button back");
-	}
-
-	/**
-	 * Executes upon activating navigator next button
-	 */
-	public void doNavigatorButtonNext() {
-		int currentPositionIndex = -1;
-		
-		for (ImageView iv : currentImageViewList) {
-			
-			currentPositionIndex = tilePaneImages.getChildren().indexOf(iv);
-			
-			debugLog(String.format("Reading index from current album %s: %d", 
-					currentAlbum.getAlbumName(), currentPositionIndex));
-		}
-
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Clicked navigator button next");
-	}
+     * Executes upon activating navigator back button
+     */
+    public void doNavigatorButtonBack() {
+        if (index == 0) {
+            index = currentImageViewList.size() - 1;
+        } else {
+            --index;
+        }
+   
+       
+        navigatorButtonBack.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+           
+ 
+           
+            if (e.isPrimaryButtonDown()) {
+               
+               
+                debugLog("Selected index field reads: " + index);
+ 
+                ImageView iv = currentImageViewList.get(index);
+               
+                if (iv.getBoundsInParent() != null) {
+                    iv.setStyle(
+                            "-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+                }
+               
+               
+                currentPhoto = photoList.get(index);
+               
+ 
+                debugLog("Image " + currentPhoto.getFilename()
+                        + " selected");
+                debugLog(currentPhoto.getFilename()
+                        + " was created on: ");
+                nameField.setText(
+                        currentPhoto.getFilename());
+                pathField.setText(
+                        currentPhoto.getFilepath());
+                sizeField.setText(" KB");
+                createdField.setText(
+                        currentPhoto.getDatePhoto());
+ 
+                displayCaption.setText(currentPhoto.getCaption());
+ 
+                captionField.setText("");
+ 
+                detailView.setImage(
+                        new Image(currentPhoto.getFilepath()));
+                detailView.setFitHeight(150);
+                detailView.setFitWidth(200);
+                detailView.setVisible(true);
+                detailView.setPreserveRatio(true);
+ 
+                ObservableList<Tag> tList = FXCollections.observableArrayList();
+               
+                for(Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+                    tList.add(tag.getValue());
+                }
+               
+                currentPhoto.setTagList(tList);
+               
+                tagList.setItems(tList);
+               
+            }
+           
+        });
+       
+ 
+       
+       
+ 
+ 
+        /**
+         * CONSOLE DIAGNOSTICS
+         */
+        debugLog("Clicked navigator button back");
+    }
+ 
+    /**
+     * Executes upon activating navigator next button
+     */
+    public void doNavigatorButtonNext() {
+        if (index == currentImageViewList.size() - 1) {
+            index = 0;
+        } else {
+            ++index;
+        }
+       
+ 
+       
+       
+        navigatorButtonNext.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+   
+           
+            if (e.isPrimaryButtonDown()) {
+               
+               
+                debugLog("Selected index field reads: " + index);
+   
+                ImageView iv = currentImageViewList.get(index);       
+                       
+                if (iv.getBoundsInParent() != null) {
+                    iv.setStyle(
+                            "-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+                }
+ 
+               
+                currentPhoto = photoList.get(index);
+               
+ 
+                debugLog("Image " + currentPhoto.getFilename()
+                        + " selected");
+                debugLog(currentPhoto.getFilename()
+                        + " was created on: ");
+                nameField.setText(
+                        currentPhoto.getFilename());
+                pathField.setText(
+                        currentPhoto.getFilepath());
+                sizeField.setText(" KB");
+                createdField.setText(
+                        currentPhoto.getDatePhoto());
+ 
+                displayCaption.setText(currentPhoto.getCaption());
+ 
+                captionField.setText("");
+ 
+                detailView.setImage(
+                        new Image(currentPhoto.getFilepath()));
+                detailView.setFitHeight(150);
+                detailView.setFitWidth(200);
+                detailView.setVisible(true);
+                detailView.setPreserveRatio(true);
+ 
+                ObservableList<Tag> tList = FXCollections.observableArrayList();
+               
+                for(Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+                    tList.add(tag.getValue());
+                }
+               
+                currentPhoto.setTagList(tList);
+               
+                tagList.setItems(tList);
+               
+            }
+           
+        });
+   
+       
+ 
+        /**
+         * CONSOLE DIAGNOSTICS
+         */
+        debugLog("Clicked navigator button next");
+    }
 
 	
 	/**
