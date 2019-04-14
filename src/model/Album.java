@@ -116,7 +116,7 @@ public class Album implements Comparable<Album>, Serializable {
 	 * @return
 	 */
 	public int getAlbumSize() {
-		return albumSize;
+		return photoMap.size();
 	}
 	
 	public int getTotalPhotos() {

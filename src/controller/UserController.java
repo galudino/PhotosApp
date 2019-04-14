@@ -666,190 +666,201 @@ public class UserController {
 	 * Executes upon activating navigator back button
 	 */
 	public void doNavigatorButtonBack() {
-		/**
-		 * Establish new index. If current index equals 0, set the index to the
-		 * last index of the currentImageViewList. (loop to end)
-		 * 
-		 * Otherwise, decrement index by one to go the previous image.
-		 */
-		ImageView old;
-		ImageView iv;
 		
-		if (index == 0) {
-			old = currentImageViewList.get(index);
-			index = currentImageViewList.size() - 1;
-			iv = currentImageViewList.get(index);
-		} else {
-			old = currentImageViewList.get(index);
-			--index;
-			iv = currentImageViewList.get(index);
-		}
-
-		/**
-		 * Add an event filter for navigatorButtonBack, for when the primary
-		 * mouse button is pressed.
-		 */
-		navigatorButtonBack.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-			if (e.isPrimaryButtonDown()) {
-				debugLog("[navigatorButtonBack] Selected index field reads: "
-						+ index);
-				
-				old.setStyle(null);
-				if (iv.getBoundsInParent() != null) {
-					iv.setStyle(
-							"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
-				}
-				
-
-				/**
-				 * Retrieve the current photo based on the current index
-				 */
-				currentPhoto = photoList.get(index);
-
-				/**
-				 * Update selected image in detail pane
-				 */
-				detailView.setImage(currentImageViewList.get(index).getImage());
-				detailView.setFitHeight(150);
-				detailView.setFitWidth(200);
-				detailView.setVisible(true);
-				detailView.setPreserveRatio(true);
-
-				/**
-				 * Update the caption section.
-				 */
-				displayCaption.setText(currentPhoto.getCaption());
-				captionField.setText("");
-
-				/**
-				 * Update selected image's detail pane
-				 */
-				nameField.setText(currentPhoto.getFilename());
-				pathField.setText(currentPhoto.getFilepath());
-				sizeField.setText("(size)" + " KB");
-				createdField.setText(currentPhoto.getDatePhoto());
-
-				ObservableList<Tag> tList = FXCollections.observableArrayList();
-
-				/**
-				 * Update tags in image detail pane
-				 */
-				for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
-						.entrySet()) {
-					tList.add(tag.getValue());
-				}
-
-				currentPhoto.setTagList(tList);
-				tagList.setItems(tList);
-
+		if(currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
+			
+			System.out.println(currentAlbum.getAlbumSize());
+			/**
+			 * Establish new index. If current index equals 0, set the index to the
+			 * last index of the currentImageViewList. (loop to end)
+			 * 
+			 * Otherwise, decrement index by one to go the previous image.
+			 */
+			ImageView old;
+			ImageView iv;
+			
+			if (index == 0) {
+				old = currentImageViewList.get(index);
+				index = currentImageViewList.size() - 1;
+				iv = currentImageViewList.get(index);
+			} else {
+				old = currentImageViewList.get(index);
+				--index;
+				iv = currentImageViewList.get(index);
 			}
-		});
 
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("[navigatorButtonBack] Image " + currentPhoto.getFilename()
-				+ " was selected");
+			/**
+			 * Add an event filter for navigatorButtonBack, for when the primary
+			 * mouse button is pressed.
+			 */
+			navigatorButtonBack.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+				if (e.isPrimaryButtonDown()) {
+					debugLog("[navigatorButtonBack] Selected index field reads: "
+							+ index);
+					
+					old.setStyle(null);
+					if (iv.getBoundsInParent() != null) {
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+					}
+					
 
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Clicked navigator button back");
+					/**
+					 * Retrieve the current photo based on the current index
+					 */
+					currentPhoto = photoList.get(index);
+
+					/**
+					 * Update selected image in detail pane
+					 */
+					detailView.setImage(currentImageViewList.get(index).getImage());
+					detailView.setFitHeight(150);
+					detailView.setFitWidth(200);
+					detailView.setVisible(true);
+					detailView.setPreserveRatio(true);
+
+					/**
+					 * Update the caption section.
+					 */
+					displayCaption.setText(currentPhoto.getCaption());
+					captionField.setText("");
+
+					/**
+					 * Update selected image's detail pane
+					 */
+					nameField.setText(currentPhoto.getFilename());
+					pathField.setText(currentPhoto.getFilepath());
+					sizeField.setText("(size)" + " KB");
+					createdField.setText(currentPhoto.getDatePhoto());
+
+					ObservableList<Tag> tList = FXCollections.observableArrayList();
+
+					/**
+					 * Update tags in image detail pane
+					 */
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
+							.entrySet()) {
+						tList.add(tag.getValue());
+					}
+
+					currentPhoto.setTagList(tList);
+					tagList.setItems(tList);
+
+				}
+			});
+
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("[navigatorButtonBack] Image " + currentPhoto.getFilename()
+					+ " was selected");
+
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("Clicked navigator button back");
+		} else {
+			
+		}
 	}
 
 	/**
 	 * Executes upon activating navigator next button
 	 */
 	public void doNavigatorButtonNext() {
-		/**
-		 * Establish new index. If current index equals the currentImageViewList
-		 * size, minus 1 (new index == last index), then set the index to zero.
-		 * (loop to beginning)
-		 * 
-		 * Otherwise, increment index by one to go to the next image.
-		 */
-		ImageView old;
-		ImageView iv;
 		
-		if (index == currentImageViewList.size() - 1) {
-			old = currentImageViewList.get(index);
-			index = 0;
-			iv = currentImageViewList.get(index);
-		} else {
-			old = currentImageViewList.get(index);
-			++index;
-			iv = currentImageViewList.get(index);
+		if(currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
+			/**
+			 * Establish new index. If current index equals the currentImageViewList
+			 * size, minus 1 (new index == last index), then set the index to zero.
+			 * (loop to beginning)
+			 * 
+			 * Otherwise, increment index by one to go to the next image.
+			 */
+			ImageView old;
+			ImageView iv;
+			
+			if (index == currentImageViewList.size() - 1) {
+				old = currentImageViewList.get(index);
+				index = 0;
+				iv = currentImageViewList.get(index);
+			} else {
+				old = currentImageViewList.get(index);
+				++index;
+				iv = currentImageViewList.get(index);
+			}
+
+			/**
+			 * Add an event filter for navigatorButtonNext, for when the primary
+			 * mouse button is pressed.
+			 */
+			navigatorButtonNext.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+				if (e.isPrimaryButtonDown()) {
+					debugLog("[navigatorButtonNext] Selected index field reads: "
+							+ index);
+
+					old.setStyle(null);
+					if (iv.getBoundsInParent() != null) {
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+					}
+
+					/**
+					 * Retrieve the current photo based on the current index
+					 */
+					currentPhoto = photoList.get(index);
+
+					/**
+					 * Update selected image in detail pane
+					 */
+					detailView.setImage(currentImageViewList.get(index).getImage());
+					detailView.setFitHeight(150);
+					detailView.setFitWidth(200);
+					detailView.setVisible(true);
+					detailView.setPreserveRatio(true);
+
+					/**
+					 * Update the caption section.
+					 */
+					displayCaption.setText(currentPhoto.getCaption());
+					captionField.setText("");
+
+					/**
+					 * Update selected image's detail pane
+					 */
+					nameField.setText(currentPhoto.getFilename());
+					pathField.setText(currentPhoto.getFilepath());
+					sizeField.setText("(size)" + " KB");
+					createdField.setText(currentPhoto.getDatePhoto());
+
+					ObservableList<Tag> tList = FXCollections.observableArrayList();
+
+					/**
+					 * Update tags in image detail pane
+					 */
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
+							.entrySet()) {
+						tList.add(tag.getValue());
+					}
+
+					currentPhoto.setTagList(tList);
+					tagList.setItems(tList);
+
+				}
+			});
+
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("[navigatorButtonNext] Image " + currentPhoto.getFilename()
+					+ " was selected");
+
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("Clicked navigator button next");
 		}
 
-		/**
-		 * Add an event filter for navigatorButtonNext, for when the primary
-		 * mouse button is pressed.
-		 */
-		navigatorButtonNext.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-			if (e.isPrimaryButtonDown()) {
-				debugLog("[navigatorButtonNext] Selected index field reads: "
-						+ index);
-
-				old.setStyle(null);
-				if (iv.getBoundsInParent() != null) {
-					iv.setStyle(
-							"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
-				}
-
-				/**
-				 * Retrieve the current photo based on the current index
-				 */
-				currentPhoto = photoList.get(index);
-
-				/**
-				 * Update selected image in detail pane
-				 */
-				detailView.setImage(currentImageViewList.get(index).getImage());
-				detailView.setFitHeight(150);
-				detailView.setFitWidth(200);
-				detailView.setVisible(true);
-				detailView.setPreserveRatio(true);
-
-				/**
-				 * Update the caption section.
-				 */
-				displayCaption.setText(currentPhoto.getCaption());
-				captionField.setText("");
-
-				/**
-				 * Update selected image's detail pane
-				 */
-				nameField.setText(currentPhoto.getFilename());
-				pathField.setText(currentPhoto.getFilepath());
-				sizeField.setText("(size)" + " KB");
-				createdField.setText(currentPhoto.getDatePhoto());
-
-				ObservableList<Tag> tList = FXCollections.observableArrayList();
-
-				/**
-				 * Update tags in image detail pane
-				 */
-				for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
-						.entrySet()) {
-					tList.add(tag.getValue());
-				}
-
-				currentPhoto.setTagList(tList);
-				tagList.setItems(tList);
-
-			}
-		});
-
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("[navigatorButtonNext] Image " + currentPhoto.getFilename()
-				+ " was selected");
-
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Clicked navigator button next");
 	}
 
 	/**
