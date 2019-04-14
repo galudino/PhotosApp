@@ -11,8 +11,10 @@
 package controller;
 
 
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -64,6 +66,8 @@ public class UserController {
 	private Album currentAlbum = null;
 	
 	ObservableList<Photo> photoList = FXCollections.observableArrayList();
+	
+	private List<ImageView> currentImageViewList = null;
 
 	//@formatter:off
 	@FXML ListView<Album> albumView;
@@ -410,167 +414,215 @@ public class UserController {
 	/**
 	 * Executes upon selection of an album within albumView
 	 */
+	@SuppressWarnings("restriction")
 	public void doSelectAlbum() {
-		
-        albumView.setCellFactory(lv -> {
-            ListCell<Album> cell = new ListCell<Album>() {
-                @Override
-                protected void updateItem(Album item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item.toString());
-                    }
-                }
-            };
-            
-            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                if ((!cell.isEmpty())) {
-                	/**
-                	 * SCENARIO: Selected cell is not empty.
-                	 */
-                	
-                    Album item = cell.getItem();
-                    
-                    if (event.isSecondaryButtonDown()) {
-                        /**
-                         * SCENARIO 1: Right clicked selection within albumView
-                         */
-                    	
-                    	/**
-                    	 * CONSOLE DIAGNOSTICS
-                    	 */
-                    	debugLog("Right click selection: " + item);
-                    } else {
-                        /**
-                         * SCENARIO 2: Did not right click within albumView
-                         */
-                    	
-                    	debugLog("Selection: " + item);
-                    		
-                    	currentAlbum = cell.getItem();
-                    	
-                    	albumHeader.setText(currentAlbum.getAlbumName());
 
-                    	photoList = FXCollections.observableArrayList();
-                    	
-                    	for(Map.Entry<String, Photo> test2 : currentAlbum.getPhotoMap().entrySet()) {
-                    		photoList.add(test2.getValue());
-                    		System.out.println("Adding: " + test2.getValue());
-                    	}
-                    	
-                    	currentAlbum.setPhotoList(photoList);
-                    	
-                    	if (photoList == null) {
-                    		debugLog("photoList is empty!");
-                    	}
-                    	
-                    
-                    	
-                    	tilePaneImages.getChildren().clear();
-                    	
-                    	/**
-                    	 * Adds padding and insets to thumbnails.
-                    	 * Ought to be adjusted later.
-                    	 */
-                    	tilePaneImages.setPadding(new Insets(10, 10, 10, 10));
-                    	tilePaneImages.setHgap(10);
-                    	
-                    	for (Photo p : photoList) {
-                    		ImageView iv = new ImageView(p.getFilepath());
+		albumView.setCellFactory(lv -> {
+			ListCell<Album> cell = new ListCell<Album>() {
+				@Override
+				protected void updateItem(Album item, boolean empty) {
+					super.updateItem(item, empty);
+					if (empty) {
+						setText(null);
+					} else {
+						setText(item.toString());
+					}
+				}
+			};
 
-                    		/**
-                    		 * These 'magic numbers' are temporary.
-                    		 * They ought to be mutable values --
-                    		 * using the "zoom-lever" within the GUI
-                    		 * (these are for the image thumbnails)
-                    		 */
-                    		iv.setFitHeight(120);
-                    		iv.setFitWidth(120);
-                    		iv.setPreserveRatio(true);
-                    		
-                    		iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-                    			if (e.isSecondaryButtonDown()) {
-                    				debugLog("Image " + p.getFilename() + " right clicked");
-                    			} else {
-                    				                    				
-                    				setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
-                    				
-                    				iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
-                    				currentPhoto = p;
-                    				
-                    				debugLog("Image " + p.getFilename() + " selected");
-                    				debugLog(p.getFilename() + " was created on: ");
-                    				nameField.setText(currentPhoto.getFilename());
-                    				pathField.setText(currentPhoto.getFilepath());
-                    				sizeField.setText(" KB");
-                    				createdField.setText(currentPhoto.getDatePhoto());
-                    				
-                    				displayCaption.setText(p.getCaption());
-                    				
-                    				captionField.setText("");
-                    				
-                    				detailView.setImage(new Image(p.getFilepath()));
-                    				detailView.setFitHeight(150);
-                    				detailView.setFitWidth(200);
-                    				detailView.setVisible(true);
-                    				detailView.setPreserveRatio(true);
-                            		
-                    				ObservableList<Tag> tList = FXCollections.observableArrayList();
-                    				
-                            		for(Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
-                            			tList.add(tag.getValue());
-                            		}
-                            		
-                            		currentPhoto.setTagList(tList);
-                            		
-                            		tagList.setItems(tList);
-                    				
-                    			}
-                    		});
-                    		
-                    		tilePaneImages.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-                    			if(e.isPrimaryButtonDown()) {
-                    				iv.setStyle(null);
-                    				
-                    				detailView.setImage(null);
-                    				displayCaption.setText(null);
-                    				nameField.setText("(No image selected)");
-                    				pathField.setText("(No image selected)");
-                    				sizeField.setText("(No image selected)");
-                    				createdField.setText("(No image selected)");
-                    				
-                    				tagName.setText("");
-                    				tagValue.setText("");
-                    				
-                    				tagList.setItems(null);
-                    				
-                    				currentPhoto = null;
-                    			}
-                    		});
-                    		
-                    		              		
-                    		tilePaneImages.getChildren().add(iv);
-                    		
-                    		/**
-                    		 * CONSOLE DIAGNOSTICS
-                    		 */
-                    		debugLog("Photo " + p + " added to tilePaneImages");
-                    	}
-                    	
-                   
-                    }
-                }
-            });
-            
-            return cell;
-        });
-    }
+			cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+				if ((!cell.isEmpty())) {
+					/**
+					 * SCENARIO: Selected cell is not empty.
+					 */
+
+					Album item = cell.getItem();
+
+					if (event.isSecondaryButtonDown()) {
+						/**
+						 * SCENARIO 1: Right clicked selection within albumView
+						 */
+
+						/**
+						 * CONSOLE DIAGNOSTICS
+						 */
+						debugLog("Right click selection: " + item);
+					} else {
+						/**
+						 * SCENARIO 2: Did not right click within albumView
+						 */
+
+						debugLog("Selection: " + item);
+
+						currentAlbum = cell.getItem();
+
+						photoList = FXCollections.observableArrayList();
+
+						for (Map.Entry<String, Photo> test2 : currentAlbum
+								.getPhotoMap().entrySet()) {
+							photoList.add(test2.getValue());
+							System.out.println("Adding: " + test2.getValue());
+							System.out.println("Filepath for: "
+									+ test2.getValue().getFilepath());
+						}
+
+						currentAlbum.setPhotoList(photoList);
+
+						if (photoList == null) {
+							debugLog("photoList is empty!");
+						}
+
+						tilePaneImages.getChildren().clear();
+
+						/**
+						 * Adds padding and insets to thumbnails. Ought to be
+						 * adjusted later.
+						 */
+						tilePaneImages.setPadding(new Insets(10, 10, 10, 10));
+						tilePaneImages.setHgap(10);
+
+						currentImageViewList = new ArrayList<ImageView>();
+						
+						for (Photo p : photoList) {
+							ImageView iv = new ImageView(p.getFilepath());
+
+							/**
+							 * These 'magic numbers' are temporary. They ought
+							 * to be mutable values -- using the "zoom-lever"
+							 * within the GUI (these are for the image
+							 * thumbnails)
+							 */
+							iv.setFitHeight(120);
+							iv.setFitWidth(120);
+							iv.setPreserveRatio(true);
+
+							iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+								if (e.isSecondaryButtonDown()) {
+									debugLog("Image " + p.getFilename()
+											+ " right clicked");
+								} else {
+
+									if (iv.getBoundsInParent() != null) {
+										iv.setStyle(
+												"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+									}
+
+									currentPhoto = p;
+
+									debugLog("Image " + p.getFilename()
+											+ " selected");
+									debugLog(p.getFilename()
+											+ " was created on: ");
+									nameField.setText(
+											currentPhoto.getFilename());
+									pathField.setText(
+											currentPhoto.getFilepath());
+									sizeField.setText(" KB");
+									createdField.setText(
+											currentPhoto.getDatePhoto());
+
+									displayCaption.setText(p.getCaption());
+
+									captionField.setText("");
+
+									detailView.setImage(
+											new Image(p.getFilepath()));
+									detailView.setFitHeight(150);
+									detailView.setFitWidth(200);
+									detailView.setVisible(true);
+									detailView.setPreserveRatio(true);
+									// iv.setStyle("-fx-effect:
+									// innershadow(gaussian, #039ed3, 4, 2.0, 0,
+									// 0);");
+								}
+							});
+
+							tilePaneImages.addEventFilter(
+									MouseEvent.MOUSE_PRESSED, e -> {
+										if (e.isPrimaryButtonDown()) {
+											iv.setStyle(null);
+
+											detailView.setImage(null);
+											displayCaption.setText(null);
+											nameField.setText(
+													"(No image selected)");
+											pathField.setText(
+													"(No image selected)");
+											sizeField.setText(
+													"(No image selected)");
+											createdField.setText(
+													"(No image selected)");
+										}
+									});
+
+							tilePaneImages.getChildren().add(iv);
+							
+							currentImageViewList.add(iv);
+
+							/**
+							 * CONSOLE DIAGNOSTICS
+							 */
+							debugLog("Photo " + p + " added to tilePaneImages");
+						}
+
+					}
+				}
+			});
+
+			return cell;
+		});
+	}
 	
 	private void setSelectedIndex(int selectedIndex) {
 		index = selectedIndex;
 	}
+	
+	/**
+	 * Executes upon activating navigator back button
+	 */
+	public void doNavigatorButtonBack() {
+		int currentPositionIndex = -1;
+		
+		for (ImageView iv : currentImageViewList) {
+			
+			currentPositionIndex = tilePaneImages.getChildren().indexOf(iv);
+			
+			debugLog(String.format("Reading index from current album %s: %d", 
+					currentAlbum.getAlbumName(), currentPositionIndex));
+			
+		}
+		
+
+		
+		
+
+
+		/**
+		 * CONSOLE DIAGNOSTICS
+		 */
+		debugLog("Clicked navigator button back");
+	}
+
+	/**
+	 * Executes upon activating navigator next button
+	 */
+	public void doNavigatorButtonNext() {
+		int currentPositionIndex = -1;
+		
+		for (ImageView iv : currentImageViewList) {
+			
+			currentPositionIndex = tilePaneImages.getChildren().indexOf(iv);
+			
+			debugLog(String.format("Reading index from current album %s: %d", 
+					currentAlbum.getAlbumName(), currentPositionIndex));
+		}
+
+		/**
+		 * CONSOLE DIAGNOSTICS
+		 */
+		debugLog("Clicked navigator button next");
+	}
+
 	
 	/**
 	 * Executes upon selecting add album mechanism
