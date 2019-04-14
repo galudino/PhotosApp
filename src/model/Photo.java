@@ -37,6 +37,8 @@ public class Photo implements Serializable {
 	private String filepath;
 	private String caption;
 	private long datePhoto;
+	
+	private File imageFile;
 
 	private ObservableList<Tag> tagList;
 	private TreeMap<String, Tag> tagMap;
@@ -61,19 +63,34 @@ public class Photo implements Serializable {
 	 * 
 	 * @param fileName
 	 */
-	public Photo(String fileName) {
-		this.filepath = fileName;
+	public Photo(String filepath) {
+		this.filepath = filepath;
 		caption = "";
 		datePhoto = 0;
 		tagList = null;
+	}
+	
+	public Photo(File imageFile) {
+		this.imageFile = imageFile;
+		filepath = this.imageFile.getAbsolutePath();
+		caption = "";
+		datePhoto = this.imageFile.lastModified();
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	public String getFileName() {
+	public String getFilepath() {
 		return filepath;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public File getImageFile() {
+		return imageFile;
 	}
 	
 	/**

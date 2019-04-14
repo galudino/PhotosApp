@@ -52,11 +52,11 @@ public class Album implements Comparable<Album>, Serializable {
 	 * @param photo
 	 */
 	public int addPhoto(Photo photo) {
-		String photoKey = Photo.makeKey(photo.getFileName());
+		String photoKey = Photo.makeKey(photo.getFilepath());
 		Photo temp = photoMap.get(photoKey);
 		
 		if(temp == null) {
-			temp = new Photo(photo.getFileName());
+			temp = new Photo(photo.getFilepath());
 			photoMap.put(photoKey, temp);
 			return indexInsertedSorted(temp);
 		} else {

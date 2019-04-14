@@ -10,7 +10,9 @@
  */
 package controller;
 
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.geometry.Insets;
 
 import model.Album;
 import model.Photo;
@@ -343,7 +346,7 @@ public class UserController {
                     	debugLog("Right click selection: " + item);
                     } else {
                         /**
-                         * SCENARIO 2: Did not right click  within albumView
+                         * SCENARIO 2: Did not right click within albumView
                          */
                     	
                     	debugLog("Selection: " + item);
@@ -365,8 +368,15 @@ public class UserController {
                     	
                     	tilePaneImages.getChildren().clear();
                     	
+                    	/**
+                    	 * Adds padding and insets to thumbnails.
+                    	 * Ought to be adjusted later.
+                    	 */
+                    	tilePaneImages.setPadding(new Insets(10, 10, 10, 10));
+                    	tilePaneImages.setHgap(10);
+                    	
                     	for (Photo p : photoList) {
-                    		ImageView iv = new ImageView(p.getFileName());
+                    		ImageView iv = new ImageView(p.getFilepath());
                     		
                     		/**
                     		 * These 'magic numbers' are temporary.
@@ -379,6 +389,20 @@ public class UserController {
                     		
                     		iv.setPreserveRatio(true);
                     		
+                    		iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+   
+                    			
+                    			if (e.isSecondaryButtonDown()) {
+                    				debugLog("Image " + p.getFilename() + " right clicked");
+                    			} else {
+                    				debugLog("Image " + p.getFilename() + " selected");
+                    			}
+                    		});
+                    		
+                    		iv.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
+
+                    		});
+                    		              		
                     		tilePaneImages.getChildren().add(iv);
                     		
                     		/**
@@ -386,6 +410,8 @@ public class UserController {
                     		 */
                     		debugLog("Photo " + p + " added to tilePaneImages");
                     	}
+                    	
+                   
                     }
                 }
             });
