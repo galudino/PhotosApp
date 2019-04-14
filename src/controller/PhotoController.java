@@ -28,6 +28,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Album;
 import model.Photo;
 import model.PhotoModel;
 
@@ -45,7 +46,7 @@ public class PhotoController {
 	
 	ObservableList<Photo> pList = FXCollections.observableArrayList();
 	
-	@FXML ListView imageQueueList;
+	@FXML ListView<Photo> imageQueueList;
 	@FXML SplitMenuButton albumList;
 	
 	FileChooser fileChooser;
@@ -75,6 +76,25 @@ public class PhotoController {
 		}
 		
 		imageQueueList.setItems(pList);
+	}
+	
+	public void addSelectedPhotos() {
+		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
+		
+		System.out.println(currentAlbum);
+		
+		if(currentAlbum != null) {
+			for(Photo p : imageQueueList.getItems()) {
+
+				if(currentAlbum.addPhoto(p) == -1) {
+					System.out.println("failed to add..");
+				} else {
+					System.out.println("added successfully.");
+				}
+			}
+		}
+		
+		model.write();
 	}
 	
 	/**

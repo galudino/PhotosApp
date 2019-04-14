@@ -55,9 +55,7 @@ public class Photo implements Serializable {
 	 * @param photo
 	 */
 	public Photo(Photo photo) {
-		
-		System.out.println(getDatePhoto());
-		
+		this.imageFile = photo.imageFile;
 		this.filepath = photo.filepath;
 		this.caption = photo.caption;
 		this.datePhoto = photo.datePhoto;
@@ -251,7 +249,7 @@ public class Photo implements Serializable {
 
 	@Override
 	public String toString() {
-		return filepath + " (" + datePhoto + "): \"" + caption + "\"";
+		return filepath + " (" + epochToLocalTime(datePhoto) + "): \"" + caption + "\"";
 	}
 
 	@Override

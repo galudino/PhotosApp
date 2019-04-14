@@ -219,19 +219,14 @@ public class PhotoModel implements Serializable {
 		
 		System.out.println(stock.getCurrentAlbum());
 
-		try {
-			Photo photo1 = new Photo(new File("src/view/stock/one.jpg").toURI().toURL().toExternalForm());
-	        Photo photo2 = new Photo(new File("src/view/stock/two.jpg").toURI().toURL().toExternalForm());
-	        Photo photo3 = new Photo(new File("src/view/stock/three.jpg").toURI().toURL().toExternalForm());
-	        Photo photo4 = new Photo(new File("src/view/stock/four.jpg").toURI().toURL().toExternalForm());
-	        
-			stock.getCurrentAlbum().addPhoto(photo2);
-			stock.getCurrentAlbum().addPhoto(photo3);
-			stock.getCurrentAlbum().addPhoto(photo4);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Photo photo1 = new Photo(new File("src/view/stock/one.jpg"));
+		Photo photo2 = new Photo(new File("src/view/stock/two.jpg"));
+		Photo photo3 = new Photo(new File("src/view/stock/three.jpg"));
+		Photo photo4 = new Photo(new File("src/view/stock/four.jpg"));
+		
+		stock.getCurrentAlbum().addPhoto(photo2);
+		stock.getCurrentAlbum().addPhoto(photo3);
+		stock.getCurrentAlbum().addPhoto(photo4);
 		
 		//stock.getCurrentAlbum().addPhoto(new File("/view/stock/one.jpg"));
 

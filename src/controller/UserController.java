@@ -12,6 +12,7 @@ package controller;
 
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -506,16 +507,17 @@ public class UserController {
 
 						debugLog("Selection: " + item);
 
-						currentAlbum = cell.getItem();
+						//currentUser.setCurrentAlbum(item);
+						
+						currentAlbum = item;
+						model.getCurrentUser().setCurrentAlbum(currentAlbum);
 
 						photoList = FXCollections.observableArrayList();
 
 						for (Map.Entry<String, Photo> test2 : currentAlbum
-								.getPhotoMap().entrySet()) {
-							photoList.add(test2.getValue());
-							System.out.println("Adding: " + test2.getValue());
-							System.out.println("Filepath for: "
-									+ test2.getValue().getFilepath());
+									.getPhotoMap().entrySet()) {
+								photoList.add(test2.getValue());
+								System.out.println("Adding: " + test2.getValue());
 						}
 
 						currentAlbum.setPhotoList(photoList);
@@ -536,7 +538,11 @@ public class UserController {
 						currentImageViewList = new ArrayList<ImageView>();
 						
 						for (Photo p : photoList) {
-							ImageView iv = new ImageView(p.getFilepath());
+							
+							File test = new File(p.getFilepath());
+							Image test2 = new Image(test.toURI().toString());
+							
+							ImageView iv = new ImageView(test2);
 
 							/**
 							 * These 'magic numbers' are temporary. They ought
@@ -578,7 +584,7 @@ public class UserController {
 									captionField.setText("");
 
 									detailView.setImage(
-											new Image(p.getFilepath()));
+											new Image(test.toURI().toString()));
 									detailView.setFitHeight(150);
 									detailView.setFitWidth(200);
 									detailView.setVisible(true);
