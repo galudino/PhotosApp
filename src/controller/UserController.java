@@ -541,8 +541,12 @@ public class UserController {
 							
 							File test = new File(p.getFilepath());
 							Image test2 = new Image(test.toURI().toString());
-							
 							ImageView iv = new ImageView(test2);
+							
+							p.setDataPhoto(test.lastModified());
+							
+							p.setSizePhoto(test.length());
+							
 
 							/**
 							 * These 'magic numbers' are temporary. They ought
@@ -569,15 +573,13 @@ public class UserController {
 
 									debugLog("Image " + p.getFilename()
 											+ " selected");
-									debugLog(p.getFilename()
-											+ " was created on: ");
+
 									nameField.setText(
 											currentPhoto.getFilename());
 									pathField.setText(
 											currentPhoto.getFilepath());
-									sizeField.setText(" KB");
-									createdField.setText(
-											currentPhoto.getDatePhoto());
+									sizeField.setText(currentPhoto.getFileSize() + " KB");
+									createdField.setText(currentPhoto.getDatePhoto() + " ");
 
 									displayCaption.setText(p.getCaption());
 

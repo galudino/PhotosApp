@@ -44,6 +44,7 @@ public class Photo implements Serializable {
 	private String filepath;
 	private String caption;
 	private long datePhoto;
+	private long fileSize;
 	
 	private File imageFile;
 
@@ -59,6 +60,7 @@ public class Photo implements Serializable {
 		this.filepath = photo.filepath;
 		this.caption = photo.caption;
 		this.datePhoto = photo.datePhoto;
+		this.fileSize = photo.fileSize;
 
 		tagMap = new TreeMap<String, Tag>();
 		tagList = FXCollections.observableArrayList();
@@ -72,6 +74,7 @@ public class Photo implements Serializable {
 		this.filepath = filepath;
 		caption = "";
 		datePhoto = 0;
+		fileSize = 0;
 		tagList = FXCollections.observableArrayList();
 		tagMap = new TreeMap<String, Tag>();
 	}
@@ -81,6 +84,7 @@ public class Photo implements Serializable {
 		filepath = imageFile.getAbsolutePath();
 		caption = "";
 		datePhoto = imageFile.lastModified();
+		fileSize = 0;
 		tagList = FXCollections.observableArrayList();
 		tagMap = new TreeMap<String, Tag>();
 	}
@@ -169,6 +173,18 @@ public class Photo implements Serializable {
 	 */
 	public String getDatePhoto() {
 		return epochToLocalTime(datePhoto);
+	}
+	
+	public void setDataPhoto(long time) {
+		datePhoto = time;
+	}
+	
+	public void setSizePhoto(long size) {
+		fileSize = (size / 1024);
+	}
+	
+	public long getFileSize() { 
+		return fileSize;
 	}
 
 	/**
