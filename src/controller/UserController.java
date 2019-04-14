@@ -292,6 +292,58 @@ public class UserController {
 			error.showAndWait();
 		}
 	}
+	
+	public void removeTag() {
+		int selectedIndex = tagList.getSelectionModel().getSelectedIndex();
+		
+		if (selectedIndex < 0) {
+			Alert error = new Alert(Alert.AlertType.ERROR,
+					"There are no tags to be deleted.", ButtonType.OK);
+			
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("There are no tags to be deleted.");
+			
+			error.showAndWait();
+			return;
+		}
+
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+				"Are you sure you want to delete this tag?", ButtonType.YES,
+				ButtonType.NO);
+		
+		alert.showAndWait();
+
+		/**
+		 * User no longer wants to delete the selected tag
+		 */
+		if (alert.getResult() != ButtonType.YES) {
+			/**
+			 * CONSOLE DIAGNOSTICS 
+			 */
+			debugLog("Quit from deleting tag.");
+			return;
+		}
+
+		/**
+		 * Tag is found within list
+		 */
+		if (selectedIndex >= 0) {
+			debugLog("Selected Index (tag to be deleted): " + selectedIndex);
+			currentPhoto.deleteTag(selectedIndex);
+
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+					"Tag successfully removed!", ButtonType.OK);
+			
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("ATag successfully removed!");
+			
+			success.showAndWait();
+		}
+	}
 
 	/**
 	 * Executes upon creating an album
@@ -531,9 +583,17 @@ public class UserController {
 									detailView.setFitWidth(200);
 									detailView.setVisible(true);
 									detailView.setPreserveRatio(true);
-									// iv.setStyle("-fx-effect:
-									// innershadow(gaussian, #039ed3, 4, 2.0, 0,
-									// 0);");
+
+                    				ObservableList<Tag> tList = FXCollections.observableArrayList();
+                    				
+                            		for(Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+                            			tList.add(tag.getValue());
+                            		}
+                            		
+                            		currentPhoto.setTagList(tList);
+                            		
+                            		tagList.setItems(tList);
+									
 								}
 							});
 

@@ -11,15 +11,24 @@
 
 package controller;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitMenuButton;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Photo;
 import model.PhotoModel;
 
 /**
@@ -34,16 +43,38 @@ public class PhotoController {
 	
 	// TODO fields
 	
+	ObservableList<Photo> pList = FXCollections.observableArrayList();
+	
 	@FXML ListView imageQueueList;
+	@FXML SplitMenuButton albumList;
+	
+	FileChooser fileChooser;
+	File file;
+	Desktop desktop = Desktop.getDesktop();
 	
 	@FXML
 	public void initialize() {
-
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
 		System.out.println();
 		debugLog("Entering " + getClass().getSimpleName());
+	}
+	
+	public void selectFile() {
+		fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().addAll(
+				new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"),
+				new ExtensionFilter("All Files", "*.*")
+		);
+		
+		file = fileChooser.showOpenDialog(null);
+		
+		if(file != null) {
+			pList.add(new Photo(file));
+		}
+		
+		imageQueueList.setItems(pList);
 	}
 	
 	/**
