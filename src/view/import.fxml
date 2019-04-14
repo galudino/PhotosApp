@@ -166,7 +166,6 @@
                            <contextMenu>
                               <ContextMenu>
                                 <items>
-                                  <MenuItem mnemonicParsing="false" text="Edit Caption" />
                                     <SeparatorMenuItem mnemonicParsing="false" />
                                     <Menu mnemonicParsing="false" text="Copy Selected Photo to Album...">
                                       <items>
