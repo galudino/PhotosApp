@@ -29,11 +29,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -59,15 +62,15 @@ import model.User;
 public class UserController {
 
 	int index = 0;
-	
+
 	final double DEFAULT_INSET_VALUE = 10.0;
 	final double DEFAULT_HEIGHT_VALUE = 150.0;
 	final double DEFAULT_WIDTH_VALUE = 200.0;
-		
+
 	double imageInsetValue = DEFAULT_INSET_VALUE;
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
-	
+
 	private Photo currentPhoto = null;
 	private PhotoModel model = LoginController.getModel();
 	private Album currentAlbum = null;
@@ -80,9 +83,17 @@ public class UserController {
 	//@formatter:off
 	@FXML Button cancelEdit;
 	@FXML Button createAlbum;
+	@FXML Button buttonAddCaption;
+	@FXML Button buttonAddTag;
+	@FXML Button buttonCopyPhoto;
+	@FXML Button buttonDeletePhoto;
+	@FXML Button buttonMovePhoto;
 	@FXML Button editAlbum;
 	@FXML Button navigatorButtonBack;
 	@FXML Button navigatorButtonNext;
+	
+	@FXML CheckBox checkBoxDeleteFromDisk;
+	@FXML CheckBox checkBoxPromptBeforeDelete;
 	
 	@FXML Hyperlink addAlbumHL;
 	@FXML Hyperlink addHL;
@@ -100,7 +111,27 @@ public class UserController {
 	@FXML ListView<Album> albumView;
 	@FXML ListView<Tag> tagList;
 	
+	@FXML MenuItem fileCreateNewAlbum;
+	@FXML MenuItem fileImportImagesSelectedAlbum;
+	@FXML MenuItem fileOpenSelectedPhotoInViewer;
+	@FXML MenuItem fileSaveAndLogout;
+	@FXML MenuItem fileSaveAndExit;
+	
+	@FXML MenuItem viewAsThumbnails;
+	@FXML MenuItem viewAsSingleImage;
+	
+	@FXML MenuItem viewModeThumbnail;
+	@FXML MenuItem viewModeSingleImage;
+	
+	@FXML MenuItem searchCurrentAlbum;
+	@FXML MenuItem searchAllAlbums;
 	@FXML Menu menuAlbums;
+	
+	@FXML MenuItem menuItemHelp;
+	@FXML MenuItem menuItemAboutPhotos;
+	
+	@FXML RadioButton radioButtonThumbnail;
+	@FXML RadioButton radioButtonSingleImage;
 	
 	@FXML Slider zoomSlider;
 
@@ -114,12 +145,12 @@ public class UserController {
 	
 	@FXML TilePane tilePaneImages;
 	//@formatter:on
-	
+
 	@FXML
 	public void initialize() {
 		albumView.setItems(currentUser.getAlbumList());
 		updateInfoData();
-		
+
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -129,7 +160,39 @@ public class UserController {
 				+ model.getCurrentUser().getUsername());
 		debugLog("Current user has albums: " + currentUser.getAlbumMap());
 	}
+
+	public void doViewModeThumbnail() {
+		debugLog("Adjusting view mode thumbnail");
+	}
+
+	public void doViewModeSingleImage() {
+		debugLog("Adjusting view mode single image");
+	}
+
+	public void doOpenSelectedPhotoInViewer() {
+		debugLog("Open selected photo in viewer");
+	}
+
+	public void doMenuAlbums() {
+		debugLog("do menu albums");
+	}
+
+	public void doCheckBoxDeleteFromDisk() {
+		debugLog("Delete from disk checked");
+	}
+
+	public void doCheckBoxPromptBeforeDelete() {
+		debugLog("Prompt before delete checked");
+	}
 	
+	public void doSearchAllAlbums() throws IOException {
+		debugLog("Search all albums");
+	}
+
+	public void doSearchCurrentAlbum() throws IOException {
+		debugLog("Search current album");
+	}
+
 	/**
 	 * Runs each time there is an update to the user's albums and/or photos.
 	 */
@@ -137,52 +200,40 @@ public class UserController {
 		int albumCount = currentUser.getAlbumList().size();
 		int totalPhotoCount = 0;
 		long totalByteCount = 0;
-		
+
 		for (Album a : currentUser.getAlbumMap().values()) {
 			totalPhotoCount += a.getAlbumSize();
-			
+
 			for (Photo p : a.getPhotoMap().values()) {
 				totalByteCount += p.getFileSize();
-				debugLog(""+ totalByteCount);
+				debugLog("" + totalByteCount);
 			}
 		}
-		
-		String output = String.format("%d albums - %d photos - %d KB", 
+
+		String output = String.format("%d albums - %d photos - %d KB",
 				albumCount, totalPhotoCount, totalByteCount);
-		
+
 		infoData.setText(output);
 	}
-	
-	public void search() throws IOException {
-		Stage window = new Stage();
-		FXMLLoader loader = new FXMLLoader();
 
-		loader.setLocation(getClass().getResource("/view/search.fxml"));
-		Parent root = loader.load();
-		Scene scene = new Scene(root);
-		addHL.getScene().getWindow().hide();
-		window.setScene(scene);
-		window.setTitle("Photos -- Search");
-		window.setResizable(false);
-		window.show();
-	}
-	
 	public void doZoomSlider() {
 		if (currentAlbum == null) {
 			return;
 		}
-		
+
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
 				double factor = newValue.doubleValue();
-				
+
 				imageInsetValue = factor * DEFAULT_INSET_VALUE; // default 10.00
-				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default 150.00
-				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default 200.00
-				
+				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default
+																	// 150.00
+				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default
+																// 200.00
+
 				for (ImageView iv : currentImageViewList) {
 					iv.setFitHeight(imageHeightValue);
 					iv.setFitWidth(imageWidthValue);
@@ -190,12 +241,12 @@ public class UserController {
 				}
 
 				debugLog("" + newValue.doubleValue());
-				
+
 				debugLog(imageInsetValue + " inset");
 				debugLog(imageHeightValue + " height");
 				debugLog(imageWidthValue + " width");
 			}
-			
+
 		});
 	}
 
@@ -211,7 +262,7 @@ public class UserController {
 		window.setTitle("Photos -- Import");
 		window.setResizable(false);
 		window.show();
-		
+
 		updateInfoData();
 	}
 
@@ -255,6 +306,14 @@ public class UserController {
 
 			error.showAndWait();
 		}
+	}
+
+	public void movePhoto() {
+		debugLog("Move photo button pressed");
+	}
+
+	public void copyPhoto() {
+		debugLog("Copy photo button pressed");
 	}
 
 	public void deletePhoto() {
@@ -308,9 +367,9 @@ public class UserController {
 				 * CONSOLE DIAGNOSTICS
 				 */
 				debugLog("Photo successfully removed!");
-				
+
 				updateInfoData();
-				
+
 				success.showAndWait();
 			}
 		} else {
@@ -627,8 +686,10 @@ public class UserController {
 						 * Adds padding and insets to thumbnails. Ought to be
 						 * adjusted later.
 						 */
-						tilePaneImages.setPadding(new Insets(imageInsetValue, imageInsetValue, imageInsetValue, imageInsetValue));
-						
+						tilePaneImages.setPadding(
+								new Insets(imageInsetValue, imageInsetValue,
+										imageInsetValue, imageInsetValue));
+
 						tilePaneImages.setHgap(imageInsetValue);
 
 						currentImageViewList = new ArrayList<ImageView>();
@@ -686,7 +747,8 @@ public class UserController {
 
 									detailView.setImage(
 											new Image(test.toURI().toString()));
-									detailView.setFitHeight(DEFAULT_HEIGHT_VALUE);
+									detailView
+											.setFitHeight(DEFAULT_HEIGHT_VALUE);
 									detailView.setFitWidth(DEFAULT_WIDTH_VALUE);
 									detailView.setVisible(true);
 									detailView.setPreserveRatio(true);
@@ -727,11 +789,11 @@ public class UserController {
 							tilePaneImages.getChildren().add(iv);
 
 							currentImageViewList.add(iv);
-							
+
 							albumHeader.setText(currentAlbum.getAlbumName());
-							
+
 							updateInfoData();
-							
+
 							/**
 							 * CONSOLE DIAGNOSTICS
 							 */
@@ -760,14 +822,14 @@ public class UserController {
 		if (currentAlbum == null) {
 			return;
 		}
-		
+
 		/**
 		 * Album is selected but photo is not selected
 		 */
 		if (currentAlbum != null && currentPhoto == null) {
 			return;
 		}
-		
+
 		/**
 		 * Album is selected and has at least 1 photo
 		 */
@@ -880,7 +942,7 @@ public class UserController {
 		if (currentAlbum == null) {
 			return;
 		}
-		
+
 		/**
 		 * Album is selected but photo is not selected
 		 */
@@ -1010,7 +1072,7 @@ public class UserController {
 		window.setTitle("Photos -- Add Album");
 		window.setResizable(false);
 		window.show();
-		
+
 		updateInfoData();
 	}
 
@@ -1041,7 +1103,7 @@ public class UserController {
 
 			oldName.setText(albumView.getSelectionModel().getSelectedItem()
 					.getAlbumName());
-			
+
 			updateInfoData();
 		}
 	}
@@ -1105,7 +1167,7 @@ public class UserController {
 			debugLog("Album successfully removed!");
 
 			updateInfoData();
-			
+
 			success.showAndWait();
 		}
 	}

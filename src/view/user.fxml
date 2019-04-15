@@ -30,26 +30,26 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#doAddAlbum" text="Create New Album" />
-                  <MenuItem mnemonicParsing="false" onAction="#importPhoto" text="Import Images Into Selected Album" />
+              <MenuItem fx:id="fileCreateNewAlbum" mnemonicParsing="false" onAction="#doAddAlbum" text="Create New Album" />
+                  <MenuItem fx:id="fileImportImagesSelectedAlbum" mnemonicParsing="false" onAction="#importPhoto" text="Import Images Into Selected Album" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
+                  <MenuItem fx:id="fileOpenSelectedPhotoInViewer" mnemonicParsing="false" onAction="#doOpenSelectedPhotoInViewer" text="Open Selected Photo in Viewer" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#doLogOff" text="Save &amp; Logout" />
-                  <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Save &amp; Exit Photos" />
+                  <MenuItem fx:id="fileItem" mnemonicParsing="false" onAction="#doLogOff" text="Save &amp; Logout" />
+                  <MenuItem fx:id="fileSaveAndExit" mnemonicParsing="false" onAction="#doQuit" text="Save &amp; Exit Photos" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
             <items>
-              <MenuItem mnemonicParsing="false" text="As Thumbnails" />
-                  <MenuItem mnemonicParsing="false" text="As Single Image" />
+              <MenuItem fx:id="viewAsThumbnails" mnemonicParsing="false" onAction="#doViewModeThumbnail" text="As Thumbnails" />
+                  <MenuItem fx:id="viewAsSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="As Single Image" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Search">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Current Album" />
-                  <MenuItem mnemonicParsing="false" onAction="#search" text="All Albums" />
-                  <Menu fx:id="menuAlbums" mnemonicParsing="false" text="Album...">
+                  <MenuItem fx:id="searchAllAlbums" mnemonicParsing="false" onAction="#doSearchAllAlbums" text="All Albums" />
+                  <MenuItem fx:id="searchCurrentAlbum" mnemonicParsing="false" onAction="#doSearchCurrentAlbum" text="Current Album" />
+                  <Menu fx:id="menuAlbums" mnemonicParsing="false" onAction="#doMenuAlbums" text="Album...">
                     <items>
                       <MenuItem mnemonicParsing="false" />
                     </items>
@@ -58,9 +58,9 @@
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#doHelp" text="Help" />
+              <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" onAction="#doHelp" text="Help" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#doAbout" text="About Photos" />
+                  <MenuItem fx:id="menuItemAboutPhotos" mnemonicParsing="false" onAction="#doAbout" text="About Photos" />
             </items>
           </Menu>
         </menus>
@@ -82,7 +82,7 @@
                         </Pane>
                         <Pane layoutX="165.0" layoutY="5.0" prefHeight="55.0" prefWidth="169.0">
                            <children>
-                              <Hyperlink id="addAlbumHL" layoutX="44.0" layoutY="17.0" onAction="#doAddAlbum" text="New Album...." />
+                              <Hyperlink id="addAlbumHL" fx:id="addAlbumHL" layoutX="44.0" layoutY="17.0" onAction="#doAddAlbum" text="New Album...." />
                            </children>
                         </Pane>
                      </children>
@@ -152,8 +152,8 @@
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="29.0" layoutX="26.0" layoutY="41.0" stroke="#dadada" strokeLineJoin="BEVEL" strokeType="INSIDE" width="238.0" />
                         <ButtonBar layoutX="16.0" layoutY="41.0" prefHeight="29.0" prefWidth="238.0">
                           <buttons>
-                              <RadioButton mnemonicParsing="false" text="Thumbnail" />
-                              <RadioButton mnemonicParsing="false" text="Single Image" />
+                              <RadioButton fx:id="radioButtonThumbnail" mnemonicParsing="false" onAction="#doViewModeThumbnail" text="Thumbnail" />
+                              <RadioButton fx:id="RadioButtonSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="Single Image" />
                           </buttons>
                         </ButtonBar>
                         <Label layoutX="108.0" layoutY="14.0" text="VIEW MODE" textFill="#aeaeae" />
@@ -218,14 +218,14 @@
                                        </font>
                                     </Label>
                                     <TextField fx:id="captionField" layoutX="16.0" layoutY="28.0" prefHeight="18.0" prefWidth="192.0" />
-                                    <Button layoutX="214.0" layoutY="28.0" mnemonicParsing="false" onAction="#setCaption" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
+                                    <Button fx:id="buttonAddCaption" layoutX="214.0" layoutY="28.0" mnemonicParsing="false" onAction="#setCaption" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
                                     <Label layoutX="16.0" layoutY="58.0" text="ADD TAG (key, value)" textFill="#aeaeae">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
                                     </Label>
                                     <TextField fx:id="tagName" layoutX="16.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
-                                    <Button layoutX="214.0" layoutY="72.0" mnemonicParsing="false" onAction="#createTag" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
+                                    <Button fx:id="buttonAddTag" layoutX="214.0" layoutY="72.0" mnemonicParsing="false" onAction="#createTag" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
                                     <TextField fx:id="tagValue" layoutX="115.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
                                     <ListView fx:id="tagList" layoutX="19.0" layoutY="117.0" prefHeight="74.0" prefWidth="261.0">
                                        <contextMenu>
@@ -290,17 +290,17 @@
                <children>
                   <ButtonBar layoutX="36.0" layoutY="84.0" prefHeight="29.0" prefWidth="244.0">
                     <buttons>
-                      <Button mnemonicParsing="false" prefHeight="27.0" text="Copy">
+                      <Button fx:id="buttonCopyPhoto" mnemonicParsing="false" onAction="#copyPhoto" prefHeight="27.0" text="Copy">
                            <tooltip>
                               <Tooltip text="Makes a duplicate of this Photo and moves the duplicate to another Album." />
                            </tooltip>
                         </Button>
-                        <Button mnemonicParsing="false" text="Move">
+                        <Button fx:id="buttonMovePhoto" mnemonicParsing="false" onAction="#movePhoto" text="Move">
                            <tooltip>
                               <Tooltip text="Relocates this Photo from this Album to another Album." />
                            </tooltip>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#deletePhoto" text="Delete">
+                        <Button fx:id="buttonDeletePhoto" mnemonicParsing="false" onAction="#deletePhoto" text="Delete">
                            <tooltip>
                               <Tooltip text="Removes this Photo from this Album." />
                            </tooltip>
@@ -312,8 +312,8 @@
                         <Font size="11.0" />
                      </font>
                   </Label>
-                  <CheckBox layoutX="14.0" layoutY="29.0" mnemonicParsing="false" text="Delete removes photos from disk" />
-                  <CheckBox layoutX="14.0" layoutY="56.0" mnemonicParsing="false" text="Prompt before delete" />
+                  <CheckBox fx:id="checkBoxDeleteFromDisk" layoutX="14.0" layoutY="29.0" mnemonicParsing="false" onAction="#doCheckBoxDeleteFromDisk" text="Delete removes photos from disk" />
+                  <CheckBox fx:id="checkBoxPromptBeforeDelete" layoutX="14.0" layoutY="56.0" mnemonicParsing="false" onAction="#doCheckBoxPromptBeforeDelete" text="Prompt before delete" />
                </children>
             </AnchorPane>
          </children></AnchorPane>
