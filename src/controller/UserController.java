@@ -20,6 +20,8 @@ import java.util.Map.Entry;
 import javax.swing.text.View;
 import javax.swing.text.html.HTMLDocument.Iterator;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -36,6 +38,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -59,6 +62,16 @@ import model.User;
  */
 public class UserController {
 
+	int index = 0;
+	
+	final double DEFAULT_INSET_VALUE = 10.0;
+	final double DEFAULT_HEIGHT_VALUE = 150.0;
+	final double DEFAULT_WIDTH_VALUE = 200.0;
+		
+	double imageInsetValue = DEFAULT_INSET_VALUE;
+	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
+	double imageWidthValue = DEFAULT_WIDTH_VALUE;
+	
 	private PhotoModel model = LoginController.getModel();
 	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
@@ -98,12 +111,13 @@ public class UserController {
 	
 	@FXML Label albumHeader;
 	@FXML Hyperlink addHL;
+	
 	@FXML Button navigatorButtonBack;
 	@FXML Button navigatorButtonNext;
+	
+	@FXML Slider zoomSlider;
 	//@formatter:on
-
-	int index = -1;
-
+	
 	@FXML
 	public void initialize() {
 		albumView.setItems(currentUser.getAlbumList());
@@ -118,6 +132,38 @@ public class UserController {
 		debugLog("Current user logged on is: "
 				+ model.getCurrentUser().getUsername());
 		debugLog("Current user has albums: " + currentUser.getAlbumMap());
+	}
+	
+	public void doZoomSlider() {
+		if (currentAlbum == null) {
+			return;
+		}
+		
+		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				double factor = newValue.doubleValue();
+				
+				imageInsetValue = factor * DEFAULT_INSET_VALUE; // default 10.00
+				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default 150.00
+				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default 200.00
+				
+				for (ImageView iv : currentImageViewList) {
+					iv.setFitHeight(imageHeightValue);
+					iv.setFitWidth(imageWidthValue);
+					iv.setPreserveRatio(true);
+				}
+
+				debugLog("" + newValue.doubleValue());
+				
+				debugLog(imageInsetValue + " inset");
+				debugLog(imageHeightValue + " height");
+				debugLog(imageWidthValue + " width");
+			}
+			
+		});
 	}
 
 	public void importPhoto() throws IOException {
@@ -544,8 +590,9 @@ public class UserController {
 						 * Adds padding and insets to thumbnails. Ought to be
 						 * adjusted later.
 						 */
-						tilePaneImages.setPadding(new Insets(10, 10, 10, 10));
-						tilePaneImages.setHgap(10);
+						tilePaneImages.setPadding(new Insets(imageInsetValue, imageInsetValue, imageInsetValue, imageInsetValue));
+						
+						tilePaneImages.setHgap(imageInsetValue);
 
 						currentImageViewList = new ArrayList<ImageView>();
 
@@ -565,8 +612,8 @@ public class UserController {
 							 * within the GUI (these are for the image
 							 * thumbnails)
 							 */
-							iv.setFitHeight(120);
-							iv.setFitWidth(120);
+							iv.setFitHeight(imageHeightValue);
+							iv.setFitWidth(imageWidthValue);
 							iv.setPreserveRatio(true);
 
 							iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
@@ -602,8 +649,8 @@ public class UserController {
 
 									detailView.setImage(
 											new Image(test.toURI().toString()));
-									detailView.setFitHeight(150);
-									detailView.setFitWidth(200);
+									detailView.setFitHeight(DEFAULT_HEIGHT_VALUE);
+									detailView.setFitWidth(DEFAULT_WIDTH_VALUE);
 									detailView.setVisible(true);
 									detailView.setPreserveRatio(true);
 
@@ -666,19 +713,35 @@ public class UserController {
 	 * Executes upon activating navigator back button
 	 */
 	public void doNavigatorButtonBack() {
+		/**
+		 * No album was selected.
+		 */
+		if (currentAlbum == null) {
+			return;
+		}
 		
-		if(currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
-			
+		/**
+		 * Album is selected but photo is not selected
+		 */
+		if (currentAlbum != null && currentPhoto == null) {
+			return;
+		}
+		
+		/**
+		 * Album is selected and has at least 1 photo
+		 */
+		if (currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
+
 			System.out.println(currentAlbum.getAlbumSize());
 			/**
-			 * Establish new index. If current index equals 0, set the index to the
-			 * last index of the currentImageViewList. (loop to end)
+			 * Establish new index. If current index equals 0, set the index to
+			 * the last index of the currentImageViewList. (loop to end)
 			 * 
 			 * Otherwise, decrement index by one to go the previous image.
 			 */
 			ImageView old;
 			ImageView iv;
-			
+
 			if (index == 0) {
 				old = currentImageViewList.get(index);
 				index = currentImageViewList.size() - 1;
@@ -695,15 +758,15 @@ public class UserController {
 			 */
 			navigatorButtonBack.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isPrimaryButtonDown()) {
-					debugLog("[navigatorButtonBack] Selected index field reads: "
-							+ index);
-					
+					debugLog(
+							"[navigatorButtonBack] Selected index field reads: "
+									+ index);
+
 					old.setStyle(null);
 					if (iv.getBoundsInParent() != null) {
 						iv.setStyle(
 								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
-					
 
 					/**
 					 * Retrieve the current photo based on the current index
@@ -713,7 +776,8 @@ public class UserController {
 					/**
 					 * Update selected image in detail pane
 					 */
-					detailView.setImage(currentImageViewList.get(index).getImage());
+					detailView.setImage(
+							currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
@@ -733,7 +797,8 @@ public class UserController {
 					sizeField.setText("(size)" + " KB");
 					createdField.setText(currentPhoto.getDatePhoto());
 
-					ObservableList<Tag> tList = FXCollections.observableArrayList();
+					ObservableList<Tag> tList = FXCollections
+							.observableArrayList();
 
 					/**
 					 * Update tags in image detail pane
@@ -760,7 +825,7 @@ public class UserController {
 			 */
 			debugLog("Clicked navigator button back");
 		} else {
-			
+
 		}
 	}
 
@@ -768,18 +833,34 @@ public class UserController {
 	 * Executes upon activating navigator next button
 	 */
 	public void doNavigatorButtonNext() {
+		/**
+		 * No album was selected
+		 */
+		if (currentAlbum == null) {
+			return;
+		}
 		
-		if(currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
+		/**
+		 * Album is selected but photo is not selected
+		 */
+		if (currentAlbum != null && currentPhoto == null) {
+			return;
+		}
+
+		/**
+		 * Album is selected and has at least 1 photo
+		 */
+		if (currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
 			/**
-			 * Establish new index. If current index equals the currentImageViewList
-			 * size, minus 1 (new index == last index), then set the index to zero.
-			 * (loop to beginning)
+			 * Establish new index. If current index equals the
+			 * currentImageViewList size, minus 1 (new index == last index),
+			 * then set the index to zero. (loop to beginning)
 			 * 
 			 * Otherwise, increment index by one to go to the next image.
 			 */
 			ImageView old;
 			ImageView iv;
-			
+
 			if (index == currentImageViewList.size() - 1) {
 				old = currentImageViewList.get(index);
 				index = 0;
@@ -796,8 +877,9 @@ public class UserController {
 			 */
 			navigatorButtonNext.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isPrimaryButtonDown()) {
-					debugLog("[navigatorButtonNext] Selected index field reads: "
-							+ index);
+					debugLog(
+							"[navigatorButtonNext] Selected index field reads: "
+									+ index);
 
 					old.setStyle(null);
 					if (iv.getBoundsInParent() != null) {
@@ -813,7 +895,8 @@ public class UserController {
 					/**
 					 * Update selected image in detail pane
 					 */
-					detailView.setImage(currentImageViewList.get(index).getImage());
+					detailView.setImage(
+							currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
@@ -833,7 +916,8 @@ public class UserController {
 					sizeField.setText("(size)" + " KB");
 					createdField.setText(currentPhoto.getDatePhoto());
 
-					ObservableList<Tag> tList = FXCollections.observableArrayList();
+					ObservableList<Tag> tList = FXCollections
+							.observableArrayList();
 
 					/**
 					 * Update tags in image detail pane
