@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -31,25 +32,25 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#doAlbum" text="Return to Albums" />
+              <MenuItem fx:id="fileReturnToAlbums" mnemonicParsing="false" onAction="#doAlbum" text="Return to Albums" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Open Selected Photo in Viewer" />
+                  <MenuItem fx:id="fileOpenSelectedPhotoInViewer" mnemonicParsing="false" onAction="#doOpenSelectedPhotoInViewer" text="Open Selected Photo in Viewer" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Save &amp; Logout" />
-                  <MenuItem mnemonicParsing="false" text="Save &amp; Exit Photos" />
+                  <MenuItem fx:id="fileSaveAndLogout" mnemonicParsing="false" onAction="#doLogOut" text="Save &amp; Logout" />
+                  <MenuItem fx:id="fileSaveAndExit" mnemonicParsing="false" onAction="#doQuit" text="Save &amp; Exit Photos" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
             <items>
-              <MenuItem mnemonicParsing="false" text="As Thumbnails" />
-                  <MenuItem mnemonicParsing="false" text="As Single Image" />
+              <MenuItem fx:id="viewAsThumbnails" mnemonicParsing="false" onAction="#doViewModeThumbnail" text="As Thumbnails" />
+                  <MenuItem fx:id="viewAsSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="As Single Image" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="Photos Help" />
+              <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" onAction="#doHelp" text="Photos Help" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="About Photos" />
+                  <MenuItem fx:id="menuItemAboutPhotos" mnemonicParsing="false" onAction="#doAbout" text="About Photos" />
             </items>
           </Menu>
         </menus>
@@ -82,7 +83,7 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <RadioButton layoutX="66.0" layoutY="30.0" mnemonicParsing="false" text="This Album">
+                        <RadioButton fx:id="radioButtonThisAlbum" layoutX="66.0" layoutY="30.0" mnemonicParsing="false" onAction="#doRadioButtonThisAlbum" text="This Album">
                            <font>
                               <Font size="11.0" />
                            </font>
@@ -95,12 +96,12 @@
                               <Font size="11.0" />
                            </font>
                         </SplitMenuButton>
-                        <RadioButton layoutX="66.0" layoutY="50.0" mnemonicParsing="false" text="Selected Album:">
+                        <RadioButton fx:id="radioButtonSelectedAlbum" layoutX="66.0" layoutY="50.0" mnemonicParsing="false" onAction="#doRadioButtonSelectedAlbum" text="Selected Album:">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </RadioButton>
-                        <RadioButton layoutX="66.0" layoutY="100.0" mnemonicParsing="false" text="All Albums">
+                        <RadioButton fx:id="radioButtonAllAlbums" layoutX="66.0" layoutY="100.0" mnemonicParsing="false" onAction="#doRadioButtonAllAlbums" text="All Albums">
                            <font>
                               <Font size="11.0" />
                            </font>
@@ -124,8 +125,8 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <DatePicker layoutX="66.0" layoutY="45.0" />
-                        <DatePicker layoutX="66.0" layoutY="87.0" />
+                        <DatePicker fx:id="datePickerFrom" layoutX="66.0" layoutY="45.0" onAction="#doDatePickerFrom" />
+                        <DatePicker fx:id="datePickerTo" layoutX="66.0" layoutY="87.0" onAction="#doDatePickerTo" />
                      </children>
                   </Pane>
                   <Pane layoutY="250.0" prefHeight="188.0" prefWidth="336.0">
@@ -135,7 +136,7 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="66.0" layoutY="44.0" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagNameOne" layoutX="66.0" layoutY="44.0" onAction="#doSearchTagNameOne" prefHeight="27.0" prefWidth="97.0" />
                         <Label layoutX="66.0" layoutY="30.0" text="TAG 1 (key1, value1)" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
@@ -146,28 +147,28 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="66.0" layoutY="123.0" prefHeight="27.0" prefWidth="97.0" />
-                        <RadioButton layoutX="66.0" layoutY="81.0" mnemonicParsing="false" text="and" />
-                        <RadioButton layoutX="131.0" layoutY="81.0" mnemonicParsing="false" text="or" />
-                        <RadioButton layoutX="189.0" layoutY="81.0" mnemonicParsing="false" text="not" />
-                        <Button layoutX="115.0" layoutY="154.0" mnemonicParsing="false" text="Add Tag Pair" />
-                        <TextField layoutX="166.0" layoutY="44.0" prefHeight="27.0" prefWidth="97.0" />
-                        <TextField layoutX="166.0" layoutY="123.0" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagNameTwo" layoutX="66.0" layoutY="123.0" onAction="#doSearchTagNameTwo" prefHeight="27.0" prefWidth="97.0" />
+                        <RadioButton fx:id="radioButtonAnd" layoutX="66.0" layoutY="81.0" mnemonicParsing="false" onAction="#doRadioButtonAnd" text="and" />
+                        <RadioButton fx:id="radioButtonOr" layoutX="131.0" layoutY="81.0" mnemonicParsing="false" onAction="#doRadioButtonOr" text="or" />
+                        <RadioButton fx:id="radioButtonNot" layoutX="189.0" layoutY="81.0" mnemonicParsing="false" onAction="#doRadioButtonNot" text="not" />
+                        <Button fx:id="buttonAddTagPair" layoutX="115.0" layoutY="154.0" mnemonicParsing="false" onAction="#doButtonAddTagPair" text="Add Tag Pair" />
+                        <TextField fx:id="searchTagValueOne" layoutX="166.0" layoutY="44.0" onAction="#doSearchTagValueOne" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagValueTwo" layoutX="166.0" layoutY="123.0" onAction="#doSearchTagValueTwo" prefHeight="27.0" prefWidth="97.0" />
                      </children>
                   </Pane>
                   <Pane layoutY="429.0" prefHeight="150.0" prefWidth="336.0">
                      <children>
-                        <Button layoutX="77.0" layoutY="109.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="182.0" text="Search Now" />
+                        <Button fx:id="buttonSearchNow" layoutX="77.0" layoutY="109.0" mnemonicParsing="false" onAction="#doButtonSearchNow" prefHeight="27.0" prefWidth="182.0" text="Search Now" />
                         <Label layoutX="41.0" layoutY="7.0" text="TAGS PROVIDED" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <ListView layoutX="41.0" layoutY="21.0" prefHeight="79.0" prefWidth="238.0">
+                        <ListView fx:id="listViewTagSearch" layoutX="41.0" layoutY="21.0" prefHeight="79.0" prefWidth="238.0">
                            <contextMenu>
                               <ContextMenu>
                                 <items>
-                                  <MenuItem mnemonicParsing="false" text="Remove Tag" />
+                                  <MenuItem fx:id="menuItemRemoveTagFromSearch" mnemonicParsing="false" onAction="#doMenuItemRemoveTagFromSearch" text="Remove Tag" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>
@@ -215,7 +216,7 @@
                               </ContextMenu>
                            </contextMenu>
                         </ScrollPane>
-                        <Label layoutX="440.0" layoutY="5.0" text="New Album From Results..." textFill="#6764ff" underline="true" />
+                        <Hyperlink layoutX="440.0" layoutY="5.0" text="New Album From Results..." />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
@@ -226,8 +227,8 @@
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="29.0" layoutX="26.0" layoutY="41.0" stroke="#dadada" strokeLineJoin="BEVEL" strokeType="INSIDE" width="238.0" />
                         <ButtonBar layoutX="16.0" layoutY="41.0" prefHeight="29.0" prefWidth="238.0">
                           <buttons>
-                              <RadioButton mnemonicParsing="false" text="Thumbnail" />
-                              <RadioButton mnemonicParsing="false" text="Single Image" />
+                              <RadioButton fx:id="radioButtonThumbnail" mnemonicParsing="false" onAction="#doViewModeThumbnail" text="Thumbnail" />
+                              <RadioButton fx:id="radioButtonSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="Single Image" />
                           </buttons>
                         </ButtonBar>
                         <Label layoutX="108.0" layoutY="14.0" text="VIEW MODE" textFill="#aeaeae" />
@@ -291,24 +292,25 @@
                                           <Font size="11.0" />
                                        </font>
                                     </Label>
-                                    <TextField layoutX="16.0" layoutY="28.0" prefHeight="18.0" prefWidth="193.0" />
-                                    <Button layoutX="214.0" layoutY="28.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
-                                    <Label layoutX="16.0" layoutY="58.0" text="ADD TAG" textFill="#aeaeae">
+                                    <TextField fx:id="captionField" layoutX="16.0" layoutY="28.0" prefHeight="18.0" prefWidth="193.0" />
+                                    <Button fx:id="buttonAddCaption" layoutX="214.0" layoutY="28.0" mnemonicParsing="false" onAction="#setCaption" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
+                                    <Label layoutX="16.0" layoutY="58.0" text="ADD TAG (key, value)" textFill="#aeaeae">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
                                     </Label>
-                                    <TextField layoutX="16.0" layoutY="72.0" prefHeight="18.0" prefWidth="193.0" />
-                                    <Button layoutX="214.0" layoutY="72.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
-                                    <ListView layoutX="16.0" layoutY="115.0" prefHeight="74.0" prefWidth="263.0">
+                                    <Button fx:id="buttonAddTag" layoutX="214.0" layoutY="72.0" mnemonicParsing="false" onAction="#createTag" prefHeight="0.0" prefWidth="67.0" text="Confirm" />
+                                    <ListView fx:id="tagList" layoutX="16.0" layoutY="115.0" prefHeight="74.0" prefWidth="263.0">
                                        <contextMenu>
                                           <ContextMenu>
                                             <items>
-                                              <MenuItem mnemonicParsing="false" text="Remove Tag" />
+                                              <MenuItem fx:id="removeTag" mnemonicParsing="false" onAction="#removeTag" text="Remove Tag" />
                                             </items>
                                           </ContextMenu>
                                        </contextMenu>
                                     </ListView>
+                                    <TextField fx:id="tagName" layoutX="17.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
+                                    <TextField fx:id="tagValue" layoutX="113.0" layoutY="72.0" prefHeight="27.0" prefWidth="96.0" />
                                  </children>
                               </Pane>
                               <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0">
@@ -364,17 +366,17 @@
                <children>
                   <ButtonBar layoutX="36.0" layoutY="84.0" prefHeight="29.0" prefWidth="244.0">
                     <buttons>
-                      <Button mnemonicParsing="false" prefHeight="27.0" text="Copy">
+                      <Button fx:id="buttonCopyPhoto" mnemonicParsing="false" onAction="#copyPhoto" prefHeight="27.0" text="Copy">
                            <tooltip>
                               <Tooltip text="Makes a duplicate of this Photo and moves the duplicate to another Album." />
                            </tooltip>
                         </Button>
-                        <Button mnemonicParsing="false" text="Move">
+                        <Button fx:id="buttonMovePhoto" mnemonicParsing="false" onAction="#movePhoto" text="Move">
                            <tooltip>
                               <Tooltip text="Relocates this Photo from this Album to another Album." />
                            </tooltip>
                         </Button>
-                        <Button mnemonicParsing="false" text="Delete">
+                        <Button fx:id="buttonDeletePhoto" mnemonicParsing="false" onAction="#deletePhoto" text="Delete">
                            <tooltip>
                               <Tooltip text="Removes this Photo from this Album." />
                            </tooltip>
@@ -386,8 +388,8 @@
                         <Font size="11.0" />
                      </font>
                   </Label>
-                  <CheckBox layoutX="14.0" layoutY="29.0" mnemonicParsing="false" text="Delete removes photos from disk" />
-                  <CheckBox layoutX="14.0" layoutY="56.0" mnemonicParsing="false" text="Prompt before delete" />
+                  <CheckBox fx:id="checkBoxDeleteFromDisk" layoutX="14.0" layoutY="29.0" mnemonicParsing="false" onAction="#doCheckBoxDeleteFromDisk" text="Delete removes photos from disk" />
+                  <CheckBox fx:id="checkBoxPromptBeforeDelete" layoutX="14.0" layoutY="56.0" mnemonicParsing="false" onAction="#doCheckBoxPromptBeforeDelete" text="Prompt before delete" />
                </children>
             </AnchorPane>
          </children></AnchorPane>
