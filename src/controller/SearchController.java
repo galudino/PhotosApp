@@ -44,6 +44,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import model.Album;
 import model.Photo;
 import model.PhotoModel;
