@@ -188,21 +188,6 @@ public class UserController {
 	public void doMenuAlbums() {
 		debugLog("do menu albums");
 		
-		menuAlbums.setOnAction(event -> {
-			MenuItem x = (MenuItem) event.getTarget();
-			Album test = new Album(x.getText());
-			
-
-			for(Album a : albumView.getItems()) {
-				
-				if(a.equals(test)) {
-					currentUser.setCurrentAlbum(test);
-					currentAlbum = a;
-					debugLog("Current album: " + currentUser.getCurrentAlbum());
-				}
-			}
-		});
-		
 	}
 	
 	public void doMenuSearch() {

@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -12,7 +13,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -84,19 +84,12 @@
                               <Font size="11.0" />
                            </font>
                         </RadioButton>
-                        <SplitMenuButton fx:id="albumList" layoutX="90.0" layoutY="70.0" mnemonicParsing="false" onAction="#doAlbumList" prefHeight="27.0" prefWidth="182.0" text="(Selected Album)">
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="(no albums available)" />
-                          </items>
-                           <font>
-                              <Font size="11.0" />
-                           </font>
-                        </SplitMenuButton>
                         <RadioButton fx:id="radioButtonSelectedAlbum" layoutX="66.0" layoutY="50.0" mnemonicParsing="false" onAction="#doRadioButtonSelectedAlbum" text="Selected Album:">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </RadioButton>
+                        <ChoiceBox fx:id="albumList" layoutX="93.0" layoutY="73.0" onMouseClicked="#doAlbumList" prefHeight="28.0" prefWidth="169.0" />
                      </children>
                   </Pane>
                   <Pane layoutY="125.0" prefHeight="115.0" prefWidth="336.0">

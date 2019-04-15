@@ -21,6 +21,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,6 +31,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -112,8 +115,7 @@ public class PhotoController {
 	
 	@FXML Slider zoomSlider;
 	
-	@FXML SplitMenuButton albumList;
-	
+	@FXML ChoiceBox<Album> albumList;
 	
 	@FXML TextField captionField;
 	
@@ -127,7 +129,7 @@ public class PhotoController {
 		
 		albumList.getItems().clear();
 		for(Album a : model.getCurrentUser().getAlbumList()) {
-			albumList.getItems().add(new MenuItem(a.getAlbumName()));
+			albumList.getItems().add(a);
 		}
 		
 		/**
@@ -157,8 +159,25 @@ public class PhotoController {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void doAlbumList() {
-		
+
+		albumList.setOnAction(event -> {
+			radioButtonSelectedAlbum.setSelected(true);
+			doRadioButtonSelectedAlbum();
+			Album test = albumList.getValue();
+			
+			for(Album a : model.getCurrentUser().getAlbumList()) {
+				
+				if(a.equals(test)) {
+					
+					System.out.println(a + " == " + test);
+					
+					model.getCurrentUser().setCurrentAlbum(test);
+					currentAlbum = test;
+				}
+			}
+		});
 	}
 	
 	public void doRadioButtonSelectedAlbum() {
@@ -172,6 +191,7 @@ public class PhotoController {
 		if(radioButtonThisAlbum.isSelected()) {
 			radioButtonSelectedAlbum.setSelected(false);
 			buttonImportSelection.setDisable(false);
+			albumList.setId("Select an album");
 		}
 	}
 	
@@ -470,29 +490,22 @@ public class PhotoController {
 	}
 	
 	public void addSelectedPhotos() {
-		if(radioButtonThisAlbum.isSelected()) {
-			Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
+		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
 			
-			System.out.println(currentAlbum);
-			
-			if(currentAlbum != null) {
-				for(Photo p : imageQueueList.getItems()) {
+		System.out.println("CURR ALB: " + currentAlbum);
+		
+		currentAlbum.setPhotoList(photoList);
+		
+		if(currentAlbum != null) {
+			for(Photo p : imageQueueList.getItems()) {
 
-					if(currentAlbum.addPhoto(p) == -1) {
-						System.out.println("failed to add..");
-					} else {
-						System.out.println("added successfully.");
-					}
+				if(currentAlbum.addPhoto(p) == -1) {
+					System.out.println("failed to add..");
+				} else {
+					System.out.println("added successfully.");
 				}
 			}
-		} else if (radioButtonSelectedAlbum.isSelected()) {
-			//get child from submenu
-			//set that to current album
-			//add
-		} else {
-
 		}
-		
 		model.write();
 	}
 	
