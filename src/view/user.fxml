@@ -45,15 +45,11 @@
                   <MenuItem fx:id="viewAsSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="As Single Image" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Search">
+            <Menu fx:id="menuSearch" mnemonicParsing="false" onAction="#doMenuSearch" text="Search">
                <items>
                   <MenuItem fx:id="searchAllAlbums" mnemonicParsing="false" onAction="#doSearchAllAlbums" text="All Albums" />
                   <MenuItem fx:id="searchCurrentAlbum" mnemonicParsing="false" onAction="#doSearchCurrentAlbum" text="Current Album" />
-                  <Menu fx:id="menuAlbums" mnemonicParsing="false" onAction="#doMenuAlbums" text="Album...">
-                    <items>
-                      <MenuItem mnemonicParsing="false" />
-                    </items>
-                  </Menu>
+                  <Menu fx:id="menuAlbums" mnemonicParsing="false" onAction="#doMenuAlbums" text="Album..." />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">

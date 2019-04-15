@@ -25,7 +25,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -120,6 +123,13 @@ public class PhotoController {
 	
 	@FXML
 	public void initialize() {
+		radioButtonThisAlbum.setSelected(true);
+		
+		albumList.getItems().clear();
+		for(Album a : model.getCurrentUser().getAlbumList()) {
+			albumList.getItems().add(new MenuItem(a.getAlbumName()));
+		}
+		
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -152,11 +162,17 @@ public class PhotoController {
 	}
 	
 	public void doRadioButtonSelectedAlbum() {
-		
+		if(radioButtonSelectedAlbum.isSelected()) {
+			radioButtonThisAlbum.setSelected(false);
+			buttonImportSelection.setDisable(false);
+		}
 	}
 	
 	public void doRadioButtonThisAlbum() {
-		
+		if(radioButtonThisAlbum.isSelected()) {
+			radioButtonSelectedAlbum.setSelected(false);
+			buttonImportSelection.setDisable(false);
+		}
 	}
 	
 	public void doButtonConfirmTag() {
@@ -454,19 +470,27 @@ public class PhotoController {
 	}
 	
 	public void addSelectedPhotos() {
-		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
-		
-		System.out.println(currentAlbum);
-		
-		if(currentAlbum != null) {
-			for(Photo p : imageQueueList.getItems()) {
+		if(radioButtonThisAlbum.isSelected()) {
+			Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
+			
+			System.out.println(currentAlbum);
+			
+			if(currentAlbum != null) {
+				for(Photo p : imageQueueList.getItems()) {
 
-				if(currentAlbum.addPhoto(p) == -1) {
-					System.out.println("failed to add..");
-				} else {
-					System.out.println("added successfully.");
+					if(currentAlbum.addPhoto(p) == -1) {
+						System.out.println("failed to add..");
+					} else {
+						System.out.println("added successfully.");
+					}
 				}
 			}
+		} else if (radioButtonSelectedAlbum.isSelected()) {
+			//get child from submenu
+			//set that to current album
+			//add
+		} else {
+
 		}
 		
 		model.write();

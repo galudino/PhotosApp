@@ -173,5 +173,14 @@ public class Album implements Comparable<Album>, Serializable {
 	public String getKey() {
 		return makeKey(albumName);
 	}
+	
+	public boolean equals(Object o) {
+		if(o == null || !(o instanceof Album)) {
+			return false;
+		}
+		
+		Album other = (Album) o;
+		return (this.albumName.equalsIgnoreCase(other.albumName));
+	}
 
 }

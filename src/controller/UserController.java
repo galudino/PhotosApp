@@ -13,13 +13,16 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -126,6 +129,7 @@ public class UserController {
 	@FXML MenuItem searchCurrentAlbum;
 	@FXML MenuItem searchAllAlbums;
 	@FXML Menu menuAlbums;
+	@FXML Menu menuSearch;
 	
 	@FXML MenuItem menuItemHelp;
 	@FXML MenuItem menuItemAboutPhotos;
@@ -148,9 +152,17 @@ public class UserController {
 
 	@FXML
 	public void initialize() {
+		addHL.setVisible(false);
+		fileImportImagesSelectedAlbum.setDisable(true);
+		
 		albumView.setItems(currentUser.getAlbumList());
 		updateInfoData();
 
+		menuAlbums.getItems().clear();
+		for(Album a : albumView.getItems()) {
+			menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
+		}
+		
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -175,6 +187,26 @@ public class UserController {
 
 	public void doMenuAlbums() {
 		debugLog("do menu albums");
+		
+		menuAlbums.setOnAction(event -> {
+			MenuItem x = (MenuItem) event.getTarget();
+			Album test = new Album(x.getText());
+			
+
+			for(Album a : albumView.getItems()) {
+				
+				if(a.equals(test)) {
+					currentUser.setCurrentAlbum(test);
+					currentAlbum = a;
+					debugLog("Current album: " + currentUser.getCurrentAlbum());
+				}
+			}
+		});
+		
+	}
+	
+	public void doMenuSearch() {
+		debugLog("test");
 	}
 
 	public void doCheckBoxDeleteFromDisk() {
@@ -200,6 +232,8 @@ public class UserController {
 		int albumCount = currentUser.getAlbumList().size();
 		int totalPhotoCount = 0;
 		long totalByteCount = 0;
+		
+
 
 		for (Album a : currentUser.getAlbumMap().values()) {
 			totalPhotoCount += a.getAlbumSize();
@@ -523,6 +557,12 @@ public class UserController {
 
 				duplicate.showAndWait();
 			} else {
+				
+				menuAlbums.getItems().clear();
+				for(Album a : albumView.getItems()) {
+					menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
+				}
+				
 				/**
 				 * SCENARIO 1b: album name does not exist within albumList
 				 */
@@ -599,9 +639,17 @@ public class UserController {
 
 				duplicate.showAndWait();
 			} else {
+				
+				menuAlbums.getItems().clear();
+				for(Album a : albumView.getItems()) {
+					menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
+				}
+				
 				if (selectedIndex <= model.getItemCount() - 1) {
 					albumView.getSelectionModel().select(selectedIndex);
 				}
+				
+				
 
 				renameAlbumName.getScene().getWindow().hide();
 
@@ -644,6 +692,9 @@ public class UserController {
 					 */
 
 					Album item = cell.getItem();
+					
+					addHL.setVisible(true);
+					fileImportImagesSelectedAlbum.setDisable(false);
 
 					if (event.isSecondaryButtonDown()) {
 						/**
@@ -665,6 +716,7 @@ public class UserController {
 
 						currentAlbum = item;
 						model.getCurrentUser().setCurrentAlbum(currentAlbum);
+						albumHeader.setText(currentAlbum.getAlbumName());
 
 						photoList = FXCollections.observableArrayList();
 
@@ -681,7 +733,9 @@ public class UserController {
 						}
 
 						tilePaneImages.getChildren().clear();
-
+						
+						tilePaneImages.setStyle("-fx-focus-color: transparent;");
+						
 						/**
 						 * Adds padding and insets to thumbnails. Ought to be
 						 * adjusted later.
@@ -789,8 +843,6 @@ public class UserController {
 							tilePaneImages.getChildren().add(iv);
 
 							currentImageViewList.add(iv);
-
-							albumHeader.setText(currentAlbum.getAlbumName());
 
 							updateInfoData();
 
@@ -1167,6 +1219,11 @@ public class UserController {
 			debugLog("Album successfully removed!");
 
 			updateInfoData();
+			
+			menuAlbums.getItems().clear();
+			for(Album a : albumView.getItems()) {
+				menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
+			}
 
 			success.showAndWait();
 		}
