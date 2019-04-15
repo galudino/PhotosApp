@@ -11,6 +11,8 @@
 package controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -47,6 +50,45 @@ import model.PhotoModel;
 import model.Tag;
 import model.User;
 
+class TagConditional {
+	Tag tag1;
+	Tag tag2;
+
+	String conditional;
+
+	public TagConditional(Tag tag1, Tag tag2, String conditional) {
+		this.tag1 = tag1;
+		this.tag2 = tag2;
+
+		switch (conditional) {
+		case "AND":
+		case "OR":
+		case "NOT":
+			this.conditional = conditional;
+			break;
+		default:
+			System.exit(0);
+			break;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s %s %s", tag1, conditional, tag2);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof TagConditional) {
+			TagConditional tc = (TagConditional)(o);
+			
+			return tag1.equals(tc.tag2) && conditional.equals(tc.conditional); 
+		} else {
+			return false;
+		}
+	}
+}
+
 /**
  * Controller class to manage functionality of search.fxml
  * 
@@ -54,49 +96,56 @@ import model.User;
  * @author Gemuele Aludino
  */
 public class SearchController {
-	
-	int index = 0;
-	
+
+	private int index = 0;
+
 	final double DEFAULT_INSET_VALUE = 10.0;
 	final double DEFAULT_HEIGHT_VALUE = 150.0;
 	final double DEFAULT_WIDTH_VALUE = 200.0;
-		
+
 	double imageInsetValue = DEFAULT_INSET_VALUE;
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
+
+	boolean deleteFromDisk;
+	boolean promptBeforeDelete;
 	
 	boolean searchScopeThisAlbum;
 	boolean searchScopeSelectedAlbum;
 	boolean searchScopeAllAlbums;
 	
-	boolean viewModeThumbnail;
-	boolean viewModeSingleImage;
-	
 	boolean searchThisAlbum;
 	boolean searchSelectedAlbum;
 	boolean searchAllAlbums;
 	
-	// TODO field to represent date range: from
-	// TODO field to represent date range: to
+	boolean searchAnd;
+	boolean searchOr;
+	boolean searchNot;
+
+	boolean viewModeThumbnail;
+	boolean viewModeSingleImage;
 	
+	LocalDate dateFrom;
+	LocalDate dateTo;
+	long longDateFrom;
+	long longDateTo;
+
 	String stringSearchTagNameOne;
 	String stringSearchTagValueOne;
 	String stringSearchTagNameTwo;
 	String stringSearchTagValueTwo;
 	
-	boolean searchAnd;
-	boolean searchOr;
-	boolean searchNot;
-	
-	private Photo currentPhoto = null;
-	private PhotoModel model = null;
-	private Album currentAlbum = null;
-	private User currentUser = null;
-	
-	private List<ImageView> currentImageViewList = null;
-	
-	ObservableList<Photo> photoList = FXCollections.observableArrayList();
+	List<TagConditional> tagConditionalList;
 
+	private Photo currentPhoto = null;
+	private PhotoModel model = LoginController.getModel();
+	private Album currentAlbum = null;
+	private User currentUser = model.getCurrentUser();
+
+	private List<ImageView> currentImageViewList = null;
+
+	ObservableList<Photo> photoList = FXCollections.observableArrayList();
+	
 	//@formatter:off
 	@FXML Button cancelEdit;
 	@FXML Button createAlbum;
@@ -116,6 +165,8 @@ public class SearchController {
 	@FXML CheckBox checkBoxDeleteFromDisk;
 	@FXML CheckBox checkBoxPromptBeforeDelete;
 	
+	@FXML ChoiceBox<Album> albumList;
+	
 	@FXML DatePicker datePickerFrom;
 	@FXML DatePicker datePickerTo;
 	
@@ -131,7 +182,7 @@ public class SearchController {
 	@FXML Label sizeField;
 	
 	@FXML ListView<Album> albumView;
-	@FXML ListView<Tag> listViewTagSearch;
+	@FXML ListView<TagConditional> listViewTagSearch;
 	@FXML ListView<Tag> tagList;
 	
 	@FXML MenuItem fileReturnToAlbums;
@@ -174,18 +225,34 @@ public class SearchController {
 	
 	@FXML Text oldName;
 	//@formatter:on
-	
+
 	@FXML
-	public void initialize() {		
+	public void initialize() {
 		/**
 		 * Upon entering SearchController,
 		 * 
-		 * You must pass the User's album list so it can be
-		 * used for either searching
-		 * - the previous selected album from UserController
-		 * - a user-selectable album (from their list of Albums)
-		 * - all of their albums.
+		 * You must pass the User's album list so it can be used for either
+		 * searching - the previous selected album from UserController - a
+		 * user-selectable album (from their list of Albums) - all of their
+		 * albums.
 		 */
+		
+		/**
+		 * Setting default values
+		 */
+		radioButtonSelectedAlbum.setSelected(true);
+		doRadioButtonSelectedAlbum();
+
+		radioButtonAnd.setSelected(true);
+		doRadioButtonAnd();
+
+		radioButtonThumbnail.setSelected(true);
+		doViewModeThumbnail();
+
+		initAlbumList();
+		
+		tagConditionalList = new ArrayList<TagConditional>();
+	
 		
 		/**
 		 * CONSOLE DIAGNOSTICS
@@ -193,149 +260,293 @@ public class SearchController {
 		System.out.println();
 		debugLog("Entering " + getClass().getSimpleName());
 	}
-	
+
+	public void initAlbumList() {
+		albumList.getItems().clear();
+
+		ObservableList<Album> currentAlbumList = model.getCurrentUser()
+				.getAlbumList();
+
+		for (Album a : currentAlbumList) {
+			albumList.getItems().add(a);
+		}
+
+		albumList.setOnAction(event -> {
+			radioButtonSelectedAlbum.setSelected(true);
+			doRadioButtonSelectedAlbum();
+			Album test = albumList.getValue();
+
+			for (Album a : currentAlbumList) {
+				if (a.equals(test)) {
+					debugLog(a + " == " + test);
+
+					model.getCurrentUser().setCurrentAlbum(test);
+					currentAlbum = test;
+				}
+			}
+
+			debugLog("selected album: " + currentAlbum.getAlbumName());
+		});
+
+	}
+
+	public void doAlbumList() {
+		radioButtonSelectedAlbum.setSelected(true);
+		doRadioButtonSelectedAlbum();
+		
+		// reassign the current album to currentAlbum
+		
+		// get the newly assigned album from here
+		//@FXML ChoiceBox<Album> albumList;
+		
+		Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+		currentAlbum = selectedAlbum != null ? selectedAlbum : null;
+		
+		debugLog("[doAlbumList]" + " newly selected album: " + currentAlbum);
+	}
+
 	public void doButtonSearchNow() {
 		debugLog("[doButtonSearchNow]");
+
+		// using the search scope,
+		// determine which album is to be searched.
+
+		// buttonSearchNow
+
+		/**
+		 * Conduct the search using:
+		 * 
+		 * Album scope (the current album, a selected album, or all the albums?)
+		 * 
+		 * LocalDate from, LocalDate to All photos must have a modified date
+		 * from-to
+		 * 
+		 * Tag Conditionals (how will this be done?
+		 * 
+		 * Tag1 && Tag2 Tag3 || Tag4
+		 */
 	}
-	
+
 	public void doMenuItemRemoveTagFromSearch() {
-		debugLog("[doMenuItemRemoveTagFromSearch]");		
-	}
+		debugLog("[doMenuItemRemoveTagFromSearch]");
+
+		//menuItemRemoveTagFromSearch
+		
+		//Remove the tag conditional from these three:
+		
+			//List<TagConditional> tagConditionalList;
+			//@FXML ListView<TagConditional> listViewTagSearch;
+				
+		int selectedIndex = listViewTagSearch.getSelectionModel().getSelectedIndex();
+		
+		if (selectedIndex < 0) {
+			debugLog("No TagConditional to remove.");
+			return;
+		}
+		
+		listViewTagSearch.getItems().remove(selectedIndex);
 	
+		tagConditionalList.remove(selectedIndex);
+	}
+
 	public void doButtonAddTagPair() {
-		debugLog("[doButtonAddTagPair]");	
+		debugLog("[doButtonAddTagPair]");
+
+		/**
+		 * Grab the strings from the TextFields
+		 */
+		stringSearchTagNameOne = searchTagNameOne.getText();
+		stringSearchTagValueOne = searchTagValueOne.getText();
+		stringSearchTagNameTwo = searchTagValueTwo.getText();
+		stringSearchTagValueTwo = searchTagValueTwo.getText();
+
+		/**
+		 * Create tag1 and tag2 based off of the strings grabbed
+		 * from TextFields
+		 */
+		Tag tag1 = new Tag(stringSearchTagNameOne, stringSearchTagValueOne);
+		Tag tag2 = new Tag(stringSearchTagNameTwo, stringSearchTagValueTwo);
+
+		/**
+		 * Determine the condition based on the RadioButtons
+		 * activated and the boolean values set.
+		 */
+		String condition = "";
+		if (searchAnd) {
+			condition = "AND";
+		} else if (searchOr) {
+			condition = "OR";
+		} else if (searchNot) {
+			condition = "NOT";
+		}
+		
+		/**
+		 * Create the tag conditional
+		 */
+		TagConditional conditional = new TagConditional(tag1, tag2, condition);
+		
+		/**
+		 * Add the conditional to the List<TagConditional>
+		 * and ObservableList<TagConditional>
+		 */
+		tagConditionalList.add(conditional);
+		//tagConditionalObservableList.add(conditional);
+				
+		/**
+		 * Add the ObservableList<TagConditional>
+		 * to the ListView interface
+		 */
+		listViewTagSearch.setItems(FXCollections.observableArrayList(tagConditionalList));
+		
+		debugLog(conditional + "was added");
 	}
-	
-	public void doSearchTagNameTwo() {
-		debugLog("[doSearchTagNameTwo]");
-	}
-	
-	public void doSearchTagValueTwo() {
-		debugLog("[doSearchTagValueTwo]");
-	}
-	
+
 	public void doRadioButtonAnd() {
 		if (radioButtonAnd.isSelected()) {
 			radioButtonOr.setSelected(false);
 			radioButtonNot.setSelected(false);
-			
+
 			searchAnd = true;
 			searchOr = false;
 			searchNot = false;
-		} 
-		
-		debugLog("[doRadioButtonAnd]");	
+		}
+
+		debugLog("[doRadioButtonAnd]");
 	}
-	
+
 	public void doRadioButtonOr() {
 		if (radioButtonOr.isSelected()) {
 			radioButtonAnd.setSelected(false);
 			radioButtonNot.setSelected(false);
-			
+
 			searchOr = true;
 			searchAnd = false;
 			searchNot = false;
-		} 
+		}
 
 		debugLog("[doRadioButtonOr]");
 	}
-	
+
 	public void doRadioButtonNot() {
 		if (radioButtonNot.isSelected()) {
 			radioButtonAnd.setSelected(false);
 			radioButtonOr.setSelected(false);
-			
+
 			searchNot = true;
 			searchAnd = false;
 			searchOr = false;
 		}
-		
+
 		debugLog("[doRadioButtonNot]");
 	}
-	
+
 	public void doSearchTagNameOne() {
-		debugLog("[doSearchTagNameOne]");	
+		debugLog("[doSearchTagNameOne]");
+
+		// searchTagNameOne
 	}
-	
+
 	public void doSearchTagValueOne() {
 		debugLog("[doSearchTagValueOne");
+
+		// searchTagValueOne
 	}
-	
+
+	public void doSearchTagNameTwo() {
+		debugLog("[doSearchTagNameTwo]");
+
+		// searchTagNameTwo
+	}
+
+	public void doSearchTagValueTwo() {
+		debugLog("[doSearchTagValueTwo]");
+
+		// searchTagValueTwo
+	}
+
 	public void doDatePickerFrom() {
 		debugLog("[doDatePickerFrom]");
+
+		dateFrom = datePickerFrom.getValue();
+		longDateFrom = 0;	// TODO must figure out how to convert LocalDate to long
+
+		debugLog(dateFrom + " was retrieved" + " (long value) " + longDateFrom);
 	}
-	
+
 	public void doDatePickerTo() {
 		debugLog("[doDatePickerTo]");
+
+		dateTo = datePickerTo.getValue();
+		longDateTo = 0; // TODO must figure out how to convert LocalDate to long
+		
+		debugLog(dateFrom + " was retrieved" + " (long value) " + longDateTo);
 	}
-	
+
 	public void doRadioButtonThisAlbum() {
 		if (radioButtonThisAlbum.isSelected()) {
 			radioButtonSelectedAlbum.setSelected(false);
 			radioButtonAllAlbums.setSelected(false);
-			
+
 			searchScopeThisAlbum = true;
 			searchScopeSelectedAlbum = false;
 			searchScopeAllAlbums = false;
 		}
-		
+
 		debugLog("[doRadioButtonThisAlbum]");
 	}
-	
+
 	public void doRadioButtonSelectedAlbum() {
 		if (radioButtonSelectedAlbum.isSelected()) {
 			radioButtonThisAlbum.setSelected(false);
 			radioButtonAllAlbums.setSelected(false);
-			
+
 			searchScopeSelectedAlbum = true;
 			searchScopeThisAlbum = false;
 			searchScopeAllAlbums = false;
 		}
-		
+
 		debugLog("[doRadioButtonSelectedAlbum]");
 	}
-	
+
 	public void doRadioButtonAllAlbums() {
 		if (radioButtonAllAlbums.isSelected()) {
 			radioButtonThisAlbum.setSelected(false);
 			radioButtonSelectedAlbum.setSelected(false);
-			
+
 			searchScopeAllAlbums = true;
 			searchScopeThisAlbum = false;
 			searchScopeSelectedAlbum = false;
 		}
-		
+
 		debugLog("[doRadioButtonAllAlbums]");
 	}
-	
-	
+
 	public void doViewModeThumbnail() {
 		if (radioButtonThumbnail.isSelected()) {
 			radioButtonSingleImage.setSelected(false);
-			
+
 			viewModeThumbnail = true;
 			viewModeSingleImage = false;
 		}
-		
-		
+
 		debugLog("[doViewModeThumbnail]");
 	}
-	
+
 	public void doViewModeSingleImage() {
 		if (radioButtonSingleImage.isSelected()) {
 			radioButtonThumbnail.setSelected(false);
-			
+
 			viewModeSingleImage = true;
 			viewModeThumbnail = false;
 		}
-		
+
 		debugLog("[doViewModeSingleImage]");
 	}
-	
+
 	public void doOpenSelectedPhotoInViewer() {
 		debugLog("[doOpenSelectedPhotoInViewer]");
 	}
-	
+
 	public void movePhoto() {
 		debugLog("Move photo button pressed");
 	}
@@ -343,7 +554,7 @@ public class SearchController {
 	public void copyPhoto() {
 		debugLog("Copy photo button pressed");
 	}
-	
+
 	public void deletePhoto() {
 		if (currentPhoto != null) {
 			int selectedIndex = index;
@@ -410,15 +621,19 @@ public class SearchController {
 		}
 
 	}
-	
+
 	public void doCheckBoxDeleteFromDisk() {
-		debugLog("Delete from disk checked");
+		deleteFromDisk = deleteFromDisk ? false : true;
+		
+		debugLog("Delete from disk checked -- delete from disk enabled: " + deleteFromDisk);
 	}
 
 	public void doCheckBoxPromptBeforeDelete() {
-		debugLog("Prompt before delete checked");
+		promptBeforeDelete = promptBeforeDelete ? false : true;
+		
+		debugLog("Prompt before delete checked -- prompt before delete enabled: " + promptBeforeDelete);
 	}
-	
+
 	public void removeTag() {
 		int selectedIndex = tagList.getSelectionModel().getSelectedIndex();
 
@@ -470,7 +685,7 @@ public class SearchController {
 			success.showAndWait();
 		}
 	}
-	
+
 	/**
 	 * Executes upon selecting add album mechanism
 	 * 
@@ -478,28 +693,25 @@ public class SearchController {
 	 */
 	public void doAddAlbum() throws IOException {
 		/*
-		Stage window = new Stage();
-		FXMLLoader loader = new FXMLLoader();
+		 * Stage window = new Stage(); FXMLLoader loader = new FXMLLoader();
+		 * 
+		 * loader.setLocation(getClass().getResource("/view/add_album.fxml"));
+		 * loader.setController(this);
+		 * 
+		 * Parent root = loader.load();
+		 * 
+		 * window.initModality(Modality.APPLICATION_MODAL); Scene scene = new
+		 * Scene(root);
+		 * 
+		 * window.setScene(scene); window.setTitle("Photos -- Add Album");
+		 * window.setResizable(false); window.show();
+		 * 
+		 * updateInfoData();
+		 */
 
-		loader.setLocation(getClass().getResource("/view/add_album.fxml"));
-		loader.setController(this);
-
-		Parent root = loader.load();
-
-		window.initModality(Modality.APPLICATION_MODAL);
-		Scene scene = new Scene(root);
-
-		window.setScene(scene);
-		window.setTitle("Photos -- Add Album");
-		window.setResizable(false);
-		window.show();
-
-		updateInfoData();
-		*/
-		
 		debugLog("[doAddAlbum] (from results)");
 	}
-	
+
 	/**
 	 * Runs each time there is an update to the user's albums and/or photos.
 	 */
@@ -522,7 +734,7 @@ public class SearchController {
 
 		infoData.setText(output);
 	}
-	
+
 	/**
 	 * Executes upon creating a tag
 	 */
@@ -585,7 +797,7 @@ public class SearchController {
 			error.showAndWait();
 		}
 	}
-	
+
 	/**
 	 * Executes upon setting a caption within captionField
 	 */
@@ -627,7 +839,7 @@ public class SearchController {
 			error.showAndWait();
 		}
 	}
-	
+
 	/**
 	 * Executes upon selecting about section
 	 * 
@@ -636,16 +848,16 @@ public class SearchController {
 	public void doAbout() throws IOException {
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
-		
+
 		loader.setLocation(getClass().getResource("/view/about.fxml"));
 		loader.setController(this);
-		
+
 		Parent root = loader.load();
-		
+
 		window.initModality(Modality.NONE);
-		
+
 		Scene scene = new Scene(root);
-		
+
 		window.setScene(scene);
 		window.setTitle("About");
 		window.setResizable(false);
@@ -660,74 +872,72 @@ public class SearchController {
 	public void doHelp() throws IOException {
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
-		
+
 		loader.setLocation(getClass().getResource("/view/help.fxml"));
 		loader.setController(this);
-		
+
 		Parent root = loader.load();
-		
+
 		window.initModality(Modality.NONE);
-		
+
 		Scene scene = new Scene(root);
-		
+
 		window.setScene(scene);
 		window.setTitle("Help");
 		window.setResizable(false);
 		window.show();
 	}
-	
+
 	public void doLogOut() throws IOException {
-		//model.write();
-		
-		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		// model.write();
+
+		Parent login = FXMLLoader
+				.load(getClass().getResource("/view/login.fxml"));
 		Scene loginScene = new Scene(login);
-		//Stage currentStage = (Stage) (imageQueueList.getScene().getWindow());
-		
-		//currentStage.hide();
-		//currentStage.setScene(loginScene);
-		//currentStage.setTitle("Photos -- V1.0");
-		//currentStage.show();
+		// Stage currentStage = (Stage) (imageQueueList.getScene().getWindow());
+
+		// currentStage.hide();
+		// currentStage.setScene(loginScene);
+		// currentStage.setTitle("Photos -- V1.0");
+		// currentStage.show();
 	}
-	
+
 	public void doQuit() {
 		LoginController.exit();
 	}
 
-	
 	public void doAlbum() throws IOException {
 		/*
-		Stage window = new Stage();
-		FXMLLoader loader = new FXMLLoader();
-		
-		loader.setLocation(getClass().getResource("/view/user.fxml"));
-		Parent root = loader.load();
-		Scene scene = new Scene(root);
-		addAlbumHL.getScene().getWindow().hide();
-		window.setScene(scene);
-		window.setTitle("Photos -- Import");
-		window.setResizable(false);
-		window.show();
-		*/
-		
+		 * Stage window = new Stage(); FXMLLoader loader = new FXMLLoader();
+		 * 
+		 * loader.setLocation(getClass().getResource("/view/user.fxml")); Parent
+		 * root = loader.load(); Scene scene = new Scene(root);
+		 * addAlbumHL.getScene().getWindow().hide(); window.setScene(scene);
+		 * window.setTitle("Photos -- Import"); window.setResizable(false);
+		 * window.show();
+		 */
+
 		debugLog("doAlbum");
 	}
-	
+
 	public void doZoomSlider() {
 		if (currentAlbum == null || currentImageViewList == null) {
 			return;
 		}
-		
+
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
 				double factor = newValue.doubleValue();
-				
+
 				imageInsetValue = factor * DEFAULT_INSET_VALUE; // default 10.00
-				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default 150.00
-				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default 200.00
-				
+				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default
+																	// 150.00
+				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default
+																// 200.00
+
 				for (ImageView iv : currentImageViewList) {
 					iv.setFitHeight(imageHeightValue);
 					iv.setFitWidth(imageWidthValue);
@@ -735,19 +945,19 @@ public class SearchController {
 				}
 
 				debugLog("" + newValue.doubleValue());
-				
+
 				debugLog(imageInsetValue + " inset");
 				debugLog(imageHeightValue + " height");
 				debugLog(imageWidthValue + " width");
 			}
-			
+
 		});
 	}
 
 	private void setSelectedIndex(int selectedIndex) {
 		index = selectedIndex;
 	}
-	
+
 	/**
 	 * Executes upon activating navigator back button
 	 */
@@ -758,14 +968,14 @@ public class SearchController {
 		if (currentAlbum == null) {
 			return;
 		}
-		
+
 		/**
 		 * Album is selected but photo is not selected
 		 */
 		if (currentAlbum != null && currentPhoto == null) {
 			return;
 		}
-		
+
 		/**
 		 * Album is selected and has at least 1 photo
 		 */
@@ -878,7 +1088,7 @@ public class SearchController {
 		if (currentAlbum == null) {
 			return;
 		}
-		
+
 		/**
 		 * Album is selected but photo is not selected
 		 */
@@ -985,7 +1195,7 @@ public class SearchController {
 		}
 
 	}
-	
+
 	/**
 	 * Used for console message/testing functionality/method calls
 	 * 
