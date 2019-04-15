@@ -55,45 +55,45 @@ public class SearchController {
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
 	
-	ObservableList<Photo> photoList = FXCollections.observableArrayList();
-
-	private List<ImageView> currentImageViewList = null;
-	
 	private Photo currentPhoto = null;
 	private Album currentAlbum = null;
 	
+	private List<ImageView> currentImageViewList = null;
+	
+	ObservableList<Photo> photoList = FXCollections.observableArrayList();
 
 	//@formatter:off
-	@FXML ListView<Album> albumView;
-	@FXML Hyperlink addAlbumHL;
-	@FXML Label infoData;
-	@FXML Button createAlbum;
-	@FXML TextField createAlbumName;
-	
-	@FXML Button editAlbum;
 	@FXML Button cancelEdit;
-	@FXML TextField renameAlbumName;
-	@FXML Text oldName;
-	
-	@FXML TilePane tilePaneImages;
-	
-	@FXML ListView<Tag> tagList;
-	@FXML TextField tagName;
-	@FXML TextField tagValue;
-	
-	@FXML TextField captionField;
-	@FXML Label displayCaption;
-	
-	@FXML Label sizeField;
-	@FXML Label createdField;
-	@FXML Label pathField;
-	@FXML Label nameField;
-	
-	@FXML ImageView detailView;
+	@FXML Button createAlbum;
+	@FXML Button editAlbum;
 	@FXML Button navigatorButtonBack;
 	@FXML Button navigatorButtonNext;
 	
+	@FXML Hyperlink addAlbumHL;
+	
+	@FXML ImageView detailView;
+	
+	@FXML Label createdField;
+	@FXML Label displayCaption;
+	@FXML Label infoData;
+	@FXML Label nameField;
+	@FXML Label pathField;
+	@FXML Label sizeField;
+	
+	@FXML ListView<Album> albumView;
+	@FXML ListView<Tag> tagList;
+	
 	@FXML Slider zoomSlider;
+	
+	@FXML TilePane tilePaneImages;
+	
+	@FXML TextField captionField;
+	@FXML TextField createAlbumName;
+	@FXML TextField renameAlbumName;
+	@FXML TextField tagName;
+	@FXML TextField tagValue;
+	
+	@FXML Text oldName;
 	//@formatter:on
 	
 	@FXML

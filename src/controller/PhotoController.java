@@ -29,6 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
@@ -61,42 +62,62 @@ public class PhotoController {
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
 	
-	ObservableList<Photo> photoList = FXCollections.observableArrayList();
-	
-	private List<ImageView> currentImageViewList = null;
-	
-	public PhotoModel model = LoginController.getModel();
-	
-	ObservableList<Photo> pList = FXCollections.observableArrayList();
-	
-	//@formatter:off
-	@FXML ListView<Photo> imageQueueList;
-	@FXML SplitMenuButton albumList;
-	
-	@FXML Label sizeField;
-	@FXML Label createdField;
-	@FXML Label pathField;
-	@FXML Label nameField;
-	
-	@FXML TextField captionField;
-	@FXML Label displayCaption;
-	@FXML ListView<Tag> tagList;
-	
-	@FXML ImageView detailView;
-	
-	@FXML Button navigatorButtonBack;
-	@FXML Button navigatorButtonNext;
-	
-	@FXML Slider zoomSlider;
-	//@formatter:on
+	Desktop desktop = Desktop.getDesktop();
 	
 	FileChooser fileChooser;
 	File file;
-	Desktop desktop = Desktop.getDesktop();
 	
 	private Photo currentPhoto = null;
 	private Album currentAlbum = null;
-		
+	private List<ImageView> currentImageViewList = null;
+	
+	ObservableList<Photo> photoList = FXCollections.observableArrayList();
+	ObservableList<Photo> pList = FXCollections.observableArrayList();
+	
+	public PhotoModel model = LoginController.getModel();
+	
+	//@formatter:off
+	@FXML Button buttonBrowse;
+	@FXML Button buttonConfirmTag;
+	@FXML Button buttonImportSelection;
+	@FXML Button navigatorButtonBack;
+	@FXML Button navigatorButtonNext;
+	
+	@FXML ImageView detailView;
+	
+	@FXML Label createdField;
+	@FXML Label displayCaption;
+	@FXML Label nameField;
+	@FXML Label pathField;
+	@FXML Label sizeField;
+	
+	@FXML ListView<Photo> imageQueueList;
+	@FXML ListView<Tag> tagList;
+	
+	@FXML MenuItem fileReturnToAlbums;
+	@FXML MenuItem fileOpenSelectedPhotoInViewer;
+	@FXML MenuItem fileSaveAndLogout;
+	@FXML MenuItem fileSaveAndExit;
+	
+	@FXML MenuItem viewAsThumbnails;
+	@FXML MenuItem viewAsSingleImage;
+	
+	@FXML RadioButton radioButtonThisAlbum;
+	@FXML RadioButton radioButtonSelectedAlbum;
+	@FXML RadioButton radioButtonThumbnail;
+	@FXML RadioButton radioButtonSimpleImage;
+	
+	@FXML Slider zoomSlider;
+	
+	@FXML SplitMenuButton albumList;
+	
+	
+	@FXML TextField captionField;
+	
+	
+	
+	//@formatter:on
+	
 	@FXML
 	public void initialize() {
 		/**
@@ -104,6 +125,42 @@ public class PhotoController {
 		 */
 		System.out.println();
 		debugLog("Entering " + getClass().getSimpleName());
+	}
+	
+	public void doViewModeThumbnail() {
+		
+	}
+	
+	public void doViewModeSingleImage() {
+		
+	}
+	
+	public void doOpenSelectedPhotoInViewer() {
+		
+	}
+	
+	public void doImageQueueList() {
+		
+	}
+	
+	public void doTagList() {
+		
+	}
+	
+	public void doAlbumList() {
+		
+	}
+	
+	public void doRadioButtonSelectedAlbum() {
+		
+	}
+	
+	public void doRadioButtonThisAlbum() {
+		
+	}
+	
+	public void doButtonConfirmTag() {
+		
 	}
 	
 	private void setSelectedIndex(int selectedIndex) {
