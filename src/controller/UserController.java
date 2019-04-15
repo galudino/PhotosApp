@@ -376,28 +376,31 @@ public class UserController {
 				error.showAndWait();
 				return;
 			}
+			
+			if(checkBoxPromptBeforeDelete.isSelected()) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+						"Are you sure you want to delete this photo?",
+						ButtonType.YES, ButtonType.NO);
 
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-					"Are you sure you want to delete this photo?",
-					ButtonType.YES, ButtonType.NO);
+				alert.showAndWait();
 
-			alert.showAndWait();
-
-			/**
-			 * User no longer wants to delete the selected album
-			 */
-			if (alert.getResult() != ButtonType.YES) {
 				/**
-				 * CONSOLE DIAGNOSTICS
+				 * User no longer wants to delete the selected album
 				 */
-				debugLog("Quit from deleting photo.");
-				return;
+				if (alert.getResult() != ButtonType.YES) {
+					/**
+					 * CONSOLE DIAGNOSTICS
+					 */
+					debugLog("Quit from deleting photo.");
+					return;
+				}
 			}
 
 			/**
 			 * Photo is found within list
 			 */
 			if (selectedIndex >= 0) {
+				
 				debugLog("Selected Index (Photo to be deleted): "
 						+ selectedIndex);
 				currentAlbum.deletePhoto(selectedIndex);

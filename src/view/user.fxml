@@ -284,32 +284,28 @@
                </children></AnchorPane>
             <AnchorPane layoutY="549.0" prefHeight="115.0" prefWidth="321.0">
                <children>
-                  <ButtonBar layoutX="36.0" layoutY="84.0" prefHeight="29.0" prefWidth="244.0">
-                    <buttons>
-                      <Button fx:id="buttonCopyPhoto" mnemonicParsing="false" onAction="#copyPhoto" prefHeight="27.0" text="Copy">
-                           <tooltip>
-                              <Tooltip text="Makes a duplicate of this Photo and moves the duplicate to another Album." />
-                           </tooltip>
-                        </Button>
-                        <Button fx:id="buttonMovePhoto" mnemonicParsing="false" onAction="#movePhoto" text="Move">
-                           <tooltip>
-                              <Tooltip text="Relocates this Photo from this Album to another Album." />
-                           </tooltip>
-                        </Button>
-                        <Button fx:id="buttonDeletePhoto" mnemonicParsing="false" onAction="#deletePhoto" text="Delete">
-                           <tooltip>
-                              <Tooltip text="Removes this Photo from this Album." />
-                           </tooltip>
-                        </Button>
-                    </buttons>
-                  </ButtonBar>
-                  <Label layoutX="14.0" layoutY="7.0" text="IMAGE FILE MANAGEMENT" textFill="#aeaeae">
+                  <ButtonBar layoutX="36.0" layoutY="84.0" prefHeight="29.0" prefWidth="244.0" />
+                  <Label layoutX="77.0" layoutY="7.0" text="IMAGE FILE MANAGEMENT" textFill="#aeaeae">
                      <font>
                         <Font size="11.0" />
                      </font>
                   </Label>
-                  <CheckBox fx:id="checkBoxDeleteFromDisk" layoutX="14.0" layoutY="29.0" mnemonicParsing="false" onAction="#doCheckBoxDeleteFromDisk" text="Delete removes photos from disk" />
-                  <CheckBox fx:id="checkBoxPromptBeforeDelete" layoutX="14.0" layoutY="56.0" mnemonicParsing="false" onAction="#doCheckBoxPromptBeforeDelete" text="Prompt before delete" />
+                  <CheckBox fx:id="checkBoxPromptBeforeDelete" layoutX="64.0" layoutY="25.0" mnemonicParsing="false" onAction="#doCheckBoxPromptBeforeDelete" text="Prompt before delete" />
+                <Button fx:id="buttonCopyPhoto" layoutX="52.0" layoutY="74.0" mnemonicParsing="false" onAction="#copyPhoto" prefHeight="32.0" prefWidth="54.0" text="Copy">
+                     <tooltip>
+                        <Tooltip text="Makes a duplicate of this Photo and moves the duplicate to another Album." />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="buttonMovePhoto" layoutX="130.0" layoutY="73.0" mnemonicParsing="false" onAction="#movePhoto" text="Move">
+                     <tooltip>
+                        <Tooltip text="Relocates this Photo from this Album to another Album." />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="buttonDeletePhoto" layoutX="208.0" layoutY="73.0" mnemonicParsing="false" onAction="#deletePhoto" text="Delete">
+                     <tooltip>
+                        <Tooltip text="Removes this Photo from this Album." />
+                     </tooltip>
+                  </Button>
                </children>
             </AnchorPane>
          </children></AnchorPane>
