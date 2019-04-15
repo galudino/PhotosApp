@@ -118,6 +118,10 @@ public class Photo implements Serializable {
 		this.tagList = tagList;
 	}
 	
+	public ObservableList<Tag> getTagList() {
+		return tagList;
+	}
+	
 	/**
 	 * 
 	 * @return

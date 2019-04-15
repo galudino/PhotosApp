@@ -106,9 +106,9 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="41.0" layoutY="78.0" prefHeight="27.0" prefWidth="96.0" />
-                        <Button fx:id="buttonConfirmTag" layoutX="246.0" layoutY="78.0" mnemonicParsing="false" onAction="#doButtonConfirmTag" prefHeight="27.0" prefWidth="76.0" text="Confirm" />
-                        <TextField layoutX="139.0" layoutY="78.0" prefHeight="27.0" prefWidth="96.0" />
+                        <TextField fx:id="tagName" layoutX="41.0" layoutY="78.0" prefHeight="27.0" prefWidth="96.0" />
+                        <Button fx:id="buttonConfirmTag" layoutX="246.0" layoutY="78.0" mnemonicParsing="false" onAction="#createTag" prefHeight="27.0" prefWidth="76.0" text="Confirm" />
+                        <TextField fx:id="tagValue" layoutX="139.0" layoutY="78.0" prefHeight="27.0" prefWidth="96.0" />
                      </children>
                   </Pane>
                   <Pane layoutY="240.0" prefHeight="125.0" prefWidth="336.0">
@@ -122,7 +122,7 @@
                            <contextMenu>
                               <ContextMenu>
                                 <items>
-                                  <MenuItem mnemonicParsing="false" text="Remove Tag" />
+                                  <MenuItem mnemonicParsing="false" onAction="#deleteTag" text="Remove Tag" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>
@@ -158,23 +158,12 @@
                      <children>
                         <ScrollPane hbarPolicy="NEVER" prefHeight="523.0" prefWidth="618.0">
                            <content>
-                              <TilePane prefHeight="521.0" prefWidth="618.0" />
+                              <TilePane fx:id="tilePaneImages" prefHeight="521.0" prefWidth="618.0" />
                            </content>
                            <contextMenu>
                               <ContextMenu>
                                 <items>
-                                    <SeparatorMenuItem mnemonicParsing="false" />
-                                    <Menu mnemonicParsing="false" text="Copy Selected Photo to Album...">
-                                      <items>
-                                        <MenuItem mnemonicParsing="false" text="(no albums available)" />
-                                      </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="Move Selected Photo to Album...">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="(no albums available)" />
-                                       </items>
-                                    </Menu>
-                                    <MenuItem mnemonicParsing="false" text="Delete Selected Photo from this Album" />
+                                    <MenuItem mnemonicParsing="false" onAction="#deletePhoto" text="Delete Selected Photo" />
                                     <SeparatorMenuItem mnemonicParsing="false" />
                                     <MenuItem mnemonicParsing="false" text="Open Photo in Viewer" />
                                 </items>
@@ -235,55 +224,52 @@
                         <Pane layoutX="18.0" layoutY="14.0" prefHeight="207.0" prefWidth="295.0">
                            <children>
                               <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="48.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
+                              <Label layoutX="16.0" layoutY="31.0" text="SIZE" textFill="#aeaeae">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="-6.0" layoutY="16.0" prefWidth="51.0" text="CREATED" textFill="#aeaeae">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="sizeField" layoutX="54.0" layoutY="31.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="createdField" layoutX="54.0" layoutY="16.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="8.0" layoutY="-14.0" prefHeight="14.0" prefWidth="40.0" text="NAME" textFill="#aeaeae">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="nameField" layoutX="54.0" layoutY="-14.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="11.0" layoutY="1.0" prefHeight="14.0" prefWidth="30.0" text="PATH" textFill="#aeaeae">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="pathField" layoutX="54.0" layoutY="1.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </Pane>
                         <Pane layoutX="18.0" layoutY="221.0" prefHeight="255.0" prefWidth="295.0">
                            <children>
                               <Pane layoutX="2.0" layoutY="1.0" prefHeight="195.0" prefWidth="295.0" />
-                              <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0">
-                                 <children>
-                                    <Label layoutX="43.0" layoutY="45.0" text="SIZE" textFill="#aeaeae">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="17.0" layoutY="30.0" prefWidth="51.0" text="CREATED" textFill="#aeaeae">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="81.0" layoutY="45.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="81.0" layoutY="30.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="35.0" prefHeight="14.0" prefWidth="40.0" text="NAME" textFill="#aeaeae">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="81.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="38.0" layoutY="15.0" prefHeight="14.0" prefWidth="30.0" text="PATH" textFill="#aeaeae">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="81.0" layoutY="15.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </Pane>
+                              <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0" />
                            </children>
                         </Pane>
                      </children>
@@ -300,7 +286,7 @@
             <Pane prefHeight="29.0" prefWidth="426.0" />
             <Pane prefHeight="29.0" prefWidth="426.0">
                <children>
-                  <Label layoutX="103.0" layoutY="8.0" text="123 albums - 12345 photos - 1.23 GB total" textFill="#a4a4a4">
+                  <Label fx:id="infoData" layoutX="103.0" layoutY="8.0" text="123 albums - 12345 photos - 1.23 GB total" textFill="#a4a4a4">
                      <font>
                         <Font size="11.0" />
                      </font>

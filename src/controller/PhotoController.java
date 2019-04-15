@@ -14,6 +14,7 @@ package controller;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -39,8 +41,10 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -79,6 +83,7 @@ public class PhotoController {
 	
 	ObservableList<Photo> photoList = FXCollections.observableArrayList();
 	ObservableList<Photo> pList = FXCollections.observableArrayList();
+	ObservableList<Tag> tList;
 	
 	public PhotoModel model = LoginController.getModel();
 	
@@ -92,7 +97,6 @@ public class PhotoController {
 	@FXML ImageView detailView;
 	
 	@FXML Label createdField;
-	@FXML Label displayCaption;
 	@FXML Label nameField;
 	@FXML Label pathField;
 	@FXML Label sizeField;
@@ -118,15 +122,20 @@ public class PhotoController {
 	@FXML ChoiceBox<Album> albumList;
 	
 	@FXML TextField captionField;
+	@FXML TextField tagName;
+	@FXML TextField tagValue;
 	
+	@FXML Label infoData;
 	
+	@FXML TilePane tilePaneImages;
 	
 	//@formatter:on
 	
 	@FXML
 	public void initialize() {
+		radioButtonThisAlbum.setText("Current album: " + model.getCurrentUser().getCurrentAlbum());
 		radioButtonThisAlbum.setSelected(true);
-		
+		updateInfoData();
 		albumList.getItems().clear();
 		for(Album a : model.getCurrentUser().getAlbumList()) {
 			albumList.getItems().add(a);
@@ -137,6 +146,26 @@ public class PhotoController {
 		 */
 		System.out.println();
 		debugLog("Entering " + getClass().getSimpleName());
+	}
+	
+	public void updateInfoData() {
+		int albumCount = model.getCurrentUser().getAlbumList().size();
+		int totalPhotoCount = 0;
+		long totalByteCount = 0;
+
+		for (Album a : model.getCurrentUser().getAlbumMap().values()) {
+			totalPhotoCount += a.getAlbumSize();
+
+			for (Photo p : a.getPhotoMap().values()) {
+				totalByteCount += p.getFileSize();
+				debugLog("" + totalByteCount);
+			}
+		}
+
+		String output = String.format("%d albums - %d photos - %d KB",
+				albumCount, totalPhotoCount, totalByteCount);
+
+		infoData.setText(output);
 	}
 	
 	public void doViewModeThumbnail() {
@@ -159,20 +188,81 @@ public class PhotoController {
 		
 	}
 	
+	public void deletePhoto() {
+		if (currentPhoto != null) {
+			int selectedIndex = index;
+
+			if (selectedIndex < 0) {
+				Alert error = new Alert(Alert.AlertType.ERROR,
+						"There are no photos to be deleted.", ButtonType.OK);
+
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("There are no photos to be deleted.");
+
+				error.showAndWait();
+				return;
+			}
+
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+					"Are you sure you want to delete this photo?",
+					ButtonType.YES, ButtonType.NO);
+
+			alert.showAndWait();
+
+			/**
+			 * User no longer wants to delete the selected album
+			 */
+			if (alert.getResult() != ButtonType.YES) {
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("Quit from deleting photo.");
+				return;
+			}
+
+			/**
+			 * Photo is found within list
+			 */
+			if (selectedIndex >= 0) {
+				debugLog("Selected Index (Photo to be deleted): "
+						+ selectedIndex);
+
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+						"Photo successfully removed!", ButtonType.OK);
+
+				tilePaneImages.getChildren().remove(selectedIndex);
+				imageQueueList.getItems().remove(selectedIndex);
+
+				/**
+				 * CONSOLE DIAGNOSTICS
+				 */
+				debugLog("Photo successfully removed!");
+
+				updateInfoData();
+
+				success.showAndWait();
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR,
+					"Please select a photo to delete.", ButtonType.OK);
+
+			debugLog("ERROR: Please select a photo.");
+
+			error.showAndWait();
+		}
+
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void doAlbumList() {
-
 		albumList.setOnAction(event -> {
-			radioButtonSelectedAlbum.setSelected(true);
-			doRadioButtonSelectedAlbum();
 			Album test = albumList.getValue();
 			
 			for(Album a : model.getCurrentUser().getAlbumList()) {
 				
 				if(a.equals(test)) {
-					
-					System.out.println(a + " == " + test);
-					
 					model.getCurrentUser().setCurrentAlbum(test);
 					currentAlbum = test;
 				}
@@ -180,18 +270,135 @@ public class PhotoController {
 		});
 	}
 	
+	/**
+	 * Executes upon creating a tag
+	 */
+	public void createTag() {
+		if (currentPhoto != null) {
+			if (tagName.getText().isEmpty() == false
+					&& tagValue.getText().isEmpty() == false) {
+				/**
+				 * SCENARIO 1: tagName and tagValue are not empty
+				 */
+				if (currentPhoto.addTag(tagName.getText().trim(),
+						tagValue.getText().trim()) == -1) {
+					/**
+					 * SCENARIO 1a: tag entered already exists
+					 */
+					Alert error = new Alert(AlertType.ERROR,
+							"Duplicate tag found. Tag not added!",
+							ButtonType.OK);
+
+					/**
+					 * CONSOLE DIAGNOSTICS
+					 */
+					debugLog("Duplicate tag found. Tag not added!");
+
+					debugLog(tagName.getText().trim() + " "
+							+ tagValue.getText().trim());
+
+					error.showAndWait();
+				} else {
+					/**
+					 * SCENARIO 1b: tag entered does not exist
+					 */
+					
+					tagName.setText(null);
+					tagValue.setText(null);
+
+					Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+							"Tag successfully added!", ButtonType.OK);
+
+					debugLog("Tag " + tagName.getText()
+							+ " was successfully added!");
+
+					success.showAndWait();
+				}
+			} else {
+				/**
+				 * SCENARIO 2: either tagName or tagValue or both are empty
+				 */
+				Alert error = new Alert(AlertType.ERROR,
+						"Please provide a tag name and value.", ButtonType.OK);
+
+				debugLog("ERROR: Please provide a tag name and value.");
+
+				error.showAndWait();
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR,
+					"Please select a photo to create a tag for.",
+					ButtonType.OK);
+
+			debugLog("ERROR: Please select a photo.");
+
+			error.showAndWait();
+		}
+	}
+
+	public void deleteTag() {
+		int selectedIndex = tagList.getSelectionModel().getSelectedIndex();
+
+		if (selectedIndex < 0) {
+			Alert error = new Alert(Alert.AlertType.ERROR,
+					"There are no tags to be deleted.", ButtonType.OK);
+
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("There are no tags to be deleted.");
+
+			error.showAndWait();
+			return;
+		}
+
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+				"Are you sure you want to delete this tag?", ButtonType.YES,
+				ButtonType.NO);
+
+		alert.showAndWait();
+
+		/**
+		 * User no longer wants to delete the selected tag
+		 */
+		if (alert.getResult() != ButtonType.YES) {
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("Quit from deleting tag.");
+			return;
+		}
+
+		/**
+		 * Tag is found within list
+		 */
+		if (selectedIndex >= 0) {
+			debugLog("Selected Index (tag to be deleted): " + selectedIndex);
+			currentPhoto.deleteTag(selectedIndex);
+
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+					"Tag successfully removed!", ButtonType.OK);
+			
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("ATag successfully removed!");
+
+			success.showAndWait();
+		}
+	}
+	
 	public void doRadioButtonSelectedAlbum() {
 		if(radioButtonSelectedAlbum.isSelected()) {
+			albumList.getSelectionModel().select(0);
 			radioButtonThisAlbum.setSelected(false);
-			buttonImportSelection.setDisable(false);
 		}
 	}
 	
 	public void doRadioButtonThisAlbum() {
 		if(radioButtonThisAlbum.isSelected()) {
 			radioButtonSelectedAlbum.setSelected(false);
-			buttonImportSelection.setDisable(false);
-			albumList.setId("Select an album");
+			albumList.getSelectionModel().clearSelection();
 		}
 	}
 	
@@ -203,11 +410,7 @@ public class PhotoController {
 		index = selectedIndex;
 	}
 	
-	public void doZoomSlider() {
-		if (currentAlbum == null) {
-			return;
-		}
-		
+	public void doZoomSlider() {				
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -239,26 +442,12 @@ public class PhotoController {
 	 * Executes upon activating navigator back button
 	 */
 	public void doNavigatorButtonBack() {
-		/**
-		 * No album was selected.
-		 */
-		if (currentAlbum == null) {
-			return;
-		}
-		
-		/**
-		 * Album is selected but photo is not selected
-		 */
-		if (currentAlbum != null && currentPhoto == null) {
-			return;
-		}
 		
 		/**
 		 * Album is selected and has at least 1 photo
 		 */
-		if (currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
+		if (currentPhoto != null) {
 
-			System.out.println(currentAlbum.getAlbumSize());
 			/**
 			 * Establish new index. If current index equals 0, set the index to
 			 * the last index of the currentImageViewList. (loop to end)
@@ -297,7 +486,7 @@ public class PhotoController {
 					/**
 					 * Retrieve the current photo based on the current index
 					 */
-					currentPhoto = photoList.get(index);
+					currentPhoto = imageQueueList.getItems().get(index);
 
 					/**
 					 * Update selected image in detail pane
@@ -308,12 +497,6 @@ public class PhotoController {
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
 					detailView.setPreserveRatio(true);
-
-					/**
-					 * Update the caption section.
-					 */
-					displayCaption.setText(currentPhoto.getCaption());
-					captionField.setText("");
 
 					/**
 					 * Update selected image's detail pane
@@ -359,24 +542,11 @@ public class PhotoController {
 	 * Executes upon activating navigator next button
 	 */
 	public void doNavigatorButtonNext() {
-		/**
-		 * No album was selected
-		 */
-		if (currentAlbum == null) {
-			return;
-		}
-		
-		/**
-		 * Album is selected but photo is not selected
-		 */
-		if (currentAlbum != null && currentPhoto == null) {
-			return;
-		}
 
 		/**
 		 * Album is selected and has at least 1 photo
 		 */
-		if (currentAlbum.getAlbumSize() != 0 && currentAlbum != null) {
+		if (currentPhoto != null) {
 			/**
 			 * Establish new index. If current index equals the
 			 * currentImageViewList size, minus 1 (new index == last index),
@@ -427,12 +597,6 @@ public class PhotoController {
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
 					detailView.setPreserveRatio(true);
-
-					/**
-					 * Update the caption section.
-					 */
-					displayCaption.setText(currentPhoto.getCaption());
-					captionField.setText("");
 
 					/**
 					 * Update selected image's detail pane
@@ -487,6 +651,115 @@ public class PhotoController {
 		}
 		
 		imageQueueList.setItems(pList);
+		
+		tilePaneImages.getChildren().clear();
+		
+		tilePaneImages.setStyle("-fx-focus-color: transparent;");
+		
+		/**
+		 * Adds padding and insets to thumbnails. Ought to be
+		 * adjusted later.
+		 */
+		tilePaneImages.setPadding(
+				new Insets(imageInsetValue, imageInsetValue,
+						imageInsetValue, imageInsetValue));
+
+		tilePaneImages.setHgap(imageInsetValue);
+
+		currentImageViewList = new ArrayList<ImageView>();
+
+		for (Photo p : imageQueueList.getItems()) {
+
+			File test = new File(p.getFilepath());
+			Image test2 = new Image(test.toURI().toString());
+			ImageView iv = new ImageView(test2);
+
+			p.setDataPhoto(test.lastModified());
+
+			p.setSizePhoto(test.length());
+
+			/**
+			 * These 'magic numbers' are temporary. They ought
+			 * to be mutable values -- using the "zoom-lever"
+			 * within the GUI (these are for the image
+			 * thumbnails)
+			 */
+			iv.setFitHeight(imageHeightValue);
+			iv.setFitWidth(imageWidthValue);
+			iv.setPreserveRatio(true);
+
+			iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+				if (e.isSecondaryButtonDown()) {
+					debugLog("Image " + p.getFilename()
+							+ " right clicked");
+				} else {
+
+					if (iv.getBoundsInParent() != null) {
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+					}
+
+					setSelectedIndex(tilePaneImages
+							.getChildren().indexOf(iv));
+					currentPhoto = p;
+
+					debugLog("Image " + p.getFilename()
+							+ " selected");
+
+					nameField.setText(
+							currentPhoto.getFilename());
+					pathField.setText(
+							currentPhoto.getFilepath());
+					sizeField.setText(
+							currentPhoto.getFileSize() + " KB");
+					createdField.setText(
+							currentPhoto.getDatePhoto() + " ");
+
+					tList = FXCollections.observableArrayList();
+					
+					for (Map.Entry<String, Tag> tag : currentPhoto
+							.getTagMap().entrySet()) {
+						tList.add(tag.getValue());
+					}
+
+					currentPhoto.setTagList(tList);
+
+					tagList.setItems(tList);
+
+				}
+			});
+
+			tilePaneImages.addEventFilter(
+					MouseEvent.MOUSE_PRESSED, e -> {
+						if (e.isPrimaryButtonDown()) {
+							iv.setStyle(null);
+
+							nameField.setText(
+									"(No image selected)");
+							pathField.setText(
+									"(No image selected)");
+							sizeField.setText(
+									"(No image selected)");
+							createdField.setText(
+									"(No image selected)");
+							
+							tagName.setText(null);
+							tagValue.setText(null);
+							tagList.setItems(null);
+						}
+					});
+
+			tilePaneImages.getChildren().add(iv);
+
+			currentImageViewList.add(iv);
+
+			updateInfoData();
+
+			/**
+			 * CONSOLE DIAGNOSTICS
+			 */
+			debugLog("Photo " + p + " added to tilePaneImages");
+		}
 	}
 	
 	public void addSelectedPhotos() {
@@ -497,15 +770,35 @@ public class PhotoController {
 		currentAlbum.setPhotoList(photoList);
 		
 		if(currentAlbum != null) {
-			for(Photo p : imageQueueList.getItems()) {
-
+			for(int i = 0; i < imageQueueList.getItems().size(); i++) {
+				
+				Photo p = imageQueueList.getItems().get(i);
+				
 				if(currentAlbum.addPhoto(p) == -1) {
-					System.out.println("failed to add..");
+					Alert error = new Alert(AlertType.ERROR, "Photo not added, duplicate photo.", ButtonType.OK);
+					error.showAndWait();
 				} else {
-					System.out.println("added successfully.");
+
+
 				}
+				Alert success = new Alert(AlertType.INFORMATION, "Photos successfully added to: " + currentAlbum.getAlbumName());
+				success.showAndWait();
+				
+					for(Tag t : p.getTagList()) {
+						currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
+					}
+				
+				imageQueueList.getItems().remove(p);
+				tilePaneImages.getChildren().remove(i);
+				i--;
 			}
+			
 		}
+		
+		tagName.setText(null);
+		tagValue.setText(null);
+		tList.clear();
+		
 		model.write();
 	}
 	
