@@ -15,10 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.swing.text.View;
-import javax.swing.text.html.HTMLDocument.Iterator;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,7 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -38,6 +33,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -72,58 +68,58 @@ public class UserController {
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
 	
-	private PhotoModel model = LoginController.getModel();
-	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
+	private PhotoModel model = LoginController.getModel();
 	private Album currentAlbum = null;
+	private User currentUser = model.getCurrentUser();
 
 	ObservableList<Photo> photoList = FXCollections.observableArrayList();
 
 	private List<ImageView> currentImageViewList = null;
 
 	//@formatter:off
-	@FXML ListView<Album> albumView;
-	@FXML Hyperlink addAlbumHL;
-	@FXML Label infoData;
-	@FXML Button createAlbum;
-	@FXML TextField createAlbumName;
-	
-	@FXML Button editAlbum;
 	@FXML Button cancelEdit;
-	@FXML TextField renameAlbumName;
-	@FXML Text oldName;
-	
-	@FXML TilePane tilePaneImages;
-	
-	@FXML ListView<Tag> tagList;
-	@FXML TextField tagName;
-	@FXML TextField tagValue;
-	
-	@FXML TextField captionField;
-	@FXML Label displayCaption;
-	
-	@FXML Label sizeField;
-	@FXML Label createdField;
-	@FXML Label pathField;
-	@FXML Label nameField;
-	
-	@FXML ImageView detailView;
-	
-	@FXML Label albumHeader;
-	@FXML Hyperlink addHL;
-	
+	@FXML Button createAlbum;
+	@FXML Button editAlbum;
 	@FXML Button navigatorButtonBack;
 	@FXML Button navigatorButtonNext;
 	
+	@FXML Hyperlink addAlbumHL;
+	@FXML Hyperlink addHL;
+	
+	@FXML ImageView detailView;
+
+	@FXML Label albumHeader;
+	@FXML Label createdField;
+	@FXML Label displayCaption;
+	@FXML Label infoData;
+	@FXML Label nameField;
+	@FXML Label pathField;
+	@FXML Label sizeField;
+	
+	@FXML ListView<Album> albumView;
+	@FXML ListView<Tag> tagList;
+	
+	@FXML Menu menuAlbums;
+	
 	@FXML Slider zoomSlider;
+
+	@FXML TextField createAlbumName;
+	@FXML TextField renameAlbumName;
+	@FXML Text oldName;
+	
+	@FXML TextField captionField;
+	@FXML TextField tagName;
+	@FXML TextField tagValue;
+	
+	@FXML TilePane tilePaneImages;
 	//@formatter:on
 	
 	@FXML
 	public void initialize() {
 		albumView.setItems(currentUser.getAlbumList());
-		infoData.setText(
-				currentUser.getAlbumList().size() + " albums - " + "  photos");
-
+		updateInfoData();
+		
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -132,6 +128,43 @@ public class UserController {
 		debugLog("Current user logged on is: "
 				+ model.getCurrentUser().getUsername());
 		debugLog("Current user has albums: " + currentUser.getAlbumMap());
+	}
+	
+	/**
+	 * Runs each time there is an update to the user's albums and/or photos.
+	 */
+	public void updateInfoData() {
+		int albumCount = currentUser.getAlbumList().size();
+		int totalPhotoCount = 0;
+		long totalByteCount = 0;
+		
+		for (Album a : currentUser.getAlbumMap().values()) {
+			totalPhotoCount += a.getAlbumSize();
+			
+			for (Photo p : a.getPhotoMap().values()) {
+				totalByteCount += p.getFileSize();
+				debugLog(""+ totalByteCount);
+			}
+		}
+		
+		String output = String.format("%d albums - %d photos - %d KB", 
+				albumCount, totalPhotoCount, totalByteCount);
+		
+		infoData.setText(output);
+	}
+	
+	public void search() throws IOException {
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+
+		loader.setLocation(getClass().getResource("/view/search.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		addHL.getScene().getWindow().hide();
+		window.setScene(scene);
+		window.setTitle("Photos -- Search");
+		window.setResizable(false);
+		window.show();
 	}
 	
 	public void doZoomSlider() {
@@ -178,6 +211,8 @@ public class UserController {
 		window.setTitle("Photos -- Import");
 		window.setResizable(false);
 		window.show();
+		
+		updateInfoData();
 	}
 
 	/**
@@ -273,7 +308,9 @@ public class UserController {
 				 * CONSOLE DIAGNOSTICS
 				 */
 				debugLog("Photo successfully removed!");
-
+				
+				updateInfoData();
+				
 				success.showAndWait();
 			}
 		} else {
@@ -690,7 +727,11 @@ public class UserController {
 							tilePaneImages.getChildren().add(iv);
 
 							currentImageViewList.add(iv);
-
+							
+							albumHeader.setText(currentAlbum.getAlbumName());
+							
+							updateInfoData();
+							
 							/**
 							 * CONSOLE DIAGNOSTICS
 							 */
@@ -969,6 +1010,8 @@ public class UserController {
 		window.setTitle("Photos -- Add Album");
 		window.setResizable(false);
 		window.show();
+		
+		updateInfoData();
 	}
 
 	/**
@@ -998,6 +1041,8 @@ public class UserController {
 
 			oldName.setText(albumView.getSelectionModel().getSelectedItem()
 					.getAlbumName());
+			
+			updateInfoData();
 		}
 	}
 
@@ -1059,6 +1104,8 @@ public class UserController {
 			 */
 			debugLog("Album successfully removed!");
 
+			updateInfoData();
+			
 			success.showAndWait();
 		}
 	}

@@ -48,7 +48,7 @@
             <Menu mnemonicParsing="false" text="Search">
                <items>
                   <MenuItem mnemonicParsing="false" text="Current Album" />
-                  <MenuItem mnemonicParsing="false" text="All Albums" />
+                  <MenuItem mnemonicParsing="false" onAction="#search" text="All Albums" />
                   <Menu fx:id="menuAlbums" mnemonicParsing="false" text="Album...">
                     <items>
                       <MenuItem mnemonicParsing="false" />

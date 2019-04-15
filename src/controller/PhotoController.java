@@ -418,7 +418,7 @@ public class PhotoController {
 	/**
 	 * Executes upon selecting about section
 	 * 
-	 * @throws IOException if about.fxml not found
+	 * @throws IOException if user.fxml not found
 	 */
 	public void doAlbum() throws IOException {
 		Stage window = new Stage();
