@@ -207,15 +207,15 @@
                   </Pane>
                   <Pane layoutX="307.0" prefHeight="74.0" prefWidth="155.0">
                      <children>
-                        <Slider layoutX="14.0" layoutY="44.0" />
+                        <Slider fx:id="zoomSlider" layoutX="14.0" layoutY="44.0" max="2.0" min="0.25" onMousePressed="#doZoomSlider" showTickLabels="true" showTickMarks="true" />
                         <Label layoutX="57.0" layoutY="14.0" text="ZOOM" textFill="#aeaeae" />
                      </children>
                   </Pane>
                   <Pane layoutX="462.0" prefHeight="74.0" prefWidth="155.0">
                      <children>
                         <Label layoutX="40.0" layoutY="14.0" text="NAVIGATOR" textFill="#aeaeae" />
-                        <Button layoutX="16.0" layoutY="37.0" mnemonicParsing="false" text="Back" />
-                        <Button layoutX="92.0" layoutY="37.0" mnemonicParsing="false" text="Next" />
+                        <Button fx:id="navigatorButtonBack" layoutX="16.0" layoutY="37.0" mnemonicParsing="false" onAction="#doNavigatorButtonBack" text="Back" />
+                        <Button fx:id="navigatorButtonNext" layoutX="92.0" layoutY="37.0" mnemonicParsing="false" onAction="#doNavigatorButtonNext" text="Next" />
                      </children></Pane>
                </children></AnchorPane>
          </children></AnchorPane>
