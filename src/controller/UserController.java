@@ -203,12 +203,37 @@ public class UserController {
 	}
 	
 	public void doSearchAllAlbums() throws IOException {
-		debugLog("Search all albums");
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+
+		loader.setLocation(getClass().getResource("/view/search.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		addHL.getScene().getWindow().hide();
+		window.setScene(scene);
+		window.setTitle("Photos -- Search");
+		window.setResizable(false);
+		window.show();
+
+		updateInfoData();
 	}
 
 	public void doSearchCurrentAlbum() throws IOException {
-		debugLog("Search current album");
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+
+		loader.setLocation(getClass().getResource("/view/search.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		addHL.getScene().getWindow().hide();
+		window.setScene(scene);
+		window.setTitle("Photos -- Search");
+		window.setResizable(false);
+		window.show();
+
+		updateInfoData();
 	}
+
 
 	/**
 	 * Runs each time there is an update to the user's albums and/or photos.
