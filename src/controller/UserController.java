@@ -33,6 +33,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -94,6 +95,8 @@ public class UserController {
 	@FXML Button editAlbum;
 	@FXML Button navigatorButtonBack;
 	@FXML Button navigatorButtonNext;
+	@FXML Button movePhoto;
+	@FXML Button copyPhoto;
 	
 	@FXML CheckBox checkBoxDeleteFromDisk;
 	@FXML CheckBox checkBoxPromptBeforeDelete;
@@ -148,6 +151,8 @@ public class UserController {
 	@FXML TextField tagValue;
 	
 	@FXML TilePane tilePaneImages;
+	
+	@FXML ChoiceBox<String> albumPicker;
 	//@formatter:on
 
 	@FXML
@@ -156,11 +161,13 @@ public class UserController {
 		fileImportImagesSelectedAlbum.setDisable(true);
 		
 		albumView.setItems(currentUser.getAlbumList());
+		
 		updateInfoData();
 
 		menuAlbums.getItems().clear();
 		for(Album a : albumView.getItems()) {
 			menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
+			a.setCounterDatetime();
 		}
 		
 		/**
@@ -190,16 +197,56 @@ public class UserController {
 		
 	}
 	
-	public void doMenuSearch() {
-		debugLog("test");
+	public void copyPhoto() {
+		Photo toCopy = new Photo(currentPhoto);
+		Album copyTo = currentUser.getAlbumMap().get(albumPicker.getValue().toLowerCase());
+		
+		for(Album a : currentUser.getAlbumList()) {
+			if(a.equals(copyTo)) {
+				if(copyTo.addPhoto(toCopy) == -1) {
+					Alert error = new Alert(AlertType.ERROR, "Photo found in this album. Copy canceled!", ButtonType.OK);
+					error.showAndWait();
+				} else {
+					Alert success = new Alert(AlertType.INFORMATION, "Photo successfully copied!", ButtonType.OK);
+					success.showAndWait();
+				}
+			}
+		}	
+		
+		for(Tag t : tagList.getItems()) {
+			copyTo.getPhotoMap().get(toCopy.getKey()).addTag(t.getTagName(), t.getTagValue());
+		}
+		copyTo.getPhotoMap().get(toCopy.getKey()).setCaption(currentPhoto.getCaption());
+		
+		copyPhoto.getScene().getWindow().hide();
 	}
-
-	public void doCheckBoxDeleteFromDisk() {
-		debugLog("Delete from disk checked");
-	}
-
-	public void doCheckBoxPromptBeforeDelete() {
-		debugLog("Prompt before delete checked");
+	
+	public void movePhoto() {
+		Photo toMove = new Photo(currentPhoto);
+		Album moveTo = currentUser.getAlbumMap().get(albumPicker.getValue().toLowerCase());
+		
+		for(Album a : currentUser.getAlbumList()) {
+			if(a.equals(moveTo)) {
+				if(moveTo.addPhoto(toMove) == -1) {
+					Alert error = new Alert(AlertType.ERROR, "Photo found in this album. Move canceled!", ButtonType.OK);
+					error.showAndWait();
+				} else {
+					currentAlbum.deletePhoto(index);
+					tilePaneImages.getChildren().remove(index);
+					Alert success = new Alert(AlertType.INFORMATION, "Photo successfully moved!", ButtonType.OK);
+					success.showAndWait();
+				}
+			}
+		}
+		
+		for(Tag t : tagList.getItems()) {
+			moveTo.getPhotoMap().get(toMove.getKey()).addTag(t.getTagName(), t.getTagValue());
+		}
+		moveTo.getPhotoMap().get(toMove.getKey()).setCaption(currentPhoto.getCaption());
+		
+		currentPhoto = null;
+		
+		movePhoto.getScene().getWindow().hide();
 	}
 	
 	public void doSearchAllAlbums() throws IOException {
@@ -352,12 +399,60 @@ public class UserController {
 		}
 	}
 
-	public void movePhoto() {
-		debugLog("Move photo button pressed");
+	public void openCopyPhoto() throws IOException {
+		if(currentPhoto != null) {
+			Stage window = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+
+			loader.setLocation(getClass().getResource("/view/copy_photo.fxml"));
+			loader.setController(this);
+
+			Parent root = loader.load();
+
+			window.initModality(Modality.APPLICATION_MODAL);
+
+			Scene scene = new Scene(root);
+
+			window.setScene(scene);
+			window.setTitle("Photos -- Copy Photo");
+			window.setResizable(false);
+			window.show();
+			
+			for(Album a : model.getCurrentUser().getAlbumList()) {
+				albumPicker.getItems().add(a.getAlbumName());
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR, "No photo was selected. Action not performed!", ButtonType.OK);
+			error.showAndWait();
+		}
 	}
 
-	public void copyPhoto() {
-		debugLog("Copy photo button pressed");
+	public void openMovePhoto() throws IOException {
+		if(currentPhoto != null) {
+			Stage window = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+
+			loader.setLocation(getClass().getResource("/view/move_photo.fxml"));
+			loader.setController(this);
+
+			Parent root = loader.load();
+
+			window.initModality(Modality.APPLICATION_MODAL);
+
+			Scene scene = new Scene(root);
+
+			window.setScene(scene);
+			window.setTitle("Photos -- Copy Photo");
+			window.setResizable(false);
+			window.show();
+			
+			for(Album a : model.getCurrentUser().getAlbumList()) {
+				albumPicker.getItems().add(a.getAlbumName());
+			} 
+		} else {
+			Alert error = new Alert(AlertType.ERROR, "No photo was selected. Action not performed!", ButtonType.OK);
+			error.showAndWait();
+		}
 	}
 
 	public void deletePhoto() {
@@ -416,6 +511,26 @@ public class UserController {
 				debugLog("Photo successfully removed!");
 
 				updateInfoData();
+				
+				currentImageViewList.remove(selectedIndex);
+				
+				detailView.setImage(null);
+				displayCaption.setText(null);
+				nameField.setText(
+						"(No image selected)");
+				pathField.setText(
+						"(No image selected)");
+				sizeField.setText(
+						"(No image selected)");
+				createdField.setText(
+						"(No image selected)");
+				
+				tagName.setText(null);
+				tagValue.setText(null);
+				tagList.setItems(null);
+				captionField.setText(null);
+				
+				currentPhoto = null;
 
 				success.showAndWait();
 			}
@@ -726,6 +841,24 @@ public class UserController {
 						debugLog("Selection: " + item);
 
 						// currentUser.setCurrentAlbum(item);
+						
+						detailView.setImage(null);
+						displayCaption.setText(null);
+						nameField.setText(
+								"(No image selected)");
+						pathField.setText(
+								"(No image selected)");
+						sizeField.setText(
+								"(No image selected)");
+						createdField.setText(
+								"(No image selected)");
+						
+						tagName.setText(null);
+						tagValue.setText(null);
+						tagList.setItems(null);
+						captionField.setText(null);
+						
+						currentPhoto = null;
 
 						currentAlbum = item;
 						model.getCurrentUser().setCurrentAlbum(currentAlbum);
@@ -850,6 +983,13 @@ public class UserController {
 													"(No image selected)");
 											createdField.setText(
 													"(No image selected)");
+											
+											tagName.setText(null);
+											tagValue.setText(null);
+											tagList.setItems(null);
+											captionField.setText(null);
+											
+											currentPhoto = null;
 										}
 									});
 

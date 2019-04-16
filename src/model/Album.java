@@ -11,9 +11,11 @@
 
 package model;
 
-import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -33,6 +35,9 @@ public class Album implements Comparable<Album>, Serializable {
 	private int albumSize;
 
 	private String albumName;
+
+	private long min;
+	private long max;
 	
 	private transient ObservableList<Photo> photoList;
 	private TreeMap<String, Photo> photoMap;
@@ -127,6 +132,32 @@ public class Album implements Comparable<Album>, Serializable {
 		}
 		return result;
 	}
+	
+    public void setCounterDatetime() {
+		boolean start = true;
+		int count 	= 0;
+		long min	= 0;
+		long max	= 0;
+		for (Map.Entry<String, Photo> p: photoMap.entrySet()) {
+			if (start) {
+				count = 1;
+				min	= p.getValue().getModifiedDate();
+				max	= p.getValue().getModifiedDate();
+				start = false;
+			} else {
+				count++;
+				long pd = p.getValue().getModifiedDate();
+				if (pd > max) {
+					max = pd;
+				}
+				if (pd < min) {
+					min = pd;
+				}
+			}
+		}
+		this.min = min;
+		this.max = max;
+	}
 
 	/**
 	 * 
@@ -144,9 +175,8 @@ public class Album implements Comparable<Album>, Serializable {
 		this.photoList = photoList;
 	}
 
-	@Override
 	public String toString() {
-		return albumName;
+		return "Album name: " + albumName + "\nPhoto count: " + photoMap.size() + "\nRanges from: " + epochToLocalTime(min) + " to " + epochToLocalTime(max);
 	}
 
 	/**
@@ -173,6 +203,12 @@ public class Album implements Comparable<Album>, Serializable {
 	public String getKey() {
 		return makeKey(albumName);
 	}
+	
+    public static String epochToLocalTime(long time) {
+        LocalDateTime datetime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return datetime.format(formatter);
+    }
 	
 	public boolean equals(Object o) {
 		if(o == null || !(o instanceof Album)) {

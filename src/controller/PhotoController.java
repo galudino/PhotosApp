@@ -72,8 +72,6 @@ public class PhotoController {
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
 	
-	Desktop desktop = Desktop.getDesktop();
-	
 	FileChooser fileChooser;
 	File file;
 	
@@ -119,7 +117,7 @@ public class PhotoController {
 	
 	@FXML Slider zoomSlider;
 	
-	@FXML ChoiceBox<Album> albumList;
+	@FXML ChoiceBox<String> albumList;
 	
 	@FXML TextField captionField;
 	@FXML TextField tagName;
@@ -133,12 +131,12 @@ public class PhotoController {
 	
 	@FXML
 	public void initialize() {
-		radioButtonThisAlbum.setText("Current album: " + model.getCurrentUser().getCurrentAlbum());
+		radioButtonThisAlbum.setText("Current album: " + model.getCurrentUser().getCurrentAlbum().getAlbumName());
 		radioButtonThisAlbum.setSelected(true);
 		updateInfoData();
 		albumList.getItems().clear();
 		for(Album a : model.getCurrentUser().getAlbumList()) {
-			albumList.getItems().add(a);
+			albumList.getItems().add(a.getAlbumName());
 		}
 		
 		/**
@@ -258,7 +256,7 @@ public class PhotoController {
 	@SuppressWarnings("unchecked")
 	public void doAlbumList() {
 		albumList.setOnAction(event -> {
-			Album test = albumList.getValue();
+			Album test = new Album(albumList.getValue());
 			
 			for(Album a : model.getCurrentUser().getAlbumList()) {
 				
@@ -705,6 +703,8 @@ public class PhotoController {
 
 					debugLog("Image " + p.getFilename()
 							+ " selected");
+					
+					System.out.println(currentImageViewList.size());
 
 					nameField.setText(
 							currentPhoto.getFilename());
@@ -752,6 +752,8 @@ public class PhotoController {
 			tilePaneImages.getChildren().add(iv);
 
 			currentImageViewList.add(iv);
+			
+			
 
 			updateInfoData();
 
@@ -797,7 +799,10 @@ public class PhotoController {
 		
 		tagName.setText(null);
 		tagValue.setText(null);
-		tList.clear();
+		
+		if(!tagList.getItems().isEmpty()) {
+			tList.clear();
+		}
 		
 		model.write();
 	}
