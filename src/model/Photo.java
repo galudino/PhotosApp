@@ -15,7 +15,10 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -73,7 +76,7 @@ public class Photo implements Serializable {
 	public Photo(String filepath) {
 		this.filepath = filepath;
 		caption = "";
-		datePhoto = 0;
+		datePhoto = new File(filepath).lastModified();
 		fileSize = 0;
 		tagList = FXCollections.observableArrayList();
 		tagMap = new TreeMap<String, Tag>();
@@ -266,6 +269,10 @@ public class Photo implements Serializable {
 	public String getKey() {
 		return makeKey(filepath);
 	}
+	
+	public long getModifiedDate() {
+        return datePhoto;
+    }
 
 	@Override
 	public String toString() {
@@ -313,7 +320,49 @@ public class Photo implements Serializable {
     public String epochToLocalTime(long time) {
         LocalDateTime datetime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         return datetime.format(formatter);
+    }
+    
+    public LocalDateTime getLocalDateTime() {
+    	long time = this.datePhoto;
+        LocalDateTime thisDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        
+        return thisDateTime;
+    }
+    
+    public boolean isInDateRange(LocalDate from, LocalDate to) {
+    	long time = this.datePhoto;
+        LocalDateTime thisDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        
+        int thisMonthValue = thisDateTime.getMonthValue();
+        int thisDayValue = thisDateTime.getDayOfMonth();
+        int thisYearValue = thisDateTime.getYear();
+        
+        int fromMonthValue = from.getMonthValue();
+        int fromDayValue = from.getDayOfMonth();
+        int fromYearValue = from.getYear();
+        
+        int toMonthValue = to.getMonthValue();
+        int toDayValue = to.getDayOfMonth();
+        int toYearValue = to.getYear();
+        
+
+        if (thisYearValue >= fromYearValue && thisYearValue <= toYearValue) {
+            if (thisMonthValue >= fromMonthValue && thisMonthValue <= toMonthValue) {            	
+            	System.out.println(thisYearValue + "::" + thisMonthValue + "::" + thisDayValue);
+            	
+            	if (thisDayValue >= fromDayValue && thisDayValue <= toDayValue) {
+            		return true;
+            	} else {
+            		return false;
+            	}
+            } else {
+            	return false;
+            }
+        } else {
+        	return false;
+        }
     }
 
 
