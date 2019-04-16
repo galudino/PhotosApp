@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -128,8 +129,6 @@ public class SearchController {
 	
 	LocalDate dateFrom;
 	LocalDate dateTo;
-	long longDateFrom;
-	long longDateTo;
 
 	String stringSearchTagNameOne;
 	String stringSearchTagValueOne;
@@ -137,12 +136,15 @@ public class SearchController {
 	String stringSearchTagValueTwo;
 	
 	List<TagConditional> tagConditionalList;
+	
+	ObservableList<Photo> photoListSearchResults;
+	TreeMap<String, Photo> photoMapSearchResults;
 
 	private Photo currentPhoto = null;
 	private PhotoModel model = LoginController.getModel();
 	private Album currentAlbum = null;
 	private User currentUser = model.getCurrentUser();
-
+	
 	private List<ImageView> currentImageViewList = null;
 
 	ObservableList<Photo> photoList = FXCollections.observableArrayList();
@@ -249,12 +251,14 @@ public class SearchController {
 
 		radioButtonThumbnail.setSelected(true);
 		doViewModeThumbnail();
-
+		
+		Album possibleAlbum = currentUser.getCurrentAlbum();
+		currentAlbum = possibleAlbum != null ? possibleAlbum : null;
+		
 		initAlbumList();
 		
 		tagConditionalList = new ArrayList<TagConditional>();
 	
-		
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -285,7 +289,7 @@ public class SearchController {
 					currentAlbum = test;
 				}
 			}
-
+			
 			debugLog("selected album: " + currentAlbum.getAlbumName());
 		});
 
@@ -308,24 +312,92 @@ public class SearchController {
 
 	public void doButtonSearchNow() {
 		debugLog("[doButtonSearchNow]");
+		
+		if (invalidDatesFromTo()) {
+			return;
+		}
+		
+		conductSearch();
+	}
+	
+	public void conductSearch() {
+		/*
+		boolean searchScopeThisAlbum;
+		boolean searchScopeSelectedAlbum;
+		boolean searchScopeAllAlbums;
+		
+		boolean searchThisAlbum;
+		boolean searchSelectedAlbum;
+		boolean searchAllAlbums;
+		
+		boolean searchAnd;
+		boolean searchOr;
+		boolean searchNot;
+		*/
+		
+		/*
+		LocalDate dateFrom;
+		LocalDate dateTo;
 
-		// using the search scope,
-		// determine which album is to be searched.
+		List<TagConditional> tagConditionalList;
 
-		// buttonSearchNow
+		private Photo currentPhoto = null;
+		private PhotoModel model = LoginController.getModel();
+		private Album currentAlbum = null;
+		private User currentUser = model.getCurrentUser();
 
-		/**
-		 * Conduct the search using:
-		 * 
-		 * Album scope (the current album, a selected album, or all the albums?)
-		 * 
-		 * LocalDate from, LocalDate to All photos must have a modified date
-		 * from-to
-		 * 
-		 * Tag Conditionals (how will this be done?
-		 * 
-		 * Tag1 && Tag2 Tag3 || Tag4
-		 */
+		private List<ImageView> currentImageViewList = null;
+
+		ObservableList<Photo> photoList = FXCollections.observableArrayList();
+		*/
+		
+		/*
+		ObservableList<Photo> photoListSearchResults;
+		TreeMap<String, Photo> photoMapSearchResults;
+		*/
+		
+		
+		
+		TreeMap<String, Album> aMap = currentUser.getAlbumMap();
+		for (Album a : aMap.values()) {
+			for (Photo p : a.getPhotoMap().values()) {
+
+				
+				debugLog("Photo curr: " + p);
+				p.isInDateRange(dateFrom, dateTo);
+				
+			}
+		}
+
+		
+		/*
+		String test = String.format(
+				"Album to search: %s\n"
+				+ "Date from: " + dateFrom + "\n"
+				+ "Date to: " + dateTo + "\n"
+				+ tagConditionalList + "\n",
+				currentAlbum);
+		
+		debugLog(test);
+		*/
+		
+		
+	}
+		
+	public boolean invalidDatesFromTo() {
+		if (dateFrom.isAfter(dateTo)) {
+			String errorStr = String.format("%s\n%s", "ERROR: See DATE RANGE.", 
+					"FROM must be chronologically before TO.");
+			
+			debugLog("[checkDateFromTo]" + errorStr);
+			
+			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
+			error.showAndWait();
+		
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void doMenuItemRemoveTagFromSearch() {
@@ -469,18 +541,18 @@ public class SearchController {
 		debugLog("[doDatePickerFrom]");
 
 		dateFrom = datePickerFrom.getValue();
-		longDateFrom = 0;	// TODO must figure out how to convert LocalDate to long
+		
 
-		debugLog(dateFrom + " was retrieved" + " (long value) " + longDateFrom);
+		
+		debugLog(dateFrom + " was retrieved");
 	}
 
 	public void doDatePickerTo() {
 		debugLog("[doDatePickerTo]");
 
 		dateTo = datePickerTo.getValue();
-		longDateTo = 0; // TODO must figure out how to convert LocalDate to long
 		
-		debugLog(dateFrom + " was retrieved" + " (long value) " + longDateTo);
+		debugLog(dateFrom + " was retrieved" + " (long value) ");
 	}
 
 	public void doRadioButtonThisAlbum() {
