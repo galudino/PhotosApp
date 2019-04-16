@@ -364,6 +364,10 @@ public class Photo implements Serializable {
         	return false;
         }
     }
+    
+    public boolean matchesTagConditional(TagConditional tc) {
+    	return false;
+    }
 
 
 	// need to create image for thumbnail
