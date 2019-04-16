@@ -91,4 +91,19 @@ public class Tag implements Comparable<Tag>, Serializable {
 				? this.tagName.compareTo(other.tagName)
 				: this.tagValue.compareToIgnoreCase(other.tagValue);
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof Tag) {
+			Tag t = (Tag)(o);
+			
+			if (tagName.equals(t.tagName) && tagValue.equals(t.tagValue)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 }
