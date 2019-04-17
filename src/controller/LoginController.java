@@ -24,6 +24,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import model.Album;
@@ -64,6 +66,13 @@ public class LoginController {
 		 */
 		System.out.println();
 		debugLog("Entering " + getClass().getSimpleName());
+	}
+	
+	@FXML
+	private void keyPressed(KeyEvent keyEvent) throws IOException {
+	    if (keyEvent.getCode() == KeyCode.ENTER) {
+	        doLogin();
+	    }
 	}
 
 	/**

@@ -780,15 +780,13 @@ public class PhotoController {
 					Alert error = new Alert(AlertType.ERROR, "Photo not added, duplicate photo.", ButtonType.OK);
 					error.showAndWait();
 				} else {
-
-
+					Alert success = new Alert(AlertType.INFORMATION, "Photos successfully added to: " + currentAlbum.getAlbumName());
+					success.showAndWait();
 				}
-				Alert success = new Alert(AlertType.INFORMATION, "Photos successfully added to: " + currentAlbum.getAlbumName());
-				success.showAndWait();
 				
-					for(Tag t : p.getTagList()) {
-						currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
-					}
+				for(Tag t : p.getTagList()) {
+					currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
+				}
 				
 				imageQueueList.getItems().remove(p);
 				tilePaneImages.getChildren().remove(i);

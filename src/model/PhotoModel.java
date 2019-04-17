@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -32,18 +31,19 @@ import javafx.collections.ObservableList;
  * @version Apr 12, 2019
  * @author Patrick Nogaj
  */
+
 public class PhotoModel implements Serializable {
 
 	private static final long serialVersionUID = -450152308719125499L;
 
-	public final static String DAT_FILE_PATH = "photos.dat";
+	public final String DAT_FILE_PATH = "photos.dat";
 
 	private ObservableList<User> userList;
 	private TreeMap<String, User> userMap;
 	private User currentUser;
 
 	/**
-	 * 
+	 * Default constructor which reads data from the DAT file and loads all the user data.
 	 */
 	public PhotoModel() {
 		userList = read();
@@ -54,69 +54,12 @@ public class PhotoModel implements Serializable {
 			userMap.put(u.getKey(), u);
 		}
 	}
-
+	
 	/**
-	 * 
-	 * @return
-	 */
-	public ObservableList<User> getUserList() {
-		return userList;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public TreeMap<String, User> getUserMap() {
-		return userMap;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public int getItemCount() {
-		return userList.size();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public User getCurrentUser() {
-		return currentUser;
-	}
-
-	/**
-	 * 
-	 * @param currentUser
-	 */
-	public void setCurrentUser(User currentUser) {
-		this.currentUser = currentUser;
-	}
-
-	/**
-	 * 
-	 * @param user
-	 * @return
-	 */
-	public int getIndex(User user) {
-		return userList.indexOf(user);
-	}
-
-	/**
-	 * 
-	 * @param userList
-	 */
-	public void setUserList(ObservableList<User> userList) {
-		this.userList = userList;
-	}
-
-	/**
-	 * 
-	 * @param username
-	 * @param password
-	 * @return
+	 * Adds a User to the TreeMap<String, User> in a sorted order.
+	 * @param username: String of User containing username.
+	 * @param password: String of User containing password.
+	 * @return index of location in ObservableList<User> of current User object.
 	 */
 	public int addUser(String username, String password) {
 		String key = User.makeKey(username);
@@ -133,33 +76,30 @@ public class PhotoModel implements Serializable {
 	}
 
 	/**
-	 * 
-	 * @param user
-	 * @return
+	 * Finds the index that the user will be input into the ObservableList<User> using compareTo from User.
+	 * @param user: User object to add into ObservableList<User>.
+	 * @return index location of where User was put in ObservableList<User>.
 	 */
 	private int indexInsertedSorted(User user) {
 		if (userList.isEmpty()) {
-			userList.add(user);
-			
+			userList.add(user);		
 			return 0;
 		} else {
 			for (int i = 0; i < userList.size(); i++) {
 				if (user.compareTo(userList.get(i)) < 0) {
 					userList.add(i, user);
-					
 					return i;
 				}
 			}
-			
 			userList.add(user);
 			return userList.size() - 1;
 		}
 	}
 
 	/**
-	 * 
-	 * @param index
-	 * @return
+	 * Removes User from ObservableList<User> and TreeMap<String, User> via index
+	 * @param index: index location of User in ObservableList<User> and TreeMap<String, User> derived from UserController
+	 * @return true | false if user was deleted or not.
 	 */
 	public boolean deleteUser(int index) {
 		String key = userList.get(index).getKey();
@@ -167,28 +107,15 @@ public class PhotoModel implements Serializable {
 
 		if (temp != null) {
 			userMap.remove(key);
-			userList.remove(index);
-			
+			userList.remove(index);	
 			return true;
 		} else {
 			return false;
 		}
 	}
-
-	/**
-	 * 
-	 * @param username
-	 * @return
-	 */
-	public User getUser(String username) {
-		return userList.stream()
-				.filter(user -> user.getUsername().equalsIgnoreCase(username))
-				.findFirst().orElse(null);
-	}
-
+	
 	/**
 	 * Reads the file from DAT_FILE_PATH to deserialize and load data.
-	 * 
 	 * @return an observable list that has all the old data, or a new list with
 	 *         admin/stock preloaded.
 	 */
@@ -216,36 +143,17 @@ public class PhotoModel implements Serializable {
 
 		stock.addAlbum("test");
 		stock.setCurrentAlbum(stock.getAlbumList().get(0));
-		
-		System.out.println(stock.getCurrentAlbum());
 
 		Photo photo1 = new Photo(new File("src/view/stock/one.jpg"));
 		Photo photo2 = new Photo(new File("src/view/stock/two.jpg"));
 		Photo photo3 = new Photo(new File("src/view/stock/three.jpg"));
 		Photo photo4 = new Photo(new File("src/view/stock/four.jpg"));
 		
+		stock.getCurrentAlbum().addPhoto(photo1);
 		stock.getCurrentAlbum().addPhoto(photo2);
 		stock.getCurrentAlbum().addPhoto(photo3);
 		stock.getCurrentAlbum().addPhoto(photo4);
 		
-		//stock.getCurrentAlbum().addPhoto(new File("/view/stock/one.jpg"));
-
-		
-		
-		
-		//stockAlbum.addPhoto(photo1);
-		//stockAlbum.addPhoto(photo2);
-		//stockAlbum.addPhoto(photo3);
-		//stockAlbum.addPhoto(photo4);
-
-		
-		//stock.getAlbumMap().put("Stock Album", stockAlbum);
-		//stock.setCurrentAlbum(stockAlbum);
-		
-		
-		// stock.addAlbum("NAMEOFALBUM");
-		System.out.println(stock.getCurrentAlbum().getPhotoList());
-
 		return FXCollections.observableArrayList(admin, stock);
 	}
 
@@ -257,18 +165,15 @@ public class PhotoModel implements Serializable {
 		try {
 			FileOutputStream fOut = new FileOutputStream(DAT_FILE_PATH);
 			ObjectOutputStream out = new ObjectOutputStream(fOut);
-
 			out.writeObject(new ArrayList<User>(userList));
-			
 			System.out.println("Saving..." + this);
-
 			out.close();
 			fOut.close();
 		} catch (IOException e) {
 			e.getMessage();
 		}
 	}
-
+	
 	/**
 	 * Used for console message/testing functionality/method calls
 	 * 
@@ -277,6 +182,74 @@ public class PhotoModel implements Serializable {
 	public void debugLog(String message) {
 		System.out.println(
 				"[" + this.getClass().getSimpleName() + "] " + message);
+	}
+
+	/**
+	 * Gets the ObservableList<User> userList.
+	 * @return ObservableList<User>.
+	 */
+	public ObservableList<User> getUserList() {
+		return userList;
+	}
+
+	/**
+	 * Gets the TreeMap<String, User> containing all Users.
+	 * @return TreeMap<String, User>.
+	 */
+	public TreeMap<String, User> getUserMap() {
+		return userMap;
+	}
+
+	/**
+	 * Gets the amount of users within the program.
+	 * @return size of ObservableList<User>.
+	 */
+	public int getItemCount() {
+		return userList.size();
+	}
+	
+	/**
+	 * Gets the index of a User object within the ObservableList<User>.
+	 * @param user: User object
+	 * @return index of User within ObservableList<User>.
+	 */
+	public int getIndex(User user) {
+		return userList.indexOf(user);
+	}
+
+	/**
+	 * Gets the current User object.
+	 * @return User object.
+	 */
+	public User getCurrentUser() {
+		return currentUser;
+	}
+	
+	/**
+	 * Gets the User object from a given username.
+	 * @param username: String containing the username of a possible User object.
+	 * @return User object if true, null if false.
+	 */
+	public User getUser(String username) {
+		return userList.stream()
+				.filter(user -> user.getUsername().equalsIgnoreCase(username))
+				.findFirst().orElse(null);
+	}
+
+	/**
+	 * Sets the current user Object to currentUser.
+	 * @param currentUser: User object
+	 */
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	/**
+	 * Sets the ObservableList<User> to userList.
+	 * @param userList: ObservableList<User>
+	 */
+	public void setUserList(ObservableList<User> userList) {
+		this.userList = userList;
 	}
 	
 	public String toString() {

@@ -14,10 +14,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="197.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="121.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album Name:" />
-      <Text layoutX="230.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Copy Photo" wrappingWidth="92.48828125" />
-      <Text layoutX="119.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To copy a photo, select an album to copy to." />
+      <Text layoutX="146.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album Name:" />
+      <Text layoutX="212.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 24; -fx-font-weight: bold;" text="Copy Photo" wrappingWidth="182.48828125" />
+      <Text layoutX="146.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To copy a photo, select an album to copy to." />
       <Button fx:id="copyPhoto" layoutX="249.0" layoutY="151.0" mnemonicParsing="false" onAction="#copyPhoto" text="Copy" />
-      <ChoiceBox fx:id="albumPicker" layoutX="206.0" layoutY="114.0" prefHeight="28.0" prefWidth="171.0" />
+      <ChoiceBox fx:id="albumPicker" layoutX="228.0" layoutY="113.0" prefHeight="28.0" prefWidth="182.0" />
    </children>
 </AnchorPane>

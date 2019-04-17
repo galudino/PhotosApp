@@ -14,10 +14,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="197.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="116.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-      <Text layoutX="230.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Album" wrappingWidth="92.48828125" />
-      <Text layoutX="76.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To create an album, please enter an album name and press 'Create'." />
-      <Button fx:id="createAlbum" onAction="#doCreate" layoutX="248.0" layoutY="151.0" mnemonicParsing="false" text="Create" />
-      <TextField fx:id="createAlbumName" layoutX="164.0" layoutY="116.0" prefHeight="26.0" prefWidth="205.0" />
+      <Text layoutX="149.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+      <Text layoutX="200.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 24; -fx-font-weight: bold;" text="Add Album" wrappingWidth="205.00000047683716" />
+      <Text layoutX="67.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To create an album, please enter an album name and press 'Create'." />
+      <Button fx:id="createAlbum" layoutX="239.0" layoutY="151.0" mnemonicParsing="false" onAction="#doCreate" text="Create" />
+      <TextField fx:id="createAlbumName" layoutX="197.0" layoutY="115.0" prefHeight="26.0" prefWidth="205.0" />
    </children>
 </AnchorPane>

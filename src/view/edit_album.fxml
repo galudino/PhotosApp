@@ -14,13 +14,13 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="197.0" prefWidth="552.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="89.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Name:" />
-      <Text layoutX="230.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rename Album" wrappingWidth="92.48828125" />
-      <Text layoutX="176.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter the new name for the album" />
-      <Button fx:id="editAlbum" onAction="#doRename" layoutX="210.0" layoutY="151.0" mnemonicParsing="false" text="Submit" />
-      <TextField fx:id="renameAlbumName" layoutX="164.0" layoutY="116.0" prefHeight="26.0" prefWidth="205.0" />
-      <Text layoutX="89.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Name:" />
+      <Text layoutX="144.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Name:" />
+      <Text layoutX="194.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 24; -fx-font-weight: bold;" text="Rename Album" wrappingWidth="180.48828125" />
+      <Text layoutX="184.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter the new name for the album" />
+      <Button fx:id="editAlbum" layoutX="213.0" layoutY="151.0" mnemonicParsing="false" onAction="#doRename" text="Submit" />
+      <TextField fx:id="renameAlbumName" layoutX="216.0" layoutY="115.0" prefHeight="26.0" prefWidth="187.0" />
+      <Text layoutX="148.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Name:" />
       <Button fx:id="cancelEdit" layoutX="284.0" layoutY="151.0" mnemonicParsing="false" onAction="#doCreate" text="Cancel" />
-      <Text fx:id="oldName" layoutX="165.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="205.00000047683716" />
+      <Text fx:id="oldName" layoutX="213.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="180.4882768392563" />
    </children>
 </AnchorPane>
