@@ -1406,7 +1406,8 @@ public class SearchController {
 					/**
 					 * Retrieve the current photo based on the current index
 					 */
-					currentPhoto = photoList.get(index);
+					//currentPhoto = photoList.get(index);
+					currentPhoto = photoListSearchResults.get(index);
 
 					/**
 					 * Update selected image in detail pane
@@ -1525,7 +1526,8 @@ public class SearchController {
 					/**
 					 * Retrieve the current photo based on the current index
 					 */
-					currentPhoto = photoList.get(index);
+					//currentPhoto = photoList.get(index);
+					currentPhoto = photoListSearchResults.get(index);
 
 					/**
 					 * Update selected image in detail pane
