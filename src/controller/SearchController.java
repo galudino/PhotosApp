@@ -883,10 +883,20 @@ public class SearchController {
 		debugLog("[doViewModeSingleImage]");
 	}
 
-	public void doOpenSelectedPhotoInViewer() {
-		debugLog("[doOpenSelectedPhotoInViewer]");
-	}
+	public void doOpenSelectedPhotoInViewer() throws IOException {
+		debugLog("Open selected photo in viewer");
+		
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/viewer.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		window.setScene(scene);
+		window.setTitle("Photos -- Viewer");
+		window.setResizable(false);
+		window.show();
 
+	}
 
 
 	public void deletePhoto() {
