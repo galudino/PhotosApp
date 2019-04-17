@@ -366,7 +366,77 @@ public class Photo implements Serializable {
     }
     
     public boolean matchesTagConditional(TagConditional tc) {
-    	return false;
+    	if (tc.isAnd()) {
+    		return evaluateAnd(tc);
+    	} else if (tc.isOr()) {
+    		return evaluateOr(tc);
+    	} else if (tc.isNot()) {
+    		return evaluateNot(tc);
+    	} else {
+    		System.out.println("TagConditional does not match AND, OR, or NOT");
+    		return false;
+    	}
+    }
+    
+    private boolean evaluateAnd(TagConditional tc) {
+    	// check to see if tc.tag1 and tc.tag2 are in this photo.
+    	boolean foundTag1 = false;
+    	boolean foundTag2 = false;
+    	
+    	for (Tag tag : tagMap.values()) {
+    		if (tc.getTag1().equals(tag)) {
+    			foundTag1 = true;
+    		}
+    		
+    		if (tc.getTag2().equals(tag)) {
+    			foundTag2 = true;
+    		}
+    		
+    		if (foundTag1 && foundTag2) {
+    			break;
+    		}
+    	}
+    	
+    	return foundTag1 && foundTag2;
+    }
+    
+    private boolean evaluateOr(TagConditional tc) {
+    	// check to see if tc.tag1 OR tc.tag2 is in this photo
+    	boolean foundTag1 = false;
+    	boolean foundTag2 = false;
+    	
+    	for (Tag tag : tagMap.values()) {
+    		if (tc.getTag1().equals(tag)) {
+    			foundTag1 = true;
+    			break;
+    		}
+    		
+    		if (tc.getTag2().equals(tag)) {
+    			foundTag2 = true;
+    			break;
+    		}
+    	}
+    	
+    	return foundTag1 || foundTag2;
+    }
+    
+    private boolean evaluateNot(TagConditional tc) {
+    	// check to see if tc.tag1 and tc.tag2 or NOT in this photo
+    	boolean foundTag1 = false;
+    	boolean foundTag2 = false;
+    	
+    	for (Tag tag : tagMap.values()) {
+    		if (tc.getTag1().equals(tag)) {
+    			foundTag1 = true;
+    		}
+    		
+    		if (tc.getTag2().equals(tag)) {
+    			foundTag2 = true;
+    			break;
+    		}
+    	}
+    	
+    	return foundTag1 && !foundTag2;
     }
 
 

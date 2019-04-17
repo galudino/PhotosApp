@@ -186,6 +186,14 @@ public class Album implements Comparable<Album>, Serializable {
 	public void setAlbumName(String albumName) {
 		this.albumName = albumName;
 	}
+	
+	public long getMin() { 
+        return min;
+    }
+
+    public long getMax() {
+        return max;
+    }
 
 	/**
 	 * 

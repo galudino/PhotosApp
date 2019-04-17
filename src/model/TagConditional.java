@@ -10,18 +10,16 @@
  */
 package model;
 
-
-
 /**
  * @version Apr 16, 2019
  * @author gemuelealudino
  *
  */
 public class TagConditional {
-	Tag tag1;
-	Tag tag2;
+	private Tag tag1;
+	private Tag tag2;
 
-	String conditional;
+	private String conditional;
 
 	public TagConditional(Tag tag1, Tag tag2, String conditional) {
 		this.tag1 = tag1;
@@ -31,12 +29,37 @@ public class TagConditional {
 		case "AND":
 		case "OR":
 		case "NOT":
+		case "searchNOconditional":
 			this.conditional = conditional;
 			break;
 		default:
-			System.exit(0);
+			//System.exit(0);
 			break;
 		}
+	}
+	
+	public boolean isAnd() {
+		return conditional.equals("AND");
+	}
+	
+	public boolean isOr() {
+		return conditional.equals("OR");
+	}
+	
+	public boolean isNot() {
+		return conditional.equals("NOT");
+	}
+	
+	public boolean isSearchNoConditional() {
+		return conditional.equals("searchNOconditional");
+	}
+	
+	public Tag getTag1() {
+		return tag1;
+	}
+	
+	public Tag getTag2() {
+		return tag2;
 	}
 	
 	@Override

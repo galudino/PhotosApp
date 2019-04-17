@@ -86,6 +86,7 @@ public class SearchController {
 	boolean searchAnd;
 	boolean searchOr;
 	boolean searchNot;
+	boolean searchNoConditional;
 
 	boolean viewModeThumbnail;
 	boolean viewModeSingleImage;
@@ -209,8 +210,7 @@ public class SearchController {
 		radioButtonSelectedAlbum.setSelected(true);
 		doRadioButtonSelectedAlbum();
 
-		radioButtonAnd.setSelected(true);
-		doRadioButtonAnd();
+		resetAndOrNot();
 
 		radioButtonThumbnail.setSelected(true);
 		doViewModeThumbnail();
@@ -319,19 +319,34 @@ public class SearchController {
 		TreeMap<String, Photo> photoMapSearchResults;
 		*/
 		
-		
+	
 		
 		TreeMap<String, Album> aMap = currentUser.getAlbumMap();
-		for (Album a : aMap.values()) {
-			for (Photo p : a.getPhotoMap().values()) {
 
+		for (Album album : aMap.values()) {
+			for (Photo photo : album.getPhotoMap().values()) {
 				
-				debugLog("Photo curr: " + p);
-				p.isInDateRange(dateFrom, dateTo);
-				
+				if (photo.isInDateRange(dateFrom, dateTo)) {
+					// if the photo is in the date range,
+					/*
+					for (TagConditional conditional : tagConditionalList) {
+						if (photo.matchesTagConditional(conditional)) {
+							debugLog(photo + " matches " + conditional);
+						} else {
+							// go to the next Photo p in the photomap
+							debugLog(photo + " does not match " + conditional);
+						}
+					}
+					*/
+					
+					debugLog("Photo found: " + photo);
+				}
 			}
 		}
-
+		
+		
+	
+		
 		
 		/*
 		String test = String.format(
@@ -348,6 +363,15 @@ public class SearchController {
 	}
 		
 	public boolean invalidDatesFromTo() {
+		if (dateFrom == null) {
+			dateFrom = LocalDate.MIN;
+		}
+		
+		if (dateTo == null) {
+			dateTo = LocalDate.MAX;
+		}
+		
+		
 		if (dateFrom.isAfter(dateTo)) {
 			String errorStr = String.format("%s\n%s", "ERROR: See DATE RANGE.", 
 					"FROM must be chronologically before TO.");
@@ -393,9 +417,25 @@ public class SearchController {
 		 */
 		stringSearchTagNameOne = searchTagNameOne.getText();
 		stringSearchTagValueOne = searchTagValueOne.getText();
-		stringSearchTagNameTwo = searchTagValueTwo.getText();
-		stringSearchTagValueTwo = searchTagValueTwo.getText();
+		
+		if (checkSearchTag1NameValue()) {
+			return;
+		}
+				
+		
+		if (searchAnd || searchOr || searchNot) {
+			stringSearchTagNameTwo = searchTagValueTwo.getText();
+			stringSearchTagValueTwo = searchTagValueTwo.getText();
+			
+			if (checkSearchTag2NameValue()) {
+				debugLog("Missing content");
+			}
+		}
+			
 
+
+		
+	
 		/**
 		 * Create tag1 and tag2 based off of the strings grabbed
 		 * from TextFields
@@ -414,6 +454,8 @@ public class SearchController {
 			condition = "OR";
 		} else if (searchNot) {
 			condition = "NOT";
+		} else if (searchNoConditional) {
+			condition = "searchNOconditional";
 		}
 		
 		/**
@@ -434,7 +476,52 @@ public class SearchController {
 		 */
 		listViewTagSearch.setItems(FXCollections.observableArrayList(tagConditionalList));
 		
+		
+		resetAndOrNot();
 		debugLog(conditional + "was added");
+	}
+	
+	public boolean checkSearchTag1NameValue() {
+		if (!stringSearchTagNameOne.equals("") && stringSearchTagValueOne.equals("")
+				|| stringSearchTagNameOne.equals("") && !stringSearchTagValueOne.equals("")) {
+			String errorStr = "Please provide a complete key and value for tag 1.";
+			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
+			error.showAndWait();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean checkSearchTag2NameValue() {
+		/*
+		if (!stringSearchTagNameTwo.equals("") && stringSearchTagValueTwo.equals("")
+				|| stringSearchTagNameTwo.equals("") && !stringSearchTagValueTwo.equals("")) {
+			String errorStr = "Please provide a complete key and value for tag 2.";
+			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
+			error.showAndWait();
+			return true;
+		} else {
+			return false;
+		}
+		*/
+		
+		return false;
+	}
+	
+	public void resetAndOrNot() {
+		searchTagNameTwo.setDisable(true);
+		searchTagValueTwo.setDisable(true);
+		searchTagNameTwo.clear();
+		searchTagValueTwo.clear();
+		
+		radioButtonAnd.setSelected(false);
+		radioButtonOr.setSelected(false);
+		radioButtonNot.setSelected(false);
+		searchAnd = false;
+		searchOr = false;
+		searchNot = false;
+		searchNoConditional = true;
 	}
 
 	public void doRadioButtonAnd() {
@@ -442,9 +529,15 @@ public class SearchController {
 			radioButtonOr.setSelected(false);
 			radioButtonNot.setSelected(false);
 
+			searchTagNameTwo.setDisable(false);
+			searchTagValueTwo.setDisable(false);
+			
 			searchAnd = true;
 			searchOr = false;
 			searchNot = false;
+			searchNoConditional = false;
+		} else {
+			resetAndOrNot();
 		}
 
 		debugLog("[doRadioButtonAnd]");
@@ -454,10 +547,16 @@ public class SearchController {
 		if (radioButtonOr.isSelected()) {
 			radioButtonAnd.setSelected(false);
 			radioButtonNot.setSelected(false);
+			
+			searchTagNameTwo.setDisable(false);
+			searchTagValueTwo.setDisable(false);
 
 			searchOr = true;
 			searchAnd = false;
 			searchNot = false;
+			searchNoConditional = false;
+		} else {
+			resetAndOrNot();
 		}
 
 		debugLog("[doRadioButtonOr]");
@@ -467,10 +566,16 @@ public class SearchController {
 		if (radioButtonNot.isSelected()) {
 			radioButtonAnd.setSelected(false);
 			radioButtonOr.setSelected(false);
+			
+			searchTagNameTwo.setDisable(false);
+			searchTagValueTwo.setDisable(false);
 
 			searchNot = true;
 			searchAnd = false;
 			searchOr = false;
+			searchNoConditional = false;
+		} else {
+			resetAndOrNot();
 		}
 
 		debugLog("[doRadioButtonNot]");
@@ -504,8 +609,6 @@ public class SearchController {
 		debugLog("[doDatePickerFrom]");
 
 		dateFrom = datePickerFrom.getValue();
-		
-
 		
 		debugLog(dateFrom + " was retrieved");
 	}
