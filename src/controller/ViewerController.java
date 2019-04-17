@@ -5,11 +5,47 @@ import java.awt.image.BufferedImage;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class ViewerController extends Canvas {
+	
+	//@formatter:off
+	@FXML Button buttonFlipHorizontal;
+	@FXML Button buttonFlipVertical;
+	@FXML Button buttonRotate180;
+	@FXML Button buttonRotate270;
+	@FXML Button buttonRotate90;
+	
+	@FXML MenuItem menuItemCloseViewer;
+	@FXML MenuItem menuItemFlipHorizontal;
+	@FXML MenuItem menuItemFlipVertical;
+	@FXML MenuItem menuItemRedo;
+	@FXML MenuItem menuItemRevert;
+	@FXML MenuItem menuItemRotate180;
+	@FXML MenuItem menuItemRotate270;
+	@FXML MenuItem menuItemRotate90;
+	@FXML MenuItem menuItemSavePhoto;
+	@FXML MenuItem menuItemSavePhotoAs;
+	@FXML MenuItem menuItemUndo;
+	
+	@FXML Slider sliderBrightness;
+	@FXML Slider sliderContrast;
+	@FXML Slider sliderHue;
+	@FXML Slider sliderSaturation;
+	@FXML Slider sliderViewerZoom;
+	
+	@FXML TextField textFieldBrightness;
+	@FXML TextField textFieldContrast;
+	@FXML TextField textFieldHue;
+	@FXML TextField textFieldSaturation;
+	
+	//@formatter:on
 	
 	BufferedImage original;
 	Image originalImage;
@@ -18,6 +54,8 @@ public class ViewerController extends Canvas {
 	public void initialize() {
 		
 	}
+	
+
 	
 	public void reset() {
 		
