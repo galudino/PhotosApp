@@ -16,6 +16,7 @@ package model;
  *
  */
 public class TagConditional {
+	
 	private Tag tag1;
 	private Tag tag2;
 
