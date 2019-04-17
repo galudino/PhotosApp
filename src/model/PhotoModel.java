@@ -139,15 +139,17 @@ public class PhotoModel implements Serializable {
 		stock.addAlbum("test");
 		stock.setCurrentAlbum(stock.getAlbumList().get(0));
 
-		Photo photo1 = new Photo(new File("src/view/stock/one.jpg"));
-		Photo photo2 = new Photo(new File("src/view/stock/two.jpg"));
-		Photo photo3 = new Photo(new File("src/view/stock/three.jpg"));
-		Photo photo4 = new Photo(new File("src/view/stock/four.jpg"));
+		Photo photo1 = new Photo(new File("./data/stock/one.jpg"));
+		Photo photo2 = new Photo(new File("./data/stock/two.jpg"));
+		Photo photo3 = new Photo(new File("./data/stock/three.jpg"));
+		Photo photo4 = new Photo(new File("./data/stock/four.jpg"));
+		Photo photo5 = new Photo(new File("./data/stock/five.jpg"));
 		
 		stock.getCurrentAlbum().addPhoto(photo1);
 		stock.getCurrentAlbum().addPhoto(photo2);
 		stock.getCurrentAlbum().addPhoto(photo3);
 		stock.getCurrentAlbum().addPhoto(photo4);
+		stock.getCurrentAlbum().addPhoto(photo5);
 		
 		return FXCollections.observableArrayList(admin, stock);
 	}
