@@ -561,7 +561,7 @@ public class UserController {
 							iv.setFitHeight(imageHeightValue);
 							iv.setFitWidth(imageWidthValue);
 							iv.setPreserveRatio(true);
-
+							
 							iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 								if (e.isSecondaryButtonDown()) {
 									
