@@ -119,16 +119,6 @@
                            <contextMenu>
                               <ContextMenu>
                                 <items>
-                                    <Menu mnemonicParsing="false" text="Copy Selected Photo to Album...">
-                                      <items>
-                                        <MenuItem mnemonicParsing="false" text="(no albums available)" />
-                                      </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="Move Selected Photo to Album...">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="(no albums available)" />
-                                       </items>
-                                    </Menu>
                                     <MenuItem mnemonicParsing="false" onAction="#deletePhoto" text="Delete Selected Photo from this Album" />
                                     <SeparatorMenuItem mnemonicParsing="false" />
                                     <MenuItem mnemonicParsing="false" text="Open Photo in Viewer" />

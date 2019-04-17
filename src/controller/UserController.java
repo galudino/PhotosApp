@@ -13,16 +13,13 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -133,6 +130,8 @@ public class UserController {
 	@FXML MenuItem searchAllAlbums;
 	@FXML Menu menuAlbums;
 	@FXML Menu menuSearch;
+	@FXML Menu copyMenu;
+	@FXML Menu moveMenu;
 	
 	@FXML MenuItem menuItemHelp;
 	@FXML MenuItem menuItemAboutPhotos;
@@ -797,7 +796,6 @@ public class UserController {
 	/**
 	 * Executes upon selection of an album within albumView
 	 */
-	@SuppressWarnings("restriction")
 	public void doSelectAlbum() {
 
 		albumView.setCellFactory(lv -> {
@@ -918,6 +916,7 @@ public class UserController {
 								if (e.isSecondaryButtonDown()) {
 									debugLog("Image " + p.getFilename()
 											+ " right clicked");
+									
 								} else {
 
 									if (iv.getBoundsInParent() != null) {
