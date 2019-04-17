@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -60,6 +62,11 @@ public class ViewerController extends Canvas {
 	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
 	
+	double DEFAULT_HEIGHT_VALUE = 0.0;
+	double DEFAULT_WIDTH_VALUE = 0.0;
+	double imageHeightValue = 0.0;
+	double imageWidthValue = 0.0;
+	
 	BufferedImage original;
 	BufferedImage editedImage;
 	Image originalImage;
@@ -81,6 +88,7 @@ public class ViewerController extends Canvas {
 		
 		System.out.println("Now in viewer: " + currentPhoto);
 
+
 		
 		displayImage();
 	}
@@ -96,6 +104,12 @@ public class ViewerController extends Canvas {
 		
 		original = createBufferedImage(originalImage, x, y, true);
 		editedImage = original;
+		
+		DEFAULT_HEIGHT_VALUE = originalImage.getHeight();
+		DEFAULT_WIDTH_VALUE = originalImage.getWidth();
+		
+		imageHeightValue = DEFAULT_HEIGHT_VALUE;
+		imageWidthValue = DEFAULT_WIDTH_VALUE;
 	}
 	
 	public void doTilePaneImage() {
@@ -107,24 +121,24 @@ public class ViewerController extends Canvas {
 	}
 	
 	public void doFlipHorizontal() {
+        imageViewMain.setScaleX(imageViewMain.getScaleX() * -1);
+    }
+
+    public void doFlipVertical() {
+        imageViewMain.setScaleY(imageViewMain.getScaleY() * -1);
+    }
 		
-	}
-	
-	public void doFlipVertical() {
-		
-	}
-	
 	public void doRotate180() {
-		editedImage = rotateImage(original, 180);
-	}
-	
-	public void doRotate270() {
-		editedImage = rotateImage(original, 270);
-	}
-	
-	public void doRotate90() {
-		editedImage = rotateImage(original, 90);
-	}
+        imageViewMain.setRotate(imageViewMain.getRotate() + 180);
+    }
+
+    public void doRotate270() {
+        imageViewMain.setRotate(imageViewMain.getRotate() + 270);
+    }
+
+    public void doRotate90() {
+        imageViewMain.setRotate(imageViewMain.getRotate() + 90);
+    }
 	
 	public BufferedImage rotateImage(BufferedImage src, int rotationAngle) {		
 		double theta = (Math.PI * 2) / 360 * rotationAngle;
@@ -196,7 +210,25 @@ public class ViewerController extends Canvas {
 	}
 	
 	public void doSliderViewerZoom() {
+		//@FXML Slider sliderViewerZoom;
 		
+		sliderViewerZoom.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				double factor = newValue.doubleValue();
+				
+				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE;
+				imageWidthValue = factor * DEFAULT_WIDTH_VALUE;
+				
+				imageViewMain.setFitHeight(imageHeightValue);
+				imageViewMain.setFitWidth(imageWidthValue);
+				imageViewMain.setPreserveRatio(true);
+				
+			}
+			
+		});
 	}
 	
 	public void doTextFieldBrightness() {
