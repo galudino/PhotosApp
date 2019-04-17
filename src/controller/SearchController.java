@@ -893,6 +893,12 @@ public class SearchController {
 		UserController.currentSelectedPhoto = null;
 		SearchController.currentSelectedPhoto = currentPhoto;
 		
+		if (PhotoController.currentSelectedPhoto == null
+				&& UserController.currentSelectedPhoto == null
+				&& SearchController.currentSelectedPhoto == null) {
+			return;
+		}
+		
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/viewer.fxml"));
