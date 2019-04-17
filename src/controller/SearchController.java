@@ -298,9 +298,6 @@ public class SearchController {
 		debugLog("map: " + photoMapSearchResults);
 		debugLog("list: " + photoListSearchResults);
 		
-		
-		
-		
 		tilePaneImages.getChildren().clear();
 		
 
@@ -351,14 +348,20 @@ public class SearchController {
 					
 					System.out.println(currentImageViewList.size());
 
-					nameField.setText(
-							currentPhoto.getFilename());
-					pathField.setText(
-							currentPhoto.getFilepath());
-					sizeField.setText(
-							currentPhoto.getFileSize() + " KB");
-					createdField.setText(
-							currentPhoto.getDatePhoto() + " ");
+					nameField.setText(currentPhoto.getFilename());
+					pathField.setText(currentPhoto.getFilepath());
+					sizeField.setText(currentPhoto.getFileSize() + " KB");
+					createdField.setText(currentPhoto.getDatePhoto() + " ");
+
+					displayCaption.setText(p.getCaption());
+
+					captionField.setText("");
+
+					detailView.setImage(new Image(test.toURI().toString()));
+					detailView.setFitHeight(DEFAULT_HEIGHT_VALUE);
+					detailView.setFitWidth(DEFAULT_WIDTH_VALUE);
+					detailView.setVisible(true);
+					detailView.setPreserveRatio(true);
 
 					tList = FXCollections.observableArrayList();
 					
@@ -379,18 +382,19 @@ public class SearchController {
 						if (e.isPrimaryButtonDown()) {
 							iv.setStyle(null);
 
-							nameField.setText(
-									"(No image selected)");
-							pathField.setText(
-									"(No image selected)");
-							sizeField.setText(
-									"(No image selected)");
-							createdField.setText(
-									"(No image selected)");
+							detailView.setImage(null);
+							displayCaption.setText(null);
+							nameField.setText("(No image selected)");
+							pathField.setText("(No image selected)");
+							sizeField.setText("(No image selected)");
+							createdField.setText("(No image selected)");
 							
 							tagName.setText(null);
 							tagValue.setText(null);
 							tagList.setItems(null);
+							captionField.setText(null);
+							
+							currentPhoto = null;
 						}
 					});
 
@@ -871,13 +875,7 @@ public class SearchController {
 		debugLog("[doOpenSelectedPhotoInViewer]");
 	}
 
-	public void movePhoto() {
-		debugLog("Move photo button pressed");
-	}
 
-	public void copyPhoto() {
-		debugLog("Copy photo button pressed");
-	}
 
 	public void deletePhoto() {
 		if (currentPhoto != null) {
@@ -896,21 +894,13 @@ public class SearchController {
 				return;
 			}
 
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-					"Are you sure you want to delete this photo?",
-					ButtonType.YES, ButtonType.NO);
+			if(checkBoxPromptBeforeDelete.isSelected()) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this photo?", ButtonType.YES, ButtonType.NO);
+				alert.showAndWait();
 
-			alert.showAndWait();
-
-			/**
-			 * User no longer wants to delete the selected album
-			 */
-			if (alert.getResult() != ButtonType.YES) {
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("Quit from deleting photo.");
-				return;
+				if (alert.getResult() != ButtonType.YES) {
+					return;
+				}
 			}
 
 			/**
@@ -1234,17 +1224,16 @@ public class SearchController {
 	}
 
 	public void doAlbum() throws IOException {
-		/*
-		 * Stage window = new Stage(); FXMLLoader loader = new FXMLLoader();
-		 * 
-		 * loader.setLocation(getClass().getResource("/view/user.fxml")); Parent
-		 * root = loader.load(); Scene scene = new Scene(root);
-		 * addAlbumHL.getScene().getWindow().hide(); window.setScene(scene);
-		 * window.setTitle("Photos -- Import"); window.setResizable(false);
-		 * window.show();
-		 */
-
-		debugLog("doAlbum");
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/user.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		tagList.getScene().getWindow().hide();
+		window.setScene(scene);
+		window.setTitle("Photos V1.0 - Welcome " + model.getCurrentUser().getUsername());
+		window.setResizable(false);
+		window.show();
 	}
 
 	public void doZoomSlider() {
