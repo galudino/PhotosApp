@@ -10,6 +10,7 @@
  */
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -39,6 +41,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
@@ -52,7 +55,6 @@ import model.PhotoModel;
 import model.Tag;
 import model.TagConditional;
 import model.User;
-
 
 /**
  * Controller class to manage functionality of search.fxml
@@ -74,15 +76,15 @@ public class SearchController {
 
 	boolean deleteFromDisk;
 	boolean promptBeforeDelete;
-	
+
 	boolean searchScopeThisAlbum;
 	boolean searchScopeSelectedAlbum;
 	boolean searchScopeAllAlbums;
-	
+
 	boolean searchThisAlbum;
 	boolean searchSelectedAlbum;
 	boolean searchAllAlbums;
-	
+
 	boolean searchAnd;
 	boolean searchOr;
 	boolean searchNot;
@@ -90,7 +92,7 @@ public class SearchController {
 
 	boolean viewModeThumbnail;
 	boolean viewModeSingleImage;
-	
+
 	LocalDate dateFrom;
 	LocalDate dateTo;
 
@@ -98,21 +100,23 @@ public class SearchController {
 	String stringSearchTagValueOne;
 	String stringSearchTagNameTwo;
 	String stringSearchTagValueTwo;
-	
+
 	List<TagConditional> tagConditionalList;
-	
-	ObservableList<Photo> photoListSearchResults;
+
+	ObservableList<Photo> photoListSearchResults = FXCollections
+			.observableArrayList();
 	TreeMap<String, Photo> photoMapSearchResults;
 
 	private Photo currentPhoto = null;
 	private PhotoModel model = LoginController.getModel();
 	private Album currentAlbum = null;
 	private User currentUser = model.getCurrentUser();
-	
+
 	private List<ImageView> currentImageViewList = null;
 
 	ObservableList<Photo> photoList = FXCollections.observableArrayList();
-	
+	ObservableList<Tag> tList;
+
 	//@formatter:off
 	@FXML Button cancelEdit;
 	@FXML Button createAlbum;
@@ -203,7 +207,7 @@ public class SearchController {
 		 * user-selectable album (from their list of Albums) - all of their
 		 * albums.
 		 */
-		
+
 		/**
 		 * Setting default values
 		 */
@@ -214,14 +218,15 @@ public class SearchController {
 
 		radioButtonThumbnail.setSelected(true);
 		doViewModeThumbnail();
-		
+
 		Album possibleAlbum = currentUser.getCurrentAlbum();
 		currentAlbum = possibleAlbum != null ? possibleAlbum : null;
-		
+
 		initAlbumList();
-		
+
 		tagConditionalList = new ArrayList<TagConditional>();
-	
+		photoMapSearchResults = new TreeMap<String, Photo>();
+
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -252,7 +257,7 @@ public class SearchController {
 					currentAlbum = test;
 				}
 			}
-			
+
 			debugLog("selected album: " + currentAlbum.getAlbumName());
 		});
 
@@ -261,126 +266,243 @@ public class SearchController {
 	public void doAlbumList() {
 		radioButtonSelectedAlbum.setSelected(true);
 		doRadioButtonSelectedAlbum();
-		
+
 		// reassign the current album to currentAlbum
-		
+
 		// get the newly assigned album from here
-		//@FXML ChoiceBox<Album> albumList;
-		
+		// @FXML ChoiceBox<Album> albumList;
+
 		Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
 		currentAlbum = selectedAlbum != null ? selectedAlbum : null;
-		
+
 		debugLog("[doAlbumList]" + " newly selected album: " + currentAlbum);
 	}
 
 	public void doButtonSearchNow() {
 		debugLog("[doButtonSearchNow]");
+		photoMapSearchResults.clear();
+		photoListSearchResults.clear();
 		
 		if (invalidDatesFromTo()) {
 			return;
 		}
+
+		photoMapSearchResults = conductSearch();
+
+		for (Photo photo : photoMapSearchResults.values()) {
+			photoListSearchResults.add(photo);
+		}
+
+		tilePaneImages.getChildren().clear();
 		
-		conductSearch();
+
+		tilePaneImages.setStyle("-fx-focus-color: transparent;");
+		
+		/**
+		 * Adds padding and insets to thumbnails. Ought to be
+		 * adjusted later.
+		 */
+		tilePaneImages.setPadding(
+				new Insets(imageInsetValue, imageInsetValue,
+						imageInsetValue, imageInsetValue));
+
+		tilePaneImages.setHgap(imageInsetValue);
+
+		currentImageViewList = new ArrayList<ImageView>();
+		
+		for (Photo p : photoMapSearchResults.values()) {
+			File test = new File(p.getFilepath());
+			Image test2 = new Image(test.toURI().toString());
+			ImageView iv = new ImageView(test2);
+			
+			p.setDataPhoto(test.lastModified());
+			p.setSizePhoto(test.length());
+			
+			/**
+			 * These 'magic numbers' are temporary. They ought
+			 * to be mutable values -- using the "zoom-lever"
+			 * within the GUI (these are for the image
+			 * thumbnails)
+			 */
+			iv.setFitHeight(imageHeightValue);
+			iv.setFitWidth(imageWidthValue);
+			iv.setPreserveRatio(true);
+
+			iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+				if (e.isSecondaryButtonDown()) {
+					debugLog("Image " + p.getFilename()
+							+ " right clicked");
+				} else {
+
+					if (iv.getBoundsInParent() != null) {
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+					}
+
+					setSelectedIndex(tilePaneImages
+							.getChildren().indexOf(iv));
+					currentPhoto = p;
+
+					debugLog("Image " + p.getFilename()
+							+ " selected");
+					
+					System.out.println(currentImageViewList.size());
+
+					nameField.setText(
+							currentPhoto.getFilename());
+					pathField.setText(
+							currentPhoto.getFilepath());
+					sizeField.setText(
+							currentPhoto.getFileSize() + " KB");
+					createdField.setText(
+							currentPhoto.getDatePhoto() + " ");
+
+					tList = FXCollections.observableArrayList();
+					
+					for (Map.Entry<String, Tag> tag : currentPhoto
+							.getTagMap().entrySet()) {
+						tList.add(tag.getValue());
+					}
+
+					currentPhoto.setTagList(tList);
+
+					tagList.setItems(tList);
+
+				}
+			});
+
+			tilePaneImages.addEventFilter(
+					MouseEvent.MOUSE_PRESSED, e -> {
+						if (e.isPrimaryButtonDown()) {
+							iv.setStyle(null);
+
+							nameField.setText(
+									"(No image selected)");
+							pathField.setText(
+									"(No image selected)");
+							sizeField.setText(
+									"(No image selected)");
+							createdField.setText(
+									"(No image selected)");
+							
+							tagName.setText(null);
+							tagValue.setText(null);
+							tagList.setItems(null);
+						}
+					});
+
+			tilePaneImages.getChildren().add(iv);
+
+			currentImageViewList.add(iv);
+		}
 	}
 	
-	public void conductSearch() {
+
+
+	public TreeMap<String, Photo> conductSearch() {
 		/*
-		boolean searchScopeThisAlbum;
-		boolean searchScopeSelectedAlbum;
-		boolean searchScopeAllAlbums;
-		
-		boolean searchThisAlbum;
-		boolean searchSelectedAlbum;
-		boolean searchAllAlbums;
-		
-		boolean searchAnd;
-		boolean searchOr;
-		boolean searchNot;
-		*/
-		
+		 * boolean searchScopeThisAlbum; boolean searchScopeSelectedAlbum;
+		 * boolean searchScopeAllAlbums;
+		 * 
+		 * boolean searchThisAlbum; boolean searchSelectedAlbum; boolean
+		 * searchAllAlbums;
+		 * 
+		 * boolean searchAnd; boolean searchOr; boolean searchNot;
+		 */
+
 		/*
-		LocalDate dateFrom;
-		LocalDate dateTo;
+		 * LocalDate dateFrom; LocalDate dateTo;
+		 * 
+		 * List<TagConditional> tagConditionalList;
+		 * 
+		 * private Photo currentPhoto = null; private PhotoModel model =
+		 * LoginController.getModel(); private Album currentAlbum = null;
+		 * private User currentUser = model.getCurrentUser();
+		 * 
+		 * private List<ImageView> currentImageViewList = null;
+		 * 
+		 * ObservableList<Photo> photoList =
+		 * FXCollections.observableArrayList();
+		 */
 
-		List<TagConditional> tagConditionalList;
-
-		private Photo currentPhoto = null;
-		private PhotoModel model = LoginController.getModel();
-		private Album currentAlbum = null;
-		private User currentUser = model.getCurrentUser();
-
-		private List<ImageView> currentImageViewList = null;
-
-		ObservableList<Photo> photoList = FXCollections.observableArrayList();
-		*/
-		
 		/*
-		ObservableList<Photo> photoListSearchResults;
-		TreeMap<String, Photo> photoMapSearchResults;
-		*/
-		
-	
-		
+		 * ObservableList<Photo> photoListSearchResults; TreeMap<String, Photo>
+		 * photoMapSearchResults;
+		 */
+
+		TreeMap<String, Photo> results = new TreeMap<String, Photo>();
+
 		TreeMap<String, Album> aMap = currentUser.getAlbumMap();
 
-		for (Album album : aMap.values()) {
-			for (Photo photo : album.getPhotoMap().values()) {
-				
+		if (searchScopeThisAlbum || searchScopeSelectedAlbum) {
+			for (Photo photo : currentAlbum.getPhotoMap().values()) {
 				if (photo.isInDateRange(dateFrom, dateTo)) {
-					// if the photo is in the date range,
-					/*
-					for (TagConditional conditional : tagConditionalList) {
-						if (photo.matchesTagConditional(conditional)) {
-							debugLog(photo + " matches " + conditional);
-						} else {
-							// go to the next Photo p in the photomap
-							debugLog(photo + " does not match " + conditional);
+					if (tagConditionalList.isEmpty()) {
+						// add all photos in date range to results
+						debugLog("FOUND: " + photo + " " + currentAlbum);
+						String key = photo.getKey();
+						results.put(key, photo);
+					} else {
+						for (TagConditional conditional : tagConditionalList) {
+							if (photo.matchesTagConditional(conditional)) {
+								// add all photos in date range
+								// and matched conditional to results
+								debugLog(
+										"FOUND: " + photo + " " + currentAlbum);
+								String key = photo.getKey();
+								results.put(key, photo);
+							}
 						}
 					}
-					*/
-					
-					debugLog("Photo found: " + photo);
+				}
+			}
+		} else if (searchScopeAllAlbums) {
+			for (Album album : aMap.values()) {
+				for (Photo photo : album.getPhotoMap().values()) {
+					if (tagConditionalList.isEmpty()) {
+						// add all photos in date range to results
+						debugLog("FOUND: " + photo + " " + currentAlbum);
+						String key = photo.getKey();
+						results.put(key, photo);
+					} else {
+						if (photo.isInDateRange(dateFrom, dateTo)) {
+							for (TagConditional conditional : tagConditionalList) {
+								if (photo.matchesTagConditional(conditional)) {
+									// add all photos in date range
+									// and matched conditional to results
+									debugLog("FOUND: " + photo + " "
+											+ currentAlbum);
+									String key = photo.getKey();
+									results.put(key, photo);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
-		
-		
-	
-		
-		
-		/*
-		String test = String.format(
-				"Album to search: %s\n"
-				+ "Date from: " + dateFrom + "\n"
-				+ "Date to: " + dateTo + "\n"
-				+ tagConditionalList + "\n",
-				currentAlbum);
-		
-		debugLog(test);
-		*/
-		
-		
+
+		return results;
 	}
-		
+
 	public boolean invalidDatesFromTo() {
 		if (dateFrom == null) {
 			dateFrom = LocalDate.MIN;
 		}
-		
+
 		if (dateTo == null) {
 			dateTo = LocalDate.MAX;
 		}
-		
-		
+
 		if (dateFrom.isAfter(dateTo)) {
-			String errorStr = String.format("%s\n%s", "ERROR: See DATE RANGE.", 
+			String errorStr = String.format("%s\n%s", "ERROR: See DATE RANGE.",
 					"FROM must be chronologically before TO.");
-			
+
 			debugLog("[checkDateFromTo]" + errorStr);
-			
+
 			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
 			error.showAndWait();
-		
+
 			return true;
 		} else {
 			return false;
@@ -390,62 +512,83 @@ public class SearchController {
 	public void doMenuItemRemoveTagFromSearch() {
 		debugLog("[doMenuItemRemoveTagFromSearch]");
 
-		//menuItemRemoveTagFromSearch
-		
-		//Remove the tag conditional from these three:
-		
-			//List<TagConditional> tagConditionalList;
-			//@FXML ListView<TagConditional> listViewTagSearch;
-				
-		int selectedIndex = listViewTagSearch.getSelectionModel().getSelectedIndex();
-		
+		// menuItemRemoveTagFromSearch
+
+		// Remove the tag conditional from these three:
+
+		// List<TagConditional> tagConditionalList;
+		// @FXML ListView<TagConditional> listViewTagSearch;
+
+		int selectedIndex = listViewTagSearch.getSelectionModel()
+				.getSelectedIndex();
+
 		if (selectedIndex < 0) {
 			debugLog("No TagConditional to remove.");
 			return;
 		}
-		
+
 		listViewTagSearch.getItems().remove(selectedIndex);
-	
 		tagConditionalList.remove(selectedIndex);
+
+		buttonAddTagPair.setDisable(false);
 	}
 
 	public void doButtonAddTagPair() {
 		debugLog("[doButtonAddTagPair]");
+
+		Tag tag1 = null;
+		Tag tag2 = null;
 
 		/**
 		 * Grab the strings from the TextFields
 		 */
 		stringSearchTagNameOne = searchTagNameOne.getText();
 		stringSearchTagValueOne = searchTagValueOne.getText();
-		
+
+		/**
+		 * Tag pair will not be added if -searchNoConditional is on -text fields
+		 * for tag1 are incomplete
+		 */
 		if (checkSearchTag1NameValue()) {
 			return;
 		}
-				
-		
-		if (searchAnd || searchOr || searchNot) {
-			stringSearchTagNameTwo = searchTagValueTwo.getText();
-			stringSearchTagValueTwo = searchTagValueTwo.getText();
-			
-			if (checkSearchTag2NameValue()) {
-				debugLog("Missing content");
-			}
-		}
-			
 
+		tag1 = new Tag(stringSearchTagNameOne, stringSearchTagValueOne);
 
-		
-	
 		/**
-		 * Create tag1 and tag2 based off of the strings grabbed
-		 * from TextFields
+		 * If searchAnd, searchOr, or searchNot All text fields for tag1 and
+		 * tag2 must be filled.
 		 */
-		Tag tag1 = new Tag(stringSearchTagNameOne, stringSearchTagValueOne);
-		Tag tag2 = new Tag(stringSearchTagNameTwo, stringSearchTagValueTwo);
+		if (searchAnd || searchOr || searchNot) {
+
+			/**
+			 * Check to see if tag1 fields are either completely empty or
+			 * partially filled
+			 */
+			if (checkSearchTag1NameValueEmpty() || checkSearchTag1NameValue()) {
+				return;
+			}
+
+			/**
+			 * Grab the strings for the TextFields
+			 */
+			stringSearchTagNameTwo = searchTagNameTwo.getText();
+			stringSearchTagValueTwo = searchTagValueTwo.getText();
+
+			/**
+			 * Check to see if tag2 fields are either completely empty or
+			 * partially filled
+			 */
+			if (checkSearchTag2NameValueEmpty() || checkSearchTag2NameValue()) {
+				return;
+			}
+
+			tag2 = new Tag(stringSearchTagNameTwo, stringSearchTagValueTwo);
+		}
 
 		/**
-		 * Determine the condition based on the RadioButtons
-		 * activated and the boolean values set.
+		 * Determine the condition based on the RadioButtons activated and the
+		 * boolean values set.
 		 */
 		String condition = "";
 		if (searchAnd) {
@@ -457,33 +600,37 @@ public class SearchController {
 		} else if (searchNoConditional) {
 			condition = "searchNOconditional";
 		}
-		
+
 		/**
 		 * Create the tag conditional
 		 */
 		TagConditional conditional = new TagConditional(tag1, tag2, condition);
-		
+
 		/**
-		 * Add the conditional to the List<TagConditional>
-		 * and ObservableList<TagConditional>
+		 * Add the conditional to the List<TagConditional> and
+		 * ObservableList<TagConditional>
 		 */
 		tagConditionalList.add(conditional);
-		//tagConditionalObservableList.add(conditional);
-				
+		// tagConditionalObservableList.add(conditional);
+
 		/**
-		 * Add the ObservableList<TagConditional>
-		 * to the ListView interface
+		 * Add the ObservableList<TagConditional> to the ListView interface
 		 */
-		listViewTagSearch.setItems(FXCollections.observableArrayList(tagConditionalList));
-		
-		
+		listViewTagSearch.setItems(
+				FXCollections.observableArrayList(tagConditionalList));
+
+		buttonAddTagPair.setDisable(true);
+
+		resetTextFields();
 		resetAndOrNot();
 		debugLog(conditional + "was added");
 	}
-	
+
 	public boolean checkSearchTag1NameValue() {
-		if (!stringSearchTagNameOne.equals("") && stringSearchTagValueOne.equals("")
-				|| stringSearchTagNameOne.equals("") && !stringSearchTagValueOne.equals("")) {
+		if (!stringSearchTagNameOne.equals("")
+				&& stringSearchTagValueOne.equals("")
+				|| stringSearchTagNameOne.equals("")
+						&& !stringSearchTagValueOne.equals("")) {
 			String errorStr = "Please provide a complete key and value for tag 1.";
 			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
 			error.showAndWait();
@@ -492,11 +639,24 @@ public class SearchController {
 			return false;
 		}
 	}
-	
+
+	public boolean checkSearchTag1NameValueEmpty() {
+		if (stringSearchTagNameOne.equals("")
+				&& stringSearchTagValueOne.equals("")) {
+			String errorStr = "Please provide a complete key and value for tag 1.";
+			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
+			error.showAndWait();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public boolean checkSearchTag2NameValue() {
-		/*
-		if (!stringSearchTagNameTwo.equals("") && stringSearchTagValueTwo.equals("")
-				|| stringSearchTagNameTwo.equals("") && !stringSearchTagValueTwo.equals("")) {
+		if (!stringSearchTagNameTwo.equals("")
+				&& stringSearchTagValueTwo.equals("")
+				|| stringSearchTagNameTwo.equals("")
+						&& !stringSearchTagValueTwo.equals("")) {
 			String errorStr = "Please provide a complete key and value for tag 2.";
 			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
 			error.showAndWait();
@@ -504,17 +664,26 @@ public class SearchController {
 		} else {
 			return false;
 		}
-		*/
-		
-		return false;
 	}
-	
+
+	public boolean checkSearchTag2NameValueEmpty() {
+		if (stringSearchTagNameTwo.equals("")
+				&& stringSearchTagValueTwo.equals("")) {
+			String errorStr = "Please provide a complete key and value for tag 2.";
+			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
+			error.showAndWait();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void resetAndOrNot() {
 		searchTagNameTwo.setDisable(true);
 		searchTagValueTwo.setDisable(true);
 		searchTagNameTwo.clear();
 		searchTagValueTwo.clear();
-		
+
 		radioButtonAnd.setSelected(false);
 		radioButtonOr.setSelected(false);
 		radioButtonNot.setSelected(false);
@@ -524,6 +693,18 @@ public class SearchController {
 		searchNoConditional = true;
 	}
 
+	public void resetTextFields() {
+		searchTagNameOne.clear();
+		searchTagValueOne.clear();
+		searchTagNameTwo.clear();
+		searchTagValueTwo.clear();
+
+		stringSearchTagNameOne = "";
+		stringSearchTagValueOne = "";
+		stringSearchTagNameTwo = "";
+		stringSearchTagValueTwo = "";
+	}
+
 	public void doRadioButtonAnd() {
 		if (radioButtonAnd.isSelected()) {
 			radioButtonOr.setSelected(false);
@@ -531,7 +712,7 @@ public class SearchController {
 
 			searchTagNameTwo.setDisable(false);
 			searchTagValueTwo.setDisable(false);
-			
+
 			searchAnd = true;
 			searchOr = false;
 			searchNot = false;
@@ -547,7 +728,7 @@ public class SearchController {
 		if (radioButtonOr.isSelected()) {
 			radioButtonAnd.setSelected(false);
 			radioButtonNot.setSelected(false);
-			
+
 			searchTagNameTwo.setDisable(false);
 			searchTagValueTwo.setDisable(false);
 
@@ -566,7 +747,7 @@ public class SearchController {
 		if (radioButtonNot.isSelected()) {
 			radioButtonAnd.setSelected(false);
 			radioButtonOr.setSelected(false);
-			
+
 			searchTagNameTwo.setDisable(false);
 			searchTagValueTwo.setDisable(false);
 
@@ -609,7 +790,7 @@ public class SearchController {
 		debugLog("[doDatePickerFrom]");
 
 		dateFrom = datePickerFrom.getValue();
-		
+
 		debugLog(dateFrom + " was retrieved");
 	}
 
@@ -617,7 +798,7 @@ public class SearchController {
 		debugLog("[doDatePickerTo]");
 
 		dateTo = datePickerTo.getValue();
-		
+
 		debugLog(dateFrom + " was retrieved" + " (long value) ");
 	}
 
@@ -763,14 +944,17 @@ public class SearchController {
 
 	public void doCheckBoxDeleteFromDisk() {
 		deleteFromDisk = deleteFromDisk ? false : true;
-		
-		debugLog("Delete from disk checked -- delete from disk enabled: " + deleteFromDisk);
+
+		debugLog("Delete from disk checked -- delete from disk enabled: "
+				+ deleteFromDisk);
 	}
 
 	public void doCheckBoxPromptBeforeDelete() {
 		promptBeforeDelete = promptBeforeDelete ? false : true;
-		
-		debugLog("Prompt before delete checked -- prompt before delete enabled: " + promptBeforeDelete);
+
+		debugLog(
+				"Prompt before delete checked -- prompt before delete enabled: "
+						+ promptBeforeDelete);
 	}
 
 	public void removeTag() {
