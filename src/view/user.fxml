@@ -127,7 +127,7 @@
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#deletePhoto" text="Delete Selected Photo from this Album" />
                                     <SeparatorMenuItem mnemonicParsing="false" />
-                                    <MenuItem mnemonicParsing="false" text="Open Photo in Viewer" />
+                                    <MenuItem mnemonicParsing="false" onAction="#doOpenSelectedPhotoInViewer" text="Open Photo in Viewer" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>

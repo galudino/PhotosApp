@@ -12,6 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import model.Photo;
+import model.PhotoModel;
+import model.User;
 
 public class ViewerController extends Canvas {
 	
@@ -47,11 +50,38 @@ public class ViewerController extends Canvas {
 	
 	//@formatter:on
 	
+	private PhotoModel model = LoginController.getModel();
+	private User currentUser = model.getCurrentUser();
+	private Photo currentPhoto = null;
+
+	
 	BufferedImage original;
 	Image originalImage;
 	
 	@FXML
 	public void initialize() {
+		// upon initialization:
+		// get the selected photo to appear in the viewer
+		// collect the data for:
+		//brightness
+		//saturation
+		//hue
+		//contrast
+		
+		if (UserController.currentSelectedPhoto != null) {
+			currentPhoto = UserController.currentSelectedPhoto;
+		}
+		
+		if (PhotoController.currentSelectedPhoto != null) {
+			currentPhoto = PhotoController.currentSelectedPhoto;
+		}
+		
+		if (SearchController.currentSelectedPhoto != null) {
+			currentPhoto = SearchController.currentSelectedPhoto;
+		}
+		
+		System.out.println("Now in viewer: " + currentPhoto);
+
 		
 	}
 	

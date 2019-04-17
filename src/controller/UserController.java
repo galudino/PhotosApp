@@ -69,6 +69,8 @@ public class UserController {
 	private Album currentAlbum = null;
 	private User currentUser = model.getCurrentUser();
 	
+	public static Photo currentSelectedPhoto = null;
+	
 	int index = 0;
 
 	final double DEFAULT_INSET_VALUE = 10.0;
@@ -183,6 +185,10 @@ public class UserController {
 
 	public void doOpenSelectedPhotoInViewer() throws IOException {
 		debugLog("Open selected photo in viewer");
+		
+		PhotoController.currentSelectedPhoto = null;
+		UserController.currentSelectedPhoto = currentPhoto;
+		SearchController.currentSelectedPhoto = null;
 		
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
@@ -584,6 +590,7 @@ public class UserController {
 
 									setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
 									currentPhoto = p;
+									currentSelectedPhoto = currentPhoto;
 
 									nameField.setText(currentPhoto.getFilename());
 									pathField.setText(currentPhoto.getFilepath());
@@ -689,6 +696,7 @@ public class UserController {
 					}
 
 					currentPhoto = photoList.get(index);
+					currentSelectedPhoto = currentPhoto;
 					
 					detailView.setImage(currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
@@ -756,6 +764,7 @@ public class UserController {
 					}
 
 					currentPhoto = photoList.get(index);
+					currentSelectedPhoto = currentPhoto;
 
 					detailView.setImage(currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);

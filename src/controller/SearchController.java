@@ -113,6 +113,8 @@ public class SearchController {
 	private PhotoModel model = LoginController.getModel();
 	private Album currentAlbum = null;
 	private User currentUser = model.getCurrentUser();
+	
+	public static Photo currentSelectedPhoto;
 
 	private List<ImageView> currentImageViewList = null;
 
@@ -353,6 +355,7 @@ public class SearchController {
 					setSelectedIndex(tilePaneImages
 							.getChildren().indexOf(iv));
 					currentPhoto = p;
+					currentSelectedPhoto = currentPhoto;
 
 					debugLog("Image " + p.getFilename()
 							+ " selected");
@@ -886,6 +889,10 @@ public class SearchController {
 	public void doOpenSelectedPhotoInViewer() throws IOException {
 		debugLog("Open selected photo in viewer");
 		
+		PhotoController.currentSelectedPhoto = null;
+		UserController.currentSelectedPhoto = null;
+		SearchController.currentSelectedPhoto = currentPhoto;
+		
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/viewer.fxml"));
@@ -1418,6 +1425,7 @@ public class SearchController {
 					 */
 					//currentPhoto = photoList.get(index);
 					currentPhoto = photoListSearchResults.get(index);
+					currentSelectedPhoto = currentPhoto;
 
 					/**
 					 * Update selected image in detail pane
@@ -1538,6 +1546,7 @@ public class SearchController {
 					 */
 					//currentPhoto = photoList.get(index);
 					currentPhoto = photoListSearchResults.get(index);
+					currentSelectedPhoto = currentPhoto;
 
 					/**
 					 * Update selected image in detail pane

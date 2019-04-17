@@ -78,6 +78,8 @@ public class PhotoController {
 	ObservableList<Tag> tList;
 
 	PhotoModel model = LoginController.getModel();
+	
+	public static Photo currentSelectedPhoto;
 
 	int index = 0;
 
@@ -134,6 +136,10 @@ public class PhotoController {
 
 	public void doOpenSelectedPhotoInViewer() throws IOException {
 		debugLog("Open selected photo in viewer");
+		
+		PhotoController.currentSelectedPhoto = currentPhoto;
+		UserController.currentSelectedPhoto = null;
+		SearchController.currentSelectedPhoto = null;
 		
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
@@ -382,6 +388,7 @@ public class PhotoController {
 					
 					currentPhoto = imageQueueList.getItems().get(index);
 					// currentPhoto = pList.get(index);
+					currentSelectedPhoto = currentPhoto;
 					
 
 					detailView.setImage(
@@ -446,6 +453,7 @@ public class PhotoController {
 					currentPhoto = imageQueueList.getItems().get(index);
 					//currentPhoto = photoList.get(index);
 					// currentPhoto = pList.get(index);
+					currentSelectedPhoto = currentPhoto;
 
 					detailView.setImage(
 							currentImageViewList.get(index).getImage());
@@ -524,6 +532,7 @@ public class PhotoController {
 
 					setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
 					currentPhoto = p;
+					currentSelectedPhoto = currentPhoto;
 					
 					detailView.setImage(
 							currentImageViewList.get(index).getImage());
