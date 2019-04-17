@@ -1,7 +1,5 @@
 package controller;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javafx.beans.value.ChangeListener;
@@ -12,13 +10,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import model.Photo;
 import model.PhotoModel;
-import model.User;
 
 public class ViewerController extends Canvas {
 	
@@ -59,7 +58,6 @@ public class ViewerController extends Canvas {
 	//@formatter:on
 	
 	private PhotoModel model = LoginController.getModel();
-	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
 	
 	double DEFAULT_HEIGHT_VALUE = 0.0;
@@ -67,8 +65,6 @@ public class ViewerController extends Canvas {
 	double imageHeightValue = 0.0;
 	double imageWidthValue = 0.0;
 	
-	BufferedImage original;
-	BufferedImage editedImage;
 	Image originalImage;
 	
 	@FXML
@@ -87,8 +83,6 @@ public class ViewerController extends Canvas {
 		}
 		
 		System.out.println("Now in viewer: " + currentPhoto);
-
-
 		
 		displayImage();
 	}
@@ -96,14 +90,7 @@ public class ViewerController extends Canvas {
 	private void displayImage() {
 		File test = new File(currentPhoto.getFilepath());
 		originalImage = new Image(test.toURI().toString());
-		ImageView iv = new ImageView(originalImage);
         imageViewMain.setImage(originalImage);
-        
-		int x = (int) originalImage.getWidth();
-		int y = (int) originalImage.getHeight();
-		
-		original = createBufferedImage(originalImage, x, y, true);
-		editedImage = original;
 		
 		DEFAULT_HEIGHT_VALUE = originalImage.getHeight();
 		DEFAULT_WIDTH_VALUE = originalImage.getWidth();
@@ -140,48 +127,8 @@ public class ViewerController extends Canvas {
         imageViewMain.setRotate(imageViewMain.getRotate() + 90);
     }
 	
-	public BufferedImage rotateImage(BufferedImage src, int rotationAngle) {		
-		double theta = (Math.PI * 2) / 360 * rotationAngle;
-		int width = src.getWidth();
-		int height = src.getHeight();
-		BufferedImage dest;
-		
-		if (rotationAngle == 90 || rotationAngle == 270) {
-			dest = new BufferedImage(src.getHeight(), src.getWidth(), src.getType());
-		} else {
-			dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-		}
-
-		Graphics2D graphics2D = dest.createGraphics();
-
-		if (rotationAngle == 90) {
-			graphics2D.translate((height - width) / 2, (height - width) / 2);
-			graphics2D.rotate(theta, height / 2, width / 2);
-		} else if (rotationAngle == 270) {
-			graphics2D.translate((width - height) / 2, (width - height) / 2);
-			graphics2D.rotate(theta, height / 2, width / 2);
-		} else {
-			graphics2D.translate(0, 0);
-			graphics2D.rotate(theta, width / 2, height / 2);
-		}
-		graphics2D.drawRenderedImage(src, null);
-		return dest;
-	}
-	
 	public void doCloseViewer() {
-		
-	}
-	
-	public void doUndo() {
-		
-	}
-	
-	public void doRedo() {
-		
-	}
-	
-	public void doRevert() {
-		
+		imageViewMain.getScene().getWindow().hide();
 	}
 	
 	public void doSavePhoto() {
@@ -194,24 +141,66 @@ public class ViewerController extends Canvas {
 	
 	
 	public void doSliderBrightness() {
-		
+	    sliderBrightness.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				double factor = newValue.doubleValue();
+				textFieldBrightness.setText(factor + "");
+				ColorAdjust brightness = new ColorAdjust();
+				brightness.setContrast(factor);
+				imageViewMain.setEffect(brightness);
+			}
+	    	
+	    });
 	}
 	
 	public void doSliderContrast() {
-		
+	    sliderContrast.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				double factor = newValue.doubleValue();
+				textFieldContrast.setText(factor + "");
+				ColorAdjust contrast = new ColorAdjust();
+				contrast.setContrast(factor);
+				imageViewMain.setEffect(contrast);
+			}
+	    	
+	    });
 	}
 	
 	public void doSliderHue() {
-		
+	    sliderHue.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				double factor = newValue.doubleValue();
+				textFieldHue.setText(factor + "");
+				ColorAdjust hue = new ColorAdjust();
+				hue.setHue(factor);
+				imageViewMain.setEffect(hue);
+			}
+	    	
+	    });
 	}
 	
-	public void doSliderSaturation() {
-		
+	public void doSliderSaturation() {	    
+	    sliderSaturation.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				double factor = newValue.doubleValue();
+				textFieldSaturation.setText(factor + "");
+				ColorAdjust desaturation = new ColorAdjust();
+				desaturation.setSaturation(factor);
+				imageViewMain.setEffect(desaturation);
+			}
+	    	
+	    });
 	}
 	
-	public void doSliderViewerZoom() {
-		//@FXML Slider sliderViewerZoom;
-		
+	public void doSliderViewerZoom() {		
 		sliderViewerZoom.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -232,58 +221,63 @@ public class ViewerController extends Canvas {
 	}
 	
 	public void doTextFieldBrightness() {
+		double input = Double.parseDouble(textFieldBrightness.getText());
 		
+		if(input < -1 || input > 1) {
+			textFieldBrightness.setText(null);
+			Alert error = new Alert(AlertType.ERROR, "Brightness values range from -1.0 to 1.0.");
+			error.showAndWait();
+		} else {
+			sliderBrightness.setValue(input);
+			ColorAdjust brightness = new ColorAdjust();
+			brightness.setBrightness(input);
+			imageViewMain.setEffect(brightness);
+		}
 	}
 	
 	public void doTextFieldContrast() {
+		double input = Double.parseDouble(textFieldContrast.getText());
 		
+		if(input < -1 || input > 1) {
+			textFieldContrast.setText(null);
+			Alert error = new Alert(AlertType.ERROR, "Contrast values range from -1.0 to 1.0.");
+			error.showAndWait();
+		} else {
+			sliderContrast.setValue(input);
+			ColorAdjust contrast = new ColorAdjust();
+			contrast.setContrast(input);
+			imageViewMain.setEffect(contrast);
+		}
 	}
 	
 	public void doTextFieldHue() {
+		double input = Double.parseDouble(textFieldHue.getText());
 		
+		if(input < -1 || input > 1) {
+			textFieldHue.setText(null);
+			Alert error = new Alert(AlertType.ERROR, "Hue values range from -1.0 to 1.0.");
+			error.showAndWait();
+		} else {
+			sliderHue.setValue(input);
+			ColorAdjust hue = new ColorAdjust();
+			hue.setHue(input);
+			imageViewMain.setEffect(hue);
+		}
 	}
 	
 	public void doTextFieldSaturation() {
+		double input = Double.parseDouble(textFieldSaturation.getText());
 		
-	}
-
-	
-	public void reset() {
-		
-	}
-	
-	public void rotateImage(BufferedImage image, int width, int height) {
-		
-	}
-	
-	public void rotateImage() {
-		BufferedImage temp;
-	}
-	
-	public void resizeImage(int width, int height) {
-		
-	}
-	
-	public BufferedImage createBufferedImage(Image image, int width, int height, boolean tran) {
-		BufferedImage temp;
-		
-		if(tran) 
-			temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		else
-			temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		
-		Graphics2D graphics = temp.createGraphics();
-		graphics.drawImage(temp, width, height, null);
-		graphics.dispose();
-		return temp;
-	}
-	
-	public void saturate() {
-	    ImageView original = new ImageView(originalImage);
-	    ImageView desaturated = new ImageView(originalImage);
-	    ColorAdjust desaturate = new ColorAdjust();
-	    desaturate.setSaturation(-1);
-	    desaturated.setEffect(desaturate);
+		if(input < -1 || input > 1) {
+			textFieldSaturation.setText(null);
+			Alert error = new Alert(AlertType.ERROR, "Saturation values range from -1.0 to 1.0.");
+			error.showAndWait();
+		} else {
+			sliderSaturation.setValue(input);
+			ColorAdjust desaturation = new ColorAdjust();
+			desaturation.setSaturation(input);
+			imageViewMain.setEffect(desaturation);
+		}
 	}
 	
 }
