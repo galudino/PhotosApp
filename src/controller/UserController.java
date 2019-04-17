@@ -142,9 +142,6 @@ public class UserController {
 	@FXML ListView<Album> albumView;
 	@FXML ListView<Tag> tagList;
 	
-	@FXML RadioButton radioButtonThumbnail;
-	@FXML RadioButton radioButtonSingleImage;
-	
 	@FXML Slider zoomSlider;
 	
 	@FXML Text oldName;
@@ -165,6 +162,8 @@ public class UserController {
 		fileImportImagesSelectedAlbum.setDisable(true);
 		albumView.setItems(currentUser.getAlbumList());
 		updateInfoData();
+		
+
 
 		/*
 		menuAlbums.getItems().clear();
@@ -173,14 +172,6 @@ public class UserController {
 			a.setCounterDatetime();
 		}
 		*/
-	}
-
-	public void doViewModeThumbnail() {
-		debugLog("Adjusting view mode thumbnail");
-	}
-
-	public void doViewModeSingleImage() {
-		debugLog("Adjusting view mode single image");
 	}
 
 	public void doOpenSelectedPhotoInViewer() throws IOException {

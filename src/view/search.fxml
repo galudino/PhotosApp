@@ -30,7 +30,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.TilePane?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SearchController">
@@ -45,12 +44,6 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="fileSaveAndLogout" mnemonicParsing="false" onAction="#doLogOut" text="Save &amp; Logout" />
                   <MenuItem fx:id="fileSaveAndExit" mnemonicParsing="false" onAction="#doQuit" text="Save &amp; Exit Photos" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="View">
-            <items>
-              <MenuItem fx:id="viewAsThumbnails" mnemonicParsing="false" onAction="#doViewModeThumbnail" text="As Thumbnails" />
-                  <MenuItem fx:id="viewAsSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="As Single Image" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -83,7 +76,7 @@
                </children></AnchorPane>
             <AnchorPane layoutY="61.0" prefHeight="585.0" prefWidth="334.0">
                <children>
-                  <Pane prefHeight="125.0" prefWidth="336.0">
+                  <Pane prefHeight="150.0" prefWidth="336.0">
                      <children>
                         <Label layoutX="41.0" layoutY="10.0" text="SEARCH SCOPE" textFill="#aeaeae">
                            <font>
@@ -100,7 +93,7 @@
                               <Font size="11.0" />
                            </font>
                         </RadioButton>
-                        <RadioButton fx:id="radioButtonAllAlbums" layoutX="66.0" layoutY="100.0" mnemonicParsing="false" onAction="#doRadioButtonAllAlbums" text="All Albums">
+                        <RadioButton fx:id="radioButtonAllAlbums" layoutX="68.0" layoutY="121.0" mnemonicParsing="false" onAction="#doRadioButtonAllAlbums" text="All Albums">
                            <font>
                               <Font size="11.0" />
                            </font>
@@ -108,7 +101,7 @@
                         <ChoiceBox fx:id="albumList" layoutX="88.0" layoutY="68.0" onMousePressed="#doAlbumList" prefWidth="150.0" />
                      </children>
                   </Pane>
-                  <Pane layoutY="125.0" prefHeight="125.0" prefWidth="336.0">
+                  <Pane layoutY="136.0" prefHeight="125.0" prefWidth="336.0">
                      <children>
                         <Label layoutX="41.0" layoutY="10.0" text="DATE RANGE" textFill="#aeaeae">
                            <font>
@@ -129,7 +122,7 @@
                         <DatePicker fx:id="datePickerTo" layoutX="66.0" layoutY="87.0" onAction="#doDatePickerTo" />
                      </children>
                   </Pane>
-                  <Pane layoutY="250.0" prefHeight="188.0" prefWidth="336.0">
+                  <Pane layoutY="261.0" prefHeight="188.0" prefWidth="336.0">
                      <children>
                         <Label layoutX="41.0" layoutY="13.0" text="ADD TAGS" textFill="#aeaeae">
                            <font>
@@ -158,13 +151,13 @@
                   </Pane>
                   <Pane layoutY="429.0" prefHeight="150.0" prefWidth="336.0">
                      <children>
-                        <Button fx:id="buttonSearchNow" layoutX="77.0" layoutY="109.0" mnemonicParsing="false" onAction="#doButtonSearchNow" prefHeight="27.0" prefWidth="182.0" text="Search Now" />
-                        <Label layoutX="41.0" layoutY="7.0" text="TAGS PROVIDED" textFill="#aeaeae">
+                        <Button fx:id="buttonSearchNow" layoutX="77.0" layoutY="121.0" mnemonicParsing="false" onAction="#doButtonSearchNow" prefHeight="27.0" prefWidth="182.0" text="Search Now" />
+                        <Label layoutX="41.0" layoutY="21.0" text="TAGS PROVIDED" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <ListView fx:id="listViewTagSearch" layoutX="41.0" layoutY="21.0" prefHeight="79.0" prefWidth="238.0">
+                        <ListView fx:id="listViewTagSearch" layoutX="41.0" layoutY="37.0" prefHeight="79.0" prefWidth="238.0">
                            <contextMenu>
                               <ContextMenu>
                                 <items>
@@ -211,18 +204,7 @@
                </children></AnchorPane>
             <AnchorPane layoutY="583.0" prefHeight="63.0" prefWidth="617.0">
                <children>
-                  <Pane layoutX="-1.0" prefHeight="79.0" prefWidth="308.0">
-                     <children>
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="29.0" layoutX="26.0" layoutY="41.0" stroke="#dadada" strokeLineJoin="BEVEL" strokeType="INSIDE" width="238.0" />
-                        <ButtonBar layoutX="16.0" layoutY="41.0" prefHeight="29.0" prefWidth="238.0">
-                          <buttons>
-                              <RadioButton fx:id="radioButtonThumbnail" mnemonicParsing="false" onAction="#doViewModeThumbnail" text="Thumbnail" />
-                              <RadioButton fx:id="radioButtonSingleImage" mnemonicParsing="false" onAction="#doViewModeSingleImage" text="Single Image" />
-                          </buttons>
-                        </ButtonBar>
-                        <Label layoutX="108.0" layoutY="14.0" text="VIEW MODE" textFill="#aeaeae" />
-                     </children>
-                  </Pane>
+                  <Pane layoutX="-1.0" prefHeight="79.0" prefWidth="308.0" />
                   <Pane layoutX="307.0" prefHeight="74.0" prefWidth="155.0">
                      <children>
                         <Slider fx:id="zoomSlider" layoutX="14.0" layoutY="44.0" max="2.0" min="0.25" onMousePressed="#doZoomSlider" showTickLabels="true" showTickMarks="true" />

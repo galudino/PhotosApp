@@ -64,7 +64,6 @@ import model.User;
  * @version Apr 12, 2019
  * @author Gemuele Aludino
  */
-
 public class SearchController {
 
 	private int index = 0;
@@ -172,9 +171,6 @@ public class SearchController {
 	@FXML MenuItem viewAsSingleImage;
 	@FXML MenuItem viewAsThumbnails;
 	
-	@FXML RadioButton radioButtonThumbnail;
-	@FXML RadioButton radioButtonSingleImage;
-	
 	@FXML RadioButton radioButtonThisAlbum;
 	@FXML RadioButton radioButtonSelectedAlbum;
 	@FXML RadioButton radioButtonAllAlbums;
@@ -228,9 +224,6 @@ public class SearchController {
 
 		resetAndOrNot();
 
-		radioButtonThumbnail.setSelected(true);
-		doViewModeThumbnail();
-
 		Album possibleAlbum = currentUser.getCurrentAlbum();
 		currentAlbum = possibleAlbum != null ? possibleAlbum : null;
 
@@ -248,6 +241,9 @@ public class SearchController {
 		debugLog("Entering " + getClass().getSimpleName());
 	}
 
+	/**
+	 * Initializes the album drop-down list
+	 */
 	public void initAlbumList() {
 		albumList.getItems().clear();
 
@@ -277,6 +273,9 @@ public class SearchController {
 
 	}
 
+	/**
+	 * Re-assigns the current album to selectedAlbum
+	 */
 	public void doAlbumList() {
 		radioButtonSelectedAlbum.setSelected(true);
 		doRadioButtonSelectedAlbum();
@@ -292,6 +291,9 @@ public class SearchController {
 		debugLog("[doAlbumList]" + " newly selected album: " + currentAlbum);
 	}
 
+	/**
+	 * Invokes search functionality
+	 */
 	public void doButtonSearchNow() {
 		debugLog("[doButtonSearchNow]");
 		photoMapSearchResults.clear();
@@ -419,8 +421,11 @@ public class SearchController {
 		
 	}
 	
-
-
+	/**
+	 * Returns a TreeMap represents the search query results
+	 * 
+	 * @return treeMap of search results based on parameters given
+	 */
 	public TreeMap<String, Photo> conductSearch() {
 		/*
 		 * boolean searchScopeThisAlbum; boolean searchScopeSelectedAlbum;
@@ -862,28 +867,6 @@ public class SearchController {
 		}
 
 		debugLog("[doRadioButtonAllAlbums]");
-	}
-
-	public void doViewModeThumbnail() {
-		if (radioButtonThumbnail.isSelected()) {
-			radioButtonSingleImage.setSelected(false);
-
-			viewModeThumbnail = true;
-			viewModeSingleImage = false;
-		}
-
-		debugLog("[doViewModeThumbnail]");
-	}
-
-	public void doViewModeSingleImage() {
-		if (radioButtonSingleImage.isSelected()) {
-			radioButtonThumbnail.setSelected(false);
-
-			viewModeSingleImage = true;
-			viewModeThumbnail = false;
-		}
-
-		debugLog("[doViewModeSingleImage]");
 	}
 
 	public void doOpenSelectedPhotoInViewer() throws IOException {

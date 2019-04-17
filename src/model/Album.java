@@ -252,7 +252,8 @@ public class Album implements Comparable<Album>, Serializable {
 	}
 	
 	public String toString() {
-		return "Album name: " + albumName + "\nPhoto count: " + photoMap.size() + "\nRanges from: " + epochToLocalTime(min) + " to " + epochToLocalTime(max);
+		return String.format("\"%s\", %d photos\nfrom %s to %s", albumName, 
+				photoMap.size(), epochToLocalTime(min), epochToLocalTime(max));
 	}
 
 }

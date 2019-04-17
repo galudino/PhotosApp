@@ -110,8 +110,6 @@ public class PhotoController {
 	
 	@FXML RadioButton radioButtonThisAlbum;
 	@FXML RadioButton radioButtonSelectedAlbum;
-	@FXML RadioButton radioButtonThumbnail;
-	@FXML RadioButton radioButtonSimpleImage;
 	
 	@FXML Slider zoomSlider;
 	
