@@ -55,6 +55,86 @@ public class ViewerController extends Canvas {
 		
 	}
 	
+	public void doFlipHorizontal() {
+		
+	}
+	
+	public void doFlipVertical() {
+		
+	}
+	
+	public void doRotate180() {
+		
+	}
+	
+	public void doRotate270() {
+		
+	}
+	
+	public void doRotate90() {
+		
+	}
+	
+	public void doCloseViewer() {
+		
+	}
+	
+	public void doUndo() {
+		
+	}
+	
+	public void doRedo() {
+		
+	}
+	
+	public void doRevert() {
+		
+	}
+	
+	public void doSavePhoto() {
+		
+	}
+	
+	public void doSavePhotoAs() {
+		
+	}
+	
+	
+	public void doSliderBrightness() {
+		
+	}
+	
+	public void doSliderContrast() {
+		
+	}
+	
+	public void doSliderHue() {
+		
+	}
+	
+	public void doSliderSaturation() {
+		
+	}
+	
+	public void doSliderViewerZoom() {
+		
+	}
+	
+	public void doTextFieldBrightness() {
+		
+	}
+	
+	public void doTextFieldContrast() {
+		
+	}
+	
+	public void doTextFieldHue() {
+		
+	}
+	
+	public void doTextFieldSaturation() {
+		
+	}
 
 	
 	public void reset() {
