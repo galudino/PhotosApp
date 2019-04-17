@@ -13,16 +13,11 @@ package model;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -36,13 +31,7 @@ import javafx.collections.ObservableList;
  */
 public class Photo implements Serializable {
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2759544425727486297L;
-	private static final int THUMBNAIL_W = 120;
-	private static final int THUMBNAIL_H = 120;
 
 	private String filepath;
 	private String caption;
@@ -55,22 +44,7 @@ public class Photo implements Serializable {
 	private TreeMap<String, Tag> tagMap;
 
 	/**
-	 * 
-	 * @param photo
-	 */
-	public Photo(Photo photo) {
-		this.imageFile = photo.imageFile;
-		this.filepath = photo.filepath;
-		this.caption = photo.caption;
-		this.datePhoto = photo.datePhoto;
-		this.fileSize = photo.fileSize;
-
-		tagMap = new TreeMap<String, Tag>();
-		tagList = FXCollections.observableArrayList();
-	}
-
-	/**
-	 * 
+	 * Constructor that takes a String as the filePath.
 	 * @param fileName
 	 */
 	public Photo(String filepath) {
@@ -82,6 +56,25 @@ public class Photo implements Serializable {
 		tagMap = new TreeMap<String, Tag>();
 	}
 	
+	/**
+	 * Overloaded constructor which takes a Photo object.
+	 * @param photo : Photo object to copy.
+	 */
+	public Photo(Photo photo) {
+		this.imageFile = photo.imageFile;
+		this.filepath = photo.filepath;
+		this.caption = photo.caption;
+		this.datePhoto = photo.datePhoto;
+		this.fileSize = photo.fileSize;
+
+		tagMap = new TreeMap<String, Tag>();
+		tagList = FXCollections.observableArrayList();
+	}
+	
+	/**
+	 * Overloaded constructor which takes a File object and extracts data.
+	 * @param imageFile: A file object utilized to store data.
+	 */
 	public Photo(File imageFile) {
 		this.imageFile = imageFile;
 		filepath = imageFile.getAbsolutePath();
@@ -92,121 +85,11 @@ public class Photo implements Serializable {
 		tagMap = new TreeMap<String, Tag>();
 	}
 
-	public Photo createPhoto(String filepath, File imageFile) {
-		if(imageFile == null) {
-			this.imageFile = new File(filepath);
-		}
-		
-		return null;
-	}
-	
 	/**
-	 * 
-	 * @return
-	 */
-	public String getFilepath() {
-		return filepath;
-	}
-	
-	public String getExternalForm() throws MalformedURLException {
-		URL url = imageFile.toURI().toURL();
-		return url.toExternalForm();
-	}
-	
-	public TreeMap<String, Tag> getTagMap() {
-		return tagMap;
-	}
-	
-	public void setTagList(ObservableList<Tag> tagList) {
-		this.tagList = tagList;
-	}
-	
-	public ObservableList<Tag> getTagList() {
-		return tagList;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public File getImageFile() {
-		return imageFile;
-	}
-	
-	/**
-	 * Accessor to compute and return the target filename within filepath
-	 * 
-	 * @author Gemuele Aludino
-	 * @return substring of filepath, resultant: filename of photo
-	 */
-	public String getFilename() {
-		return filepath.substring(filepath.lastIndexOf(File.separator) + 1);
-	}
-	
-	/**
-	 * Accessor to compute and return the target filename within filepath
-	 * with no extension
-	 * 
-	 * @author Gemuele Aludino
-	 * @return substring of filepath, resultant: filename of photo, no extension
-	 */
-	public String getFilenameNoExtension() {
-		String filename = getFilename();
-		return filename.substring(0, filename.lastIndexOf("."));
-	}
-	
-	/**
-	 * Accessor to compute and return the target filename's extension
-	 * 
-	 * @author Gemuele Aludino
-	 * @return substring of filepath, resultant: extension of filename
-	 */
-	public String getFilenameExtension() {
-		String filename = getFilename();
-		return filename.substring(filename.lastIndexOf("."));
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getCaption() {
-		return caption;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getDatePhoto() {
-		return epochToLocalTime(datePhoto);
-	}
-	
-	public void setDataPhoto(long time) {
-		datePhoto = time;
-	}
-	
-	public void setSizePhoto(long size) {
-		fileSize = (size / 1024);
-	}
-	
-	public long getFileSize() { 
-		return fileSize;
-	}
-
-	/**
-	 * 
-	 * @param caption
-	 */
-	public void setCaption(String caption) {
-		this.caption = caption;
-	}
-
-	/**
-	 * 
-	 * @param tagName
-	 * @param tagValue
-	 * @return
+	 * Adds a tag to the TreeMap<String, Tag> based on index.
+	 * @param tagName : String object containing the value of the tag name.
+	 * @param tagValue : String object containing the value of the tag value.
+	 * @return index of where it was placed in the TreeMap<String, Tag> or -1 if not added.
 	 */
 	public int addTag(String tagName, String tagValue) {
 		String tagKey = Tag.makeKey(tagName, tagValue);
@@ -245,9 +128,9 @@ public class Photo implements Serializable {
 	}
 
 	/**
-	 * 
-	 * @param index
-	 * @return
+	 * Removes a Tag from the TreeMap<String, Tag> and the ObservableList<Tag> based on index.
+	 * @param index : index of where the Tag is in the list which is derived from UserController.
+	 * @return true | false based on if the Tag was deleted.
 	 */
 	public boolean deleteTag(int index) {
 		String key = tagList.get(index).getKey();
@@ -262,73 +145,21 @@ public class Photo implements Serializable {
 		}
 	}
 	
-	public static String makeKey(String fileName) {
-		return fileName.toLowerCase();
-	}
-	
-	public String getKey() {
-		return makeKey(filepath);
-	}
-	
-	public long getModifiedDate() {
-        return datePhoto;
-    }
-
-	@Override
-	public String toString() {
-		return filepath + " (" + epochToLocalTime(datePhoto) + "): \"" + caption + "\"";
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o != null && o instanceof Photo) {
-			Photo p = (Photo) (o);
-
-			/**
-			 * If filenames are equal:
-			 * 	Compare dates. If dates are equal:
-			 * 		Compare captions. If captions equal:
-			 * 			return true;
-			 * 	    Else return false.
-			 *  Else return false.
-			 * Else return false.
-			 */
-			return filepath.contentEquals(p.filepath) ? ((datePhoto == p.datePhoto) ? ((caption.equals(p.caption)) ? true : false) : true) : true;
-		} else {
-			return false;
-		}
-
-	}
-	
 	/**
 	 * 
-	 * @param o
+	 * @param time
 	 * @return
 	 */
-	public int compareTo(Object o) {
-		// TODO compareTo
-		
-		if (o != null && o instanceof Photo) {
-			Photo p = (Photo)(o);
-			
-			return 0;
-		} else {
-			return 0;
-		}
-	}
-	
     public String epochToLocalTime(long time) {
         LocalDateTime datetime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         return datetime.format(formatter);
     }
     
     public LocalDateTime getLocalDateTime() {
     	long time = this.datePhoto;
-        LocalDateTime thisDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
-        
-        return thisDateTime;
+    	LocalDateTime thisDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+    	return thisDateTime;
     }
     
     public boolean isInDateRange(LocalDate from, LocalDate to) {
@@ -438,8 +269,121 @@ public class Photo implements Serializable {
     	
     	return foundTag1 && !foundTag2;
     }
+    
+
+	public static String makeKey(String fileName) {
+		return fileName.toLowerCase();
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getFilepath() {
+		return filepath;
+	}
+	
+	public TreeMap<String, Tag> getTagMap() {
+		return tagMap;
+	}
+	
+	public ObservableList<Tag> getTagList() {
+		return tagList;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public File getImageFile() {
+		return imageFile;
+	}
+	
+	/**
+	 * Accessor to compute and return the target filename within filepath
+	 * 
+	 * @author Gemuele Aludino
+	 * @return substring of filepath, resultant: filename of photo
+	 */
+	public String getFilename() {
+		return filepath.substring(filepath.lastIndexOf(File.separator) + 1);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getCaption() {
+		return caption;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getDatePhoto() {
+		return epochToLocalTime(datePhoto);
+	}
+	
+	public long getFileSize() { 
+		return fileSize;
+	}
+	
+	public String getKey() {
+		return makeKey(filepath);
+	}
+	
+	public long getModifiedDate() {
+        return datePhoto;
+    }
+
+	/**
+	 * 
+	 * @param caption
+	 */
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+	
+	public void setTagList(ObservableList<Tag> tagList) {
+		this.tagList = tagList;
+	}
+	
+	public void setDataPhoto(long time) {
+		datePhoto = time;
+	}
+	
+	public void setSizePhoto(long size) {
+		fileSize = (size / 1024);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof Photo) {
+			Photo p = (Photo) (o);
+
+			/**
+			 * If filenames are equal:
+			 * 	Compare dates. If dates are equal:
+			 * 		Compare captions. If captions equal:
+			 * 			return true;
+			 * 	    Else return false.
+			 *  Else return false.
+			 * Else return false.
+			 */
+			return filepath.contentEquals(p.filepath) ? ((datePhoto == p.datePhoto) ? ((caption.equals(p.caption)) ? true : false) : true) : true;
+		} else {
+			return false;
+		}
+	}
+	
+
+	@Override
+	public String toString() {
+		return filepath + " (" + epochToLocalTime(datePhoto) + "): \"" + caption + "\"";
+	}
 
 
-	// need to create image for thumbnail
-	// need to create method to grab date/time from the photo
+	
 }

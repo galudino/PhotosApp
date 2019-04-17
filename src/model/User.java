@@ -12,7 +12,6 @@
 package model;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -32,108 +31,27 @@ public class User implements Comparable<User>, Serializable {
 	private String password;
 
 	private transient ObservableList<Album> albumList;
-
 	private TreeMap<String, Album> albumMap;
 
 	private Album currentAlbum;
-	
-	private int totalPhotos;
 
 	/**
-	 * 
-	 * @param username
-	 * @param password
+	 * Default User constructor
+	 * @param username -- username of User utilized for login.
+	 * @param password -- password of User utilized for login.
 	 */
 	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
-		
 		albumList = FXCollections.observableArrayList();
 		albumMap = new TreeMap<String, Album>();
-		
 		currentAlbum = null;
-		
-		totalPhotos = 0;
-	}
-
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getKey() {
-		return makeKey(username);
 	}
 
 	/**
-	 * 
-	 * @return
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public ObservableList<Album> getAlbumList() {
-		return albumList;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Album getCurrentAlbum() {
-		return currentAlbum;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public TreeMap<String, Album> getAlbumMap() {
-		return albumMap;
-	}
-
-	/**
-	 * 
-	 * @param albumList
-	 */
-	public void setAlbumList(ObservableList<Album> albumList) {
-		this.albumList = albumList;
-	}
-
-	/**
-	 * 
-	 * @param currentAlbum
-	 */
-	public void setCurrentAlbum(Album currentAlbum) {
-		this.currentAlbum = currentAlbum;
-	}
-	
-	public void setCurrentAlbum(String currentAlbum) {
-		String key = Album.makeKey(currentAlbum);
-		Album temp = albumMap.get(key);
-		
-		if(temp != null) {
-			this.currentAlbum = albumMap.get(key);
-		}
-	}
-
-	/**
-	 * 
-	 * @param albumName
-	 * @return
+	 * Method to add an album.
+	 * @param albumName : String object to check to see if Album currently exists
+	 * @return index of where it was placed in the ObservableList<Album>.
 	 */
 	public int addAlbum(String albumName) {
 		String albumKey = Album.makeKey(albumName);
@@ -149,9 +67,9 @@ public class User implements Comparable<User>, Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param index
-	 * @return
+	 * Method to delete an album.
+	 * @param index : index is gathered from the UserController and specifies the index of the Album to delete.
+	 * @return true || false depending on action.
 	 */
 	public boolean deleteAlbum(int index) {
 		String key = albumList.get(index).getKey();
@@ -167,9 +85,9 @@ public class User implements Comparable<User>, Serializable {
 	}
 
 	/**
-	 * 
-	 * @param album
-	 * @return
+	 * Inserts the album in a sorted way by utilizing the Album compareTo().
+	 * @param album : an Album object to compare with the rest of the Albums in the ObservableList<Album>.
+	 * @return the index of where it was placed in the ObservableList<Album>.
 	 */
 	private int indexInsertedSorted(Album album) {
 		if (albumList.isEmpty()) {
@@ -188,10 +106,10 @@ public class User implements Comparable<User>, Serializable {
 	}
 
 	/**
-	 * 
-	 * @param index
-	 * @param albumName
-	 * @return
+	 * Edits the album name by utilizing keys of the current album, and prospective album.
+	 * @param index : index of location in the album list gathered from UserController.java
+	 * @param albumName : String containing new album name.
+	 * @return index of where it was placed in the ObservableList<Album> or -1 if not added.
 	 */
 	public int edit(int index, String albumName) {
 		String oldKey = albumList.get(index).getKey();
@@ -219,17 +137,91 @@ public class User implements Comparable<User>, Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param username
-	 * @return
+	 * Generates the key for a specific User.
+	 * @param username : String from the User regarding the username
+	 * @return username which is all lowercased to ensure all keys are compared with the same constraints.
 	 */
 	public static String makeKey(String username) {
 		return username.toLowerCase();
 	}
+	
+	/**
+	 * Generates a key for a user utilizing the username to differentiate users.
+	 * @return a String of the username which is lowercased.
+	 */
+	public String getKey() {
+		return makeKey(username);
+	}
 
 	/**
-	 * 
+	 * Returns the username.
+	 * @return a String object with the username.
 	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Returns the password.
+	 * @return a String object with the password.
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * Returns the albumList for a specific user
+	 * @return an ObservableList<Album> object which contains the users albums.
+	 */
+	public ObservableList<Album> getAlbumList() {
+		return albumList;
+	}
+
+	/**
+	 * Return the current album object.
+	 * @return an Album object
+	 */
+	public Album getCurrentAlbum() {
+		return currentAlbum;
+	}
+
+	/**
+	 * Returns the TreeMap<String, Album> of the current user which is utilized to save data.
+	 * @return an TreeMap<String, Album> object. String is the Album key, and the value is the actual Album object.
+	 */
+	public TreeMap<String, Album> getAlbumMap() {
+		return albumMap;
+	}
+
+	/**
+	 * Sets the ObservableList<Album> to the parameter.
+	 * @param albumList an ObservableList<Album> object to be passed and set.
+	 */
+	public void setAlbumList(ObservableList<Album> albumList) {
+		this.albumList = albumList;
+	}
+
+	/**
+	 * Sets the current Album object to the parameter.
+	 * @param currentAlbum : Album object to set to current.
+	 */
+	public void setCurrentAlbum(Album currentAlbum) {
+		this.currentAlbum = currentAlbum;
+	}
+	
+	/**
+	 * Sets the current Album object to the parameter.
+	 * @param currentAlbum : String to create an album, and check in the TreeMap<String, Album> for that value.
+	 */
+	public void setCurrentAlbum(String currentAlbum) {
+		String key = Album.makeKey(currentAlbum);
+		Album temp = albumMap.get(key);
+		
+		if(temp != null) {
+			this.currentAlbum = albumMap.get(key);
+		}
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof User)) {
@@ -245,9 +237,6 @@ public class User implements Comparable<User>, Serializable {
 		return this.username.compareToIgnoreCase(user.username);
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public String toString() {
 		return "(username) " + username + " " + "(password) " + password;
