@@ -26,6 +26,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -125,14 +126,13 @@ public class SearchController {
 	@FXML Button navigatorButtonBack;
 	@FXML Button navigatorButtonNext;
 	@FXML Button buttonSearchNow;
-	
 	@FXML Button buttonCopyPhoto;
 	@FXML Button buttonDeletePhoto;
-	@FXML Button buttonMovePhoto;
-	
+	@FXML Button buttonMovePhoto;	
 	@FXML Button buttonAddCaption;
 	@FXML Button buttonAddTag;
 	@FXML Button buttonAddTagPair;
+	@FXML Button cancelButton;
 	
 	@FXML CheckBox checkBoxDeleteFromDisk;
 	@FXML CheckBox checkBoxPromptBeforeDelete;
@@ -228,6 +228,8 @@ public class SearchController {
 		tagConditionalList = new ArrayList<TagConditional>();
 		photoMapSearchResults = new TreeMap<String, Photo>();
 
+		updateInfoData();
+		
 		/**
 		 * CONSOLE DIAGNOSTICS
 		 */
@@ -490,6 +492,7 @@ public class SearchController {
 			}
 		}
 
+		
 		return results;
 	}
 
@@ -909,13 +912,14 @@ public class SearchController {
 			if (selectedIndex >= 0) {
 				debugLog("Selected Index (Photo to be deleted): "
 						+ selectedIndex);
-				currentAlbum.deletePhoto(selectedIndex);
 
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
 						"Photo successfully removed!", ButtonType.OK);
 
 				tilePaneImages.getChildren().remove(selectedIndex);
 
+				photoListSearchResults.remove(selectedIndex);
+				
 				/**
 				 * CONSOLE DIAGNOSTICS
 				 */
@@ -1005,28 +1009,82 @@ public class SearchController {
 
 	/**
 	 * Executes upon selecting add album mechanism
-	 * 
 	 * @throws IOException if add_album.fxml not found
 	 */
 	public void doAddAlbum() throws IOException {
-		/*
-		 * Stage window = new Stage(); FXMLLoader loader = new FXMLLoader();
-		 * 
-		 * loader.setLocation(getClass().getResource("/view/add_album.fxml"));
-		 * loader.setController(this);
-		 * 
-		 * Parent root = loader.load();
-		 * 
-		 * window.initModality(Modality.APPLICATION_MODAL); Scene scene = new
-		 * Scene(root);
-		 * 
-		 * window.setScene(scene); window.setTitle("Photos -- Add Album");
-		 * window.setResizable(false); window.show();
-		 * 
-		 * updateInfoData();
-		 */
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/add_album.fxml"));
+		loader.setController(this);
+		Parent root = loader.load();
+		window.initModality(Modality.APPLICATION_MODAL);
+		Scene scene = new Scene(root);
+		window.setScene(scene);
+		window.setTitle("Photos -- Add Album");
+		window.setResizable(false);
+		window.show();
+		updateInfoData();
+	}
+	
+	/**
+	 * Executes upon creating an album
+	 */
+	public void doCreate() {
+		if (createAlbumName.getText().isEmpty() == false) {
+			String albumName = createAlbumName.getText().trim();
 
-		debugLog("[doAddAlbum] (from results)");
+			if (currentUser.addAlbum(albumName) == -1) {
+				Alert duplicate = new Alert(Alert.AlertType.ERROR, "Duplicate album found. Album not added!", ButtonType.OK);
+
+				duplicate.showAndWait();
+			} else {	
+				
+				currentUser.setCurrentAlbum(albumName);
+				
+				createAlbumName.getScene().getWindow().hide();
+				
+				updateInfoData();
+
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Album successfully added!", ButtonType.OK);
+				success.showAndWait();
+				
+				addSelectedPhotos();
+				
+			}
+		} else {
+			Alert error = new Alert(AlertType.ERROR, "Please provide an album name.", ButtonType.OK);
+			error.showAndWait();
+		}
+	}
+	
+	/**
+	 * This goes through the imageQueueList (ListView<User>) and adds the photos to the current album or selected album.
+	 */
+	public void addSelectedPhotos() {
+		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();		
+		currentAlbum.setPhotoList(photoListSearchResults);
+		
+		if(currentAlbum != null) {
+			for(int i = 0; i < photoListSearchResults.size(); i++) {
+				
+				Photo p = photoListSearchResults.get(i);
+				
+				currentAlbum.addPhoto(p);
+				
+				for(Tag t : p.getTagList()) {
+					currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
+				}
+			}
+		}
+		
+		tagName.setText(null);
+		tagValue.setText(null);
+		
+		if(!tagList.getItems().isEmpty()) {
+			tList.clear();
+		}
+		
+		model.write();
 	}
 
 	/**
@@ -1510,6 +1568,13 @@ public class SearchController {
 			debugLog("Clicked navigator button next");
 		}
 
+	}
+	
+	/**
+	 * Closes the current window.
+	 */
+	public void doCancel() {
+		cancelButton.getScene().getWindow().hide();
 	}
 
 	/**

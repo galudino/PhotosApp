@@ -115,6 +115,7 @@ public class UserController {
 	@FXML Button navigatorButtonNext;
 	@FXML Button movePhoto;
 	@FXML Button copyPhoto;
+	@FXML Button cancelButton;
 	
 	@FXML Label albumHeader;
 	@FXML Label createdField;
@@ -270,7 +271,7 @@ public class UserController {
 				}
 				
 				createAlbumName.getScene().getWindow().hide();
-				infoData.setText(currentUser.getAlbumList().size() + " albums - " + "  photos");
+				updateInfoData();
 
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Album successfully added!", ButtonType.OK);
 				success.showAndWait();
@@ -1028,6 +1029,13 @@ public class UserController {
 	 */
 	public void doQuit() {
 		LoginController.exit();
+	}
+	
+	/**
+	 * Closes the current window.
+	 */
+	public void doCancel() {
+		cancelButton.getScene().getWindow().hide();
 	}
 
 	/**
