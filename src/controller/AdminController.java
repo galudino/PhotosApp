@@ -8,6 +8,7 @@
  * 01:198:213 Software Methodology, Spring 2019
  * Professor Seshadri Venugopal
  */
+
 package controller;
 
 import java.io.IOException;
@@ -43,155 +44,78 @@ public class AdminController {
 	//@formatter:off
 	@FXML TextField textFieldUsername;
 	@FXML TextField textFieldPassword;
-	
+
 	@FXML Button buttonConfirmAdd;
 	
 	@FXML TableView<User> tableViewUsers;
+	
 	@FXML TableColumn<User, String> userColumn;
 	@FXML TableColumn<User, String> passwordColumn;
 	//@formatter:on
 
+	/**
+	 * Initializes the administrator control panel with the information needed from the model.
+	 */
 	@FXML
 	public void initialize() {
-		userColumn.setCellValueFactory(
-				new PropertyValueFactory<User, String>("username"));
-
-		passwordColumn.setCellValueFactory(
-				new PropertyValueFactory<User, String>("password"));
-
+		userColumn.setCellValueFactory(new PropertyValueFactory<User, String>("username"));
+		passwordColumn.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
 		tableViewUsers.setItems(model.getUserList());
-		
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		System.out.println();
-		debugLog("Entering " + getClass().getSimpleName());
 	}
 
 	/**
-	 * Executes upon activating buttonConfirmAdd
+	 * Creates a new User utilizing the text fields to gather information about the user.
 	 */
 	public void doAdd() {
 		String username = textFieldUsername.getText();
 		String password = textFieldPassword.getText();
 
 		if (username.isEmpty() == false && password.isEmpty() == false) {
-			/**
-			 * SCENARIO 1: SUCCESS. username and password are provided
-			 */
-
 			User newUser = new User(username, password);
 
 			if (model.addUser(username, password) == -1) {
-				/**
-				 * SCENARIO 1a: FAILURE. username exists in model
-				 */
+				textFieldUsername.setText(null);
+				textFieldPassword.setText(null);
 				
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("Duplicate username found. User not added!");
-
-				Alert duplicate = new Alert(Alert.AlertType.ERROR,
-						"Duplicate username found. User not added!",
-						ButtonType.OK);
-
+				Alert duplicate = new Alert(Alert.AlertType.ERROR, "Duplicate username found. User not added!", ButtonType.OK);
 				duplicate.showAndWait();
 			} else {
-				/**
-				 * SCENARIO 1b: SUCCESS. username does not exist in model
-				 */
+				textFieldUsername.setText(null);
+				textFieldPassword.setText(null);
 				
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */				
-				debugLog("Username " + newUser.getUsername() + " added successfully.");
-
-				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-						"User successfully added!", ButtonType.OK);
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "User successfully added!", ButtonType.OK);
 				success.showAndWait();
-
-				/**
-				 * Pre-select the newly created user in tableViewUsers
-				 */
+				
 				int selectedIndex = model.getIndex(newUser);
 				tableViewUsers.getSelectionModel().select(selectedIndex);
-				
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("Selected Index: " + selectedIndex);
 			}
 		} else {
-			/**
-			 * SCENARIO 2: FAILURE. username and password are not provided
-			 */
-
-			Alert error = new Alert(AlertType.ERROR,
-					"Please provide a username and password.", ButtonType.OK);
-			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Please provide a username and password.");
-			
+			Alert error = new Alert(AlertType.ERROR,"Please provide a username and password.", ButtonType.OK);
 			error.showAndWait();
 		}
 	}
 
 	/**
-	 * Executes upon deleting user
+	 * Deletes the user from the tableViewUsers, and from the model.
 	 */
 	public void doDelete() {
-		int selectedIndex = tableViewUsers.getSelectionModel()
-				.getSelectedIndex();
+		int selectedIndex = tableViewUsers.getSelectionModel().getSelectedIndex();
 
 		if (selectedIndex < 0) {
-			/**
-			 * No users to delete in model
-			 */
-			Alert error = new Alert(Alert.AlertType.ERROR,
-					"There are no users to be deleted.", ButtonType.OK);
-			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("There are no users to be deleted.");
-
+			Alert error = new Alert(Alert.AlertType.ERROR, "There are no users to be deleted.", ButtonType.OK);
 			error.showAndWait();
 			return;
 		}
 
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-				"Are you sure you want to delete this user?", ButtonType.YES,
-				ButtonType.NO);
-		
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Prompt: Are you sure you want to delete the selected user?");
-		
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this user?", ButtonType.YES, ButtonType.NO);		
 		alert.showAndWait();
 
 		if (alert.getResult() != ButtonType.YES) {
 			return;
 		}
 
-		/**
-		 * Users available to delete in model
-		 */
-		if (selectedIndex >= 0) {
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Selected Index: " + selectedIndex);
-			
+		if (selectedIndex >= 0) {			
 			model.deleteUser(selectedIndex);
-			
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Selected user deleted.");
 			
 			if (selectedIndex <= model.getItemCount() - 1) {
 				tableViewUsers.getSelectionModel().select(selectedIndex);
@@ -201,74 +125,46 @@ public class AdminController {
 
 	/**
 	 * Executes upon visiting about option
-	 * 
 	 * @throws IOException if about.fxml not found
 	 */
 	public void doAbout() throws IOException {
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
-
 		loader.setLocation(getClass().getResource("/view/about.fxml"));
 		loader.setController(this);
-
 		Parent root = loader.load();
-
 		window.initModality(Modality.NONE);
-
 		Scene scene = new Scene(root);
-
 		window.setScene(scene);
 		window.setTitle("Photos V1.0 -- About");
 		window.setResizable(false);
-		
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Entering about section.");
-
 		window.show();
 	}
 
 	/**
-	 * Executes upon logging out
-	 * 
+	 * Saves the current model, and returns back to the login screen.
 	 * @throws IOException if login.fxml not found
 	 */
 	public void doLogOff() throws IOException {
 		model.write();
-
-		Parent login = FXMLLoader
-				.load(getClass().getResource("/view/login.fxml"));
+		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene loginScene = new Scene(login);
-
 		Stage currentStage = (Stage) (tableViewUsers.getScene().getWindow());
-
 		currentStage.hide();
 		currentStage.setScene(loginScene);
 		currentStage.setTitle("Photos -- V1.0");
-		
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Now logging out of adminstrator mode.");
-
 		currentStage.show();
 	}
 
 	/**
-	 * Executes upon termination
+	 * Saves the current model, and exits the program.
 	 */
 	public void doQuit() {
-		/**
-		 * CONSOLE DIAGNOSTICS
-		 */
-		debugLog("Now quitting application.");
 		LoginController.exit();
 	}
 	
 	/**
 	 * Used for console message/testing functionality/method calls
-	 * 
 	 * @param message String that denotes a message for the console
 	 */
 	public void debugLog(String message) {

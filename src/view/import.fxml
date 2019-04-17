@@ -144,7 +144,7 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <ListView fx:id="imageQueueList" layoutX="45.0" layoutY="22.0" onMousePressed="#doImageQueueList" prefHeight="125.0" prefWidth="266.0" />
+                        <ListView fx:id="imageQueueList" layoutX="45.0" layoutY="22.0" prefHeight="125.0" prefWidth="266.0" />
                      </children>
                   </Pane>
                </children></AnchorPane>

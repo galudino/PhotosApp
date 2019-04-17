@@ -126,11 +126,6 @@ public class PhotoModel implements Serializable {
 			ObjectInputStream in = new ObjectInputStream(fIn);
 			@SuppressWarnings("unchecked")
 			List<User> readList = (List<User>) in.readObject();
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("User list from file" + readList);
-
 			return FXCollections.observableArrayList(readList);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -175,8 +170,7 @@ public class PhotoModel implements Serializable {
 	}
 	
 	/**
-	 * Used for console message/testing functionality/method calls
-	 * 
+	 * Used for console message/testing functionality/method calls 
 	 * @param message String that denotes a message for the console
 	 */
 	public void debugLog(String message) {

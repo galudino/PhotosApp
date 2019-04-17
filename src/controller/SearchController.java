@@ -8,6 +8,7 @@
  * 01:198:213 Software Methodology, Spring 2019
  * Professor Seshadri Venugopal
  */
+
 package controller;
 
 import java.io.File;
@@ -62,6 +63,7 @@ import model.User;
  * @version Apr 12, 2019
  * @author Gemuele Aludino
  */
+
 public class SearchController {
 
 	private int index = 0;
@@ -103,8 +105,7 @@ public class SearchController {
 
 	List<TagConditional> tagConditionalList;
 
-	ObservableList<Photo> photoListSearchResults = FXCollections
-			.observableArrayList();
+	ObservableList<Photo> photoListSearchResults = FXCollections.observableArrayList();
 	TreeMap<String, Photo> photoMapSearchResults;
 
 	private Photo currentPhoto = null;

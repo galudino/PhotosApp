@@ -27,8 +27,24 @@ import javafx.stage.Stage;
 public class Photos extends Application {
 	
 	/**
+	 * main calls start based on Application, and launches the login.FXML
+	 * @throws Exception if login.fxml is not found.
+	 */
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/login.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		primaryStage.setScene(scene);
+		primaryStage.setOnCloseRequest(e -> exit());
+		primaryStage.setTitle("Photos -- V1.0");
+		primaryStage.setResizable(false);
+		primaryStage.show();
+	}
+	
+	/**
 	 * Program execution begins here.
-	 * 
 	 * @param args Command line arguments
 	 */
 	public static void main(String[] args) {
@@ -42,21 +58,4 @@ public class Photos extends Application {
 		LoginController.exit();
 	}
 	
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-
-		loader.setLocation(getClass().getResource("/view/login.fxml"));
-
-		Parent root = loader.load();
-		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
-
-		primaryStage.setOnCloseRequest(e -> exit());
-
-		primaryStage.setTitle("Photos -- V1.0");
-		primaryStage.setResizable(false);
-
-		primaryStage.show();
-	}
 }
