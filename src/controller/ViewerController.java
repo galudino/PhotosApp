@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import model.Photo;
 import model.PhotoModel;
 import model.User;
@@ -25,6 +26,8 @@ public class ViewerController extends Canvas {
 	@FXML Button buttonRotate270;
 	@FXML Button buttonRotate90;
 	
+	@FXML ImageView imageViewMain;
+
 	@FXML MenuItem menuItemCloseViewer;
 	@FXML MenuItem menuItemFlipHorizontal;
 	@FXML MenuItem menuItemFlipVertical;
@@ -47,6 +50,8 @@ public class ViewerController extends Canvas {
 	@FXML TextField textFieldContrast;
 	@FXML TextField textFieldHue;
 	@FXML TextField textFieldSaturation;
+	
+	@FXML TilePane tilePaneImage;
 	
 	//@formatter:on
 	
@@ -82,6 +87,19 @@ public class ViewerController extends Canvas {
 		
 		System.out.println("Now in viewer: " + currentPhoto);
 
+		
+		displayImage();
+	}
+	
+	private void displayImage() {
+		
+	}
+	
+	public void doTilePaneImage() {
+		
+	}
+	
+	public void doImageViewMain() {
 		
 	}
 	
