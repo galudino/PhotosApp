@@ -942,6 +942,7 @@ public class UserController {
 	 * @throws IOException if search.fxml not found
 	 */
 	public void doSearchAllAlbums() throws IOException {
+		enableAll();
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/search.fxml"));
@@ -960,6 +961,7 @@ public class UserController {
 	 * @throws IOException if search.fxml not found
 	 */
 	public void doSearchCurrentAlbum() throws IOException {
+		enableCurrent();
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/search.fxml"));
@@ -1036,6 +1038,25 @@ public class UserController {
 	 */
 	public void doCancel() {
 		cancelButton.getScene().getWindow().hide();
+	}
+	
+	private static boolean currentStatus = false;
+	private static boolean allStatus = false;
+	
+	private void enableCurrent() {
+		UserController.currentStatus = true;
+	}
+	
+	private void enableAll() {
+		UserController.allStatus = true;
+	}
+	
+	public static boolean searchCurrent() {
+		return currentStatus;
+	}
+	
+	public static boolean searchAll() {
+		return allStatus;
 	}
 
 	/**

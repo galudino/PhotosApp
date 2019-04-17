@@ -212,8 +212,17 @@ public class SearchController {
 		/**
 		 * Setting default values
 		 */
-		radioButtonSelectedAlbum.setSelected(true);
-		doRadioButtonSelectedAlbum();
+		
+		if(UserController.searchCurrent()) {
+			radioButtonThisAlbum.setSelected(true);
+			doRadioButtonThisAlbum();
+		} else if (UserController.searchAll()) {
+			radioButtonAllAlbums.setSelected(true);
+			doRadioButtonAllAlbums();
+		} else {
+			radioButtonSelectedAlbum.setSelected(true);
+			doRadioButtonSelectedAlbum();
+		}
 
 		resetAndOrNot();
 
@@ -1047,9 +1056,10 @@ public class SearchController {
 
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Album successfully added!", ButtonType.OK);
 				success.showAndWait();
-				
 				addSelectedPhotos();
 				
+				tilePaneImages.getChildren().clear();
+				photoListSearchResults.clear();
 			}
 		} else {
 			Alert error = new Alert(AlertType.ERROR, "Please provide an album name.", ButtonType.OK);
@@ -1071,8 +1081,10 @@ public class SearchController {
 				
 				currentAlbum.addPhoto(p);
 				
-				for(Tag t : p.getTagList()) {
-					currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
+				if(p.getTagList().isEmpty() == false) {
+					for(Tag t : p.getTagList()) {
+						currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
+					}
 				}
 			}
 		}
