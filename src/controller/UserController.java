@@ -84,7 +84,7 @@ public class UserController {
 	private List<ImageView> currentImageViewList = null;
 
 	//@formatter:off
-	@FXML Menu menuAlbums;
+	//@FXML Menu menuAlbums;
 	@FXML Menu menuSearch;
 	@FXML Menu copyMenu;
 	@FXML Menu moveMenu;
@@ -164,11 +164,13 @@ public class UserController {
 		albumView.setItems(currentUser.getAlbumList());
 		updateInfoData();
 
+		/*
 		menuAlbums.getItems().clear();
 		for(Album a : albumView.getItems()) {
 			menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
 			a.setCounterDatetime();
 		}
+		*/
 	}
 
 	public void doViewModeThumbnail() {
@@ -264,11 +266,13 @@ public class UserController {
 
 				duplicate.showAndWait();
 			} else {
-				menuAlbums.getItems().clear();
+				//menuAlbums.getItems().clear();
 				
+				/*
 				for(Album a : albumView.getItems()) {
 					menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
 				}
+				*/
 				
 				createAlbumName.getScene().getWindow().hide();
 				updateInfoData();
@@ -301,11 +305,13 @@ public class UserController {
 				duplicate.showAndWait();
 			} else {
 				
-				menuAlbums.getItems().clear();
+				//menuAlbums.getItems().clear();
 				
+				/*
 				for(Album a : albumView.getItems()) {
 					menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
 				}
+				*/
 				
 				if (selectedIndex <= model.getItemCount() - 1) {
 					albumView.getSelectionModel().select(selectedIndex);
@@ -814,10 +820,12 @@ public class UserController {
 
 			updateInfoData();
 			
+			/*
 			menuAlbums.getItems().clear();
 			for(Album a : albumView.getItems()) {
 				menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
 			}
+			*/
 		}
 	}
 	

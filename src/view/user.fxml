@@ -56,7 +56,6 @@
                <items>
                   <MenuItem fx:id="searchAllAlbums" mnemonicParsing="false" onAction="#doSearchAllAlbums" text="All Albums" />
                   <MenuItem fx:id="searchCurrentAlbum" mnemonicParsing="false" onAction="#doSearchCurrentAlbum" text="Current Album" />
-                  <Menu fx:id="menuAlbums" mnemonicParsing="false" onAction="#doMenuAlbums" text="Album..." />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
