@@ -193,7 +193,7 @@
                      <children>
                         <ScrollPane hbarPolicy="NEVER" prefHeight="523.0" prefWidth="618.0">
                            <content>
-                              <TilePane prefHeight="521.0" prefWidth="618.0" />
+                              <TilePane fx:id="tilePaneImages" prefHeight="521.0" prefWidth="618.0" />
                            </content>
                            <contextMenu>
                               <ContextMenu>

@@ -292,7 +292,14 @@ public class SearchController {
 		for (Photo photo : photoMapSearchResults.values()) {
 			photoListSearchResults.add(photo);
 		}
-
+		
+		
+		debugLog("map: " + photoMapSearchResults);
+		debugLog("list: " + photoListSearchResults);
+		
+		
+		
+		
 		tilePaneImages.getChildren().clear();
 		
 
@@ -309,6 +316,7 @@ public class SearchController {
 		tilePaneImages.setHgap(imageInsetValue);
 
 		currentImageViewList = new ArrayList<ImageView>();
+
 		
 		for (Photo p : photoMapSearchResults.values()) {
 			File test = new File(p.getFilepath());
@@ -318,12 +326,6 @@ public class SearchController {
 			p.setDataPhoto(test.lastModified());
 			p.setSizePhoto(test.length());
 			
-			/**
-			 * These 'magic numbers' are temporary. They ought
-			 * to be mutable values -- using the "zoom-lever"
-			 * within the GUI (these are for the image
-			 * thumbnails)
-			 */
 			iv.setFitHeight(imageHeightValue);
 			iv.setFitWidth(imageWidthValue);
 			iv.setPreserveRatio(true);
@@ -395,6 +397,7 @@ public class SearchController {
 
 			currentImageViewList.add(iv);
 		}
+		
 	}
 	
 

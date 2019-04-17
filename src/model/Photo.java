@@ -218,6 +218,8 @@ public class Photo implements Serializable {
     		return evaluateOr(tc);
     	} else if (tc.isNot()) {
     		return evaluateNot(tc);
+    	} else if (tc.isSearchNoConditional()) {
+    		return evaluateSearchNoConditional(tc);
     	} else {
     		System.out.println("TagConditional does not match AND, OR, or NOT");
     		return false;
@@ -294,6 +296,19 @@ public class Photo implements Serializable {
     		}
     	} 	
     	return foundTag1 && !foundTag2;
+    }
+    
+    private boolean evaluateSearchNoConditional(TagConditional tc) {
+    	boolean foundTag1 = false;
+    	
+    	for (Tag tag : tagMap.values()) {
+    		if (tc.getTag1().equals(tag)) {
+    			foundTag1 = true;
+    			break;
+    		}
+    	}
+    	
+    	return foundTag1;
     }
     
 
