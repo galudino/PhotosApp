@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -58,20 +59,13 @@ public class ViewerController extends Canvas {
 	private PhotoModel model = LoginController.getModel();
 	private User currentUser = model.getCurrentUser();
 	private Photo currentPhoto = null;
-
 	
 	BufferedImage original;
+	BufferedImage editedImage;
 	Image originalImage;
 	
 	@FXML
 	public void initialize() {
-		// upon initialization:
-		// get the selected photo to appear in the viewer
-		// collect the data for:
-		//brightness
-		//saturation
-		//hue
-		//contrast
 		
 		if (UserController.currentSelectedPhoto != null) {
 			currentPhoto = UserController.currentSelectedPhoto;
@@ -92,7 +86,16 @@ public class ViewerController extends Canvas {
 	}
 	
 	private void displayImage() {
+		File test = new File(currentPhoto.getFilepath());
+		originalImage = new Image(test.toURI().toString());
+		ImageView iv = new ImageView(originalImage);
+        imageViewMain.setImage(originalImage);
+        
+		int x = (int) originalImage.getWidth();
+		int y = (int) originalImage.getHeight();
 		
+		original = createBufferedImage(originalImage, x, y, true);
+		editedImage = original;
 	}
 	
 	public void doTilePaneImage() {
@@ -112,15 +115,43 @@ public class ViewerController extends Canvas {
 	}
 	
 	public void doRotate180() {
-		
+		editedImage = rotateImage(original, 180);
 	}
 	
 	public void doRotate270() {
-		
+		editedImage = rotateImage(original, 270);
 	}
 	
 	public void doRotate90() {
+		editedImage = rotateImage(original, 90);
+	}
+	
+	public BufferedImage rotateImage(BufferedImage src, int rotationAngle) {		
+		double theta = (Math.PI * 2) / 360 * rotationAngle;
+		int width = src.getWidth();
+		int height = src.getHeight();
+		BufferedImage dest;
 		
+		if (rotationAngle == 90 || rotationAngle == 270) {
+			dest = new BufferedImage(src.getHeight(), src.getWidth(), src.getType());
+		} else {
+			dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		}
+
+		Graphics2D graphics2D = dest.createGraphics();
+
+		if (rotationAngle == 90) {
+			graphics2D.translate((height - width) / 2, (height - width) / 2);
+			graphics2D.rotate(theta, height / 2, width / 2);
+		} else if (rotationAngle == 270) {
+			graphics2D.translate((width - height) / 2, (width - height) / 2);
+			graphics2D.rotate(theta, height / 2, width / 2);
+		} else {
+			graphics2D.translate(0, 0);
+			graphics2D.rotate(theta, width / 2, height / 2);
+		}
+		graphics2D.drawRenderedImage(src, null);
+		return dest;
 	}
 	
 	public void doCloseViewer() {
