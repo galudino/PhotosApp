@@ -230,52 +230,54 @@
                      <children>
                         <Pane layoutX="18.0" layoutY="14.0" prefHeight="207.0" prefWidth="295.0">
                            <children>
-                              <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="48.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
-                              <Label layoutX="16.0" layoutY="31.0" text="SIZE" textFill="#aeaeae">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="-6.0" layoutY="16.0" prefWidth="51.0" text="CREATED" textFill="#aeaeae">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="sizeField" layoutX="54.0" layoutY="31.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="createdField" layoutX="54.0" layoutY="16.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="8.0" layoutY="-14.0" prefHeight="14.0" prefWidth="40.0" text="NAME" textFill="#aeaeae">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="nameField" layoutX="54.0" layoutY="-14.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="11.0" layoutY="1.0" prefHeight="14.0" prefWidth="30.0" text="PATH" textFill="#aeaeae">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="pathField" layoutX="54.0" layoutY="1.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
-                              </Label>
+                              <ImageView fx:id="detailView" fitHeight="150.0" fitWidth="200.0" layoutX="48.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </Pane>
                         <Pane layoutX="18.0" layoutY="221.0" prefHeight="255.0" prefWidth="295.0">
                            <children>
-                              <Pane layoutX="2.0" layoutY="1.0" prefHeight="195.0" prefWidth="295.0" />
+                              <Pane layoutX="2.0" layoutY="1.0" prefHeight="195.0" prefWidth="295.0">
+                                 <children>
+                                    <Label layoutX="40.0" layoutY="59.0" text="SIZE" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="18.0" layoutY="44.0" prefWidth="51.0" text="CREATED" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="sizeField" layoutX="78.0" layoutY="59.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="createdField" layoutX="78.0" layoutY="44.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="32.0" layoutY="14.0" prefHeight="14.0" prefWidth="40.0" text="NAME" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="nameField" layoutX="78.0" layoutY="14.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="35.0" layoutY="29.0" prefHeight="14.0" prefWidth="30.0" text="PATH" textFill="#aeaeae">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="pathField" layoutX="78.0" layoutY="29.0" prefHeight="14.0" prefWidth="200.0" text="(no image selected)">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                 </children></Pane>
                               <Pane layoutX="2.0" layoutY="195.0" prefHeight="60.0" prefWidth="295.0" />
                            </children>
                         </Pane>

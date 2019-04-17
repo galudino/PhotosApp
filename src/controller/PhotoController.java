@@ -58,29 +58,29 @@ import model.Tag;
  */
 
 public class PhotoController {
-	
+
 	final double DEFAULT_INSET_VALUE = 10.0;
 	final double DEFAULT_HEIGHT_VALUE = 150.0;
 	final double DEFAULT_WIDTH_VALUE = 200.0;
-		
+
 	double imageInsetValue = DEFAULT_INSET_VALUE;
 	double imageHeightValue = DEFAULT_HEIGHT_VALUE;
 	double imageWidthValue = DEFAULT_WIDTH_VALUE;
-	
+
 	private Photo currentPhoto = null;
 	private List<ImageView> currentImageViewList = null;
-	
+
 	FileChooser fileChooser;
 	File file;
-	
+
 	ObservableList<Photo> photoList = FXCollections.observableArrayList();
 	ObservableList<Photo> pList = FXCollections.observableArrayList();
 	ObservableList<Tag> tList;
-	
+
 	PhotoModel model = LoginController.getModel();
-	
+
 	int index = 0;
-	
+
 	//@formatter:off
 	@FXML Button buttonBrowse;
 	@FXML Button buttonConfirmTag;
@@ -123,33 +123,34 @@ public class PhotoController {
 	
 	@FXML TilePane tilePaneImages;
 	//@formatter:on
-	
+
 	public void doViewModeThumbnail() {
-		
+
 	}
-	
+
 	public void doViewModeSingleImage() {
-		
+
 	}
-	
+
 	public void doOpenSelectedPhotoInViewer() {
-		
+
 	}
-	
+
 	/**
 	 * Initializes the FXML document with information from previous FXML.
 	 */
 	@FXML
 	public void initialize() {
-		radioButtonThisAlbum.setText("Current album: " + model.getCurrentUser().getCurrentAlbum().getAlbumName());
+		radioButtonThisAlbum.setText("Current album: "
+				+ model.getCurrentUser().getCurrentAlbum().getAlbumName());
 		radioButtonThisAlbum.setSelected(true);
 		updateInfoData();
 		albumList.getItems().clear();
-		for(Album a : model.getCurrentUser().getAlbumList()) {
+		for (Album a : model.getCurrentUser().getAlbumList()) {
 			albumList.getItems().add(a.getAlbumName());
 		}
 	}
-	
+
 	/**
 	 * Updates the bottom pane with information regarding the user model.
 	 */
@@ -165,11 +166,12 @@ public class PhotoController {
 				totalByteCount += p.getFileSize();
 			}
 		}
-		
-		String output = String.format("%d albums - %d photos - %d KB", albumCount, totalPhotoCount, totalByteCount);
+
+		String output = String.format("%d albums - %d photos - %d KB",
+				albumCount, totalPhotoCount, totalByteCount);
 		infoData.setText(output);
 	}
-	
+
 	/**
 	 * Deletes the photo from the list.
 	 */
@@ -178,12 +180,15 @@ public class PhotoController {
 			int selectedIndex = index;
 
 			if (selectedIndex < 0) {
-				Alert error = new Alert(Alert.AlertType.ERROR, "There are no photos to be deleted.", ButtonType.OK);
+				Alert error = new Alert(Alert.AlertType.ERROR,
+						"There are no photos to be deleted.", ButtonType.OK);
 				error.showAndWait();
 				return;
 			}
 
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this photo?", ButtonType.YES, ButtonType.NO);
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+					"Are you sure you want to delete this photo?",
+					ButtonType.YES, ButtonType.NO);
 			alert.showAndWait();
 
 			if (alert.getResult() != ButtonType.YES) {
@@ -191,56 +196,67 @@ public class PhotoController {
 			}
 
 			if (selectedIndex >= 0) {
-				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Photo successfully removed!", ButtonType.OK);
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+						"Photo successfully removed!", ButtonType.OK);
 				success.showAndWait();
-				
+
 				tilePaneImages.getChildren().remove(selectedIndex);
 				imageQueueList.getItems().remove(selectedIndex);
 				updateInfoData();
 			}
 		} else {
-			Alert error = new Alert(AlertType.ERROR, "Please select a photo to delete.", ButtonType.OK);
+			Alert error = new Alert(AlertType.ERROR,
+					"Please select a photo to delete.", ButtonType.OK);
 			error.showAndWait();
 		}
 
 	}
-	
+
 	/**
-	 * Selects the album list from menuItems and sets it to the current album for the current user.
+	 * Selects the album list from menuItems and sets it to the current album
+	 * for the current user.
 	 */
 	public void doAlbumList() {
 		albumList.setOnAction(event -> {
 			Album test = new Album(albumList.getValue());
-			for(Album a : model.getCurrentUser().getAlbumList()) {
-				if(a.equals(test)) {
+			for (Album a : model.getCurrentUser().getAlbumList()) {
+				if (a.equals(test)) {
 					model.getCurrentUser().setCurrentAlbum(test);
 				}
 			}
 		});
 	}
-	
+
 	/**
 	 * Creates a tag for the current photo.
 	 */
 	public void createTag() {
 		if (currentPhoto != null) {
-			if (tagName.getText().isEmpty() == false && tagValue.getText().isEmpty() == false) {
-				if (currentPhoto.addTag(tagName.getText().trim(), tagValue.getText().trim()) == -1) {
-					Alert error = new Alert(AlertType.ERROR, "Duplicate tag found. Tag not added!", ButtonType.OK);
+			if (tagName.getText().isEmpty() == false
+					&& tagValue.getText().isEmpty() == false) {
+				if (currentPhoto.addTag(tagName.getText().trim(),
+						tagValue.getText().trim()) == -1) {
+					Alert error = new Alert(AlertType.ERROR,
+							"Duplicate tag found. Tag not added!",
+							ButtonType.OK);
 					error.showAndWait();
 				} else {
 					tagName.setText(null);
 					tagValue.setText(null);
 
-					Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully added!", ButtonType.OK);
+					Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+							"Tag successfully added!", ButtonType.OK);
 					success.showAndWait();
 				}
 			} else {
-				Alert error = new Alert(AlertType.ERROR, "Please provide a tag name and value.", ButtonType.OK);
+				Alert error = new Alert(AlertType.ERROR,
+						"Please provide a tag name and value.", ButtonType.OK);
 				error.showAndWait();
 			}
 		} else {
-			Alert error = new Alert(AlertType.ERROR, "Please select a photo to create a tag for.", ButtonType.OK);
+			Alert error = new Alert(AlertType.ERROR,
+					"Please select a photo to create a tag for.",
+					ButtonType.OK);
 			error.showAndWait();
 		}
 	}
@@ -252,12 +268,15 @@ public class PhotoController {
 		int selectedIndex = tagList.getSelectionModel().getSelectedIndex();
 
 		if (selectedIndex < 0) {
-			Alert error = new Alert(Alert.AlertType.ERROR, "There are no tags to be deleted.", ButtonType.OK);
+			Alert error = new Alert(Alert.AlertType.ERROR,
+					"There are no tags to be deleted.", ButtonType.OK);
 			error.showAndWait();
 			return;
 		}
 
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this tag?", ButtonType.YES, ButtonType.NO);
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+				"Are you sure you want to delete this tag?", ButtonType.YES,
+				ButtonType.NO);
 		alert.showAndWait();
 
 		if (alert.getResult() != ButtonType.YES) {
@@ -267,53 +286,57 @@ public class PhotoController {
 		if (selectedIndex >= 0) {
 			currentPhoto.deleteTag(selectedIndex);
 
-			Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully removed!", ButtonType.OK);
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
+					"Tag successfully removed!", ButtonType.OK);
 			success.showAndWait();
 		}
 	}
-	
+
 	/**
 	 * Changes the other radio button to false if one is currently selected.
 	 */
 	public void doRadioButtonSelectedAlbum() {
-		if(radioButtonSelectedAlbum.isSelected()) {
+		if (radioButtonSelectedAlbum.isSelected()) {
 			albumList.getSelectionModel().select(0);
 			radioButtonThisAlbum.setSelected(false);
 		}
 	}
-	
+
 	/**
 	 * Changes the other radio button to false if one is currently selected.
 	 */
 	public void doRadioButtonThisAlbum() {
-		if(radioButtonThisAlbum.isSelected()) {
+		if (radioButtonThisAlbum.isSelected()) {
 			radioButtonSelectedAlbum.setSelected(false);
 			albumList.getSelectionModel().clearSelection();
 		}
 	}
-	
+
 	/**
 	 * Adjusts the ImageViews based on value of zoom sized.
 	 */
-	public void doZoomSlider() {				
+	public void doZoomSlider() {
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
 				double factor = newValue.doubleValue();
-				
+
 				imageInsetValue = factor * DEFAULT_INSET_VALUE; // default 10.00
-				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default 150.00
-				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default 200.00
-				
+				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE; // default
+																	// 150.00
+				imageWidthValue = factor * DEFAULT_WIDTH_VALUE; // default
+																// 200.00
+
 				for (ImageView iv : currentImageViewList) {
 					iv.setFitHeight(imageHeightValue);
 					iv.setFitWidth(imageWidthValue);
 					iv.setPreserveRatio(true);
 				}
-			}	
+			}
 		});
 	}
-	
+
 	/**
 	 * Executes upon activating navigator back button
 	 */
@@ -332,40 +355,54 @@ public class PhotoController {
 				iv = currentImageViewList.get(index);
 			}
 
+			// everything up to here is fine
+
 			navigatorButtonBack.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isPrimaryButtonDown()) {
 					old.setStyle(null);
-					
+
 					if (iv.getBoundsInParent() != null) {
-						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
 					
+					// everything up to here is fine
+					
+					
 					currentPhoto = imageQueueList.getItems().get(index);
+					// currentPhoto = pList.get(index);
+					
 
-					detailView.setImage(currentImageViewList.get(index).getImage());
+					detailView.setImage(
+							currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
 					detailView.setPreserveRatio(true);
-
+					
+					
 					nameField.setText(currentPhoto.getFilename());
 					pathField.setText(currentPhoto.getFilepath());
 					sizeField.setText("(size)" + " KB");
 					createdField.setText(currentPhoto.getDatePhoto());
 
-					ObservableList<Tag> tList = FXCollections.observableArrayList();
-					
-					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+					ObservableList<Tag> tList = FXCollections
+							.observableArrayList();
+
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
+							.entrySet()) {
 						tList.add(tag.getValue());
 					}
-					
+
 					currentPhoto.setTagList(tList);
 					tagList.setItems(tList);
+					
 				}
 			});
 		} else {
 
 		}
+
 	}
 
 	/**
@@ -391,12 +428,16 @@ public class PhotoController {
 
 					old.setStyle(null);
 					if (iv.getBoundsInParent() != null) {
-						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
 
-					currentPhoto = photoList.get(index);
+					currentPhoto = imageQueueList.getItems().get(index);
+					//currentPhoto = photoList.get(index);
+					// currentPhoto = pList.get(index);
 
-					detailView.setImage(currentImageViewList.get(index).getImage());
+					detailView.setImage(
+							currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
@@ -407,9 +448,11 @@ public class PhotoController {
 					sizeField.setText("(size)" + " KB");
 					createdField.setText(currentPhoto.getDatePhoto());
 
-					ObservableList<Tag> tList = FXCollections.observableArrayList();
+					ObservableList<Tag> tList = FXCollections
+							.observableArrayList();
 
-					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
+							.entrySet()) {
 						tList.add(tag.getValue());
 					}
 
@@ -420,28 +463,29 @@ public class PhotoController {
 			});
 		}
 	}
-	
+
 	/**
 	 * Selects the file from the FileChooser and adds the Photo to the tilePane.
 	 */
 	public void selectFile() {
 		fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().addAll(
-				new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"),
-				new ExtensionFilter("All Files", "*.*")
-		);
-		
+		fileChooser.getExtensionFilters()
+				.addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg",
+						"*.jpeg", "*.gif"),
+						new ExtensionFilter("All Files", "*.*"));
+
 		file = fileChooser.showOpenDialog(null);
-		
-		if(file != null) {
+
+		if (file != null) {
 			pList.add(new Photo(file));
 		}
-		
+
 		imageQueueList.setItems(pList);
-		
+
 		tilePaneImages.getChildren().clear();
 		tilePaneImages.setStyle("-fx-focus-color: transparent;");
-		tilePaneImages.setPadding(new Insets(imageInsetValue, imageInsetValue, imageInsetValue, imageInsetValue));
+		tilePaneImages.setPadding(new Insets(imageInsetValue, imageInsetValue,
+				imageInsetValue, imageInsetValue));
 		tilePaneImages.setHgap(imageInsetValue);
 
 		currentImageViewList = new ArrayList<ImageView>();
@@ -460,14 +504,22 @@ public class PhotoController {
 
 			iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isSecondaryButtonDown()) {
-					
+
 				} else {
 					if (iv.getBoundsInParent() != null) {
-						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+						iv.setStyle(
+								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
 
 					setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
 					currentPhoto = p;
+					
+					detailView.setImage(
+							currentImageViewList.get(index).getImage());
+					detailView.setFitHeight(150);
+					detailView.setFitWidth(200);
+					detailView.setVisible(true);
+					detailView.setPreserveRatio(true);
 
 					nameField.setText(currentPhoto.getFilename());
 					pathField.setText(currentPhoto.getFilepath());
@@ -475,8 +527,9 @@ public class PhotoController {
 					createdField.setText(currentPhoto.getDatePhoto());
 
 					tList = FXCollections.observableArrayList();
-					
-					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
+
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
+							.entrySet()) {
 						tList.add(tag.getValue());
 					}
 
@@ -485,69 +538,74 @@ public class PhotoController {
 				}
 			});
 
-			tilePaneImages.addEventFilter(
-					MouseEvent.MOUSE_PRESSED, e -> {
-						if (e.isPrimaryButtonDown()) {
-							iv.setStyle(null);
+			tilePaneImages.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+				if (e.isPrimaryButtonDown()) {
+					iv.setStyle(null);
 
-							nameField.setText("(No image selected)");
-							pathField.setText("(No image selected)");
-							sizeField.setText("(No image selected)");
-							createdField.setText("(No image selected)");
-							
-							tagName.setText(null);
-							tagValue.setText(null);
-							tagList.setItems(null);
-						}
-					});
+					nameField.setText("(No image selected)");
+					pathField.setText("(No image selected)");
+					sizeField.setText("(No image selected)");
+					createdField.setText("(No image selected)");
+
+					tagName.setText(null);
+					tagValue.setText(null);
+					tagList.setItems(null);
+				}
+			});
 
 			tilePaneImages.getChildren().add(iv);
 			currentImageViewList.add(iv);
 			updateInfoData();
 		}
 	}
-	
+
 	/**
-	 * This goes through the imageQueueList (ListView<User>) and adds the photos to the current album or selected album.
+	 * This goes through the imageQueueList (ListView<User>) and adds the photos
+	 * to the current album or selected album.
 	 */
 	public void addSelectedPhotos() {
-		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();		
+		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
 		currentAlbum.setPhotoList(photoList);
-		
-		if(currentAlbum != null) {
-			for(int i = 0; i < imageQueueList.getItems().size(); i++) {
-				
+
+		if (currentAlbum != null) {
+			for (int i = 0; i < imageQueueList.getItems().size(); i++) {
+
 				Photo p = imageQueueList.getItems().get(i);
-				
-				if(currentAlbum.addPhoto(p) == -1) {
-					Alert error = new Alert(AlertType.ERROR, "Photo not added, duplicate photo.", ButtonType.OK);
+
+				if (currentAlbum.addPhoto(p) == -1) {
+					Alert error = new Alert(AlertType.ERROR,
+							"Photo not added, duplicate photo.", ButtonType.OK);
 					error.showAndWait();
 				} else {
-					Alert success = new Alert(AlertType.INFORMATION, "Photos successfully added to: " + currentAlbum.getAlbumName());
+					Alert success = new Alert(AlertType.INFORMATION,
+							"Photos successfully added to: "
+									+ currentAlbum.getAlbumName());
 					success.showAndWait();
 				}
-				
-				for(Tag t : p.getTagList()) {
-					currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
+
+				for (Tag t : p.getTagList()) {
+					currentAlbum.getPhotoMap().get(p.getKey())
+							.addTag(t.getTagName(), t.getTagValue());
 				}
-				
+
 				imageQueueList.getItems().remove(p);
 				tilePaneImages.getChildren().remove(i);
 				i--;
 			}
 		}
-		
+
 		tagName.setText(null);
 		tagValue.setText(null);
-		
-		if(!tagList.getItems().isEmpty()) {
+
+		if (!tagList.getItems().isEmpty()) {
 			tList.clear();
 		}
 		model.write();
 	}
-	
+
 	/**
 	 * Executes upon selecting about section
+	 * 
 	 * @throws IOException if user.fxml not found
 	 */
 	public void doAlbum() throws IOException {
@@ -558,13 +616,15 @@ public class PhotoController {
 		Scene scene = new Scene(root);
 		imageQueueList.getScene().getWindow().hide();
 		window.setScene(scene);
-		window.setTitle("Photos V1.0 - Welcome " + model.getCurrentUser().getUsername());
+		window.setTitle("Photos V1.0 - Welcome "
+				+ model.getCurrentUser().getUsername());
 		window.setResizable(false);
 		window.show();
 	}
-	
+
 	/**
 	 * Executes upon selecting about section
+	 * 
 	 * @throws IOException if about.fxml not found
 	 */
 	public void doAbout() throws IOException {
@@ -583,6 +643,7 @@ public class PhotoController {
 
 	/**
 	 * Executes upon selecting help section
+	 * 
 	 * @throws IOException if help.fxml not found
 	 */
 	public void doHelp() throws IOException {
@@ -598,14 +659,16 @@ public class PhotoController {
 		window.setResizable(false);
 		window.show();
 	}
-	
+
 	/**
 	 * Executes upon selecting logout section
+	 * 
 	 * @throws IOException if login.fxml not found
 	 */
 	public void doLogOut() throws IOException {
 		model.write();
-		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		Parent login = FXMLLoader
+				.load(getClass().getResource("/view/login.fxml"));
 		Scene loginScene = new Scene(login);
 		Stage currentStage = (Stage) (imageQueueList.getScene().getWindow());
 		currentStage.hide();
@@ -613,16 +676,17 @@ public class PhotoController {
 		currentStage.setTitle("Photos -- V1.0");
 		currentStage.show();
 	}
-	
+
 	/**
 	 * Quits the application and calls exit() from the LoginController.
 	 */
 	public void doQuit() {
 		LoginController.exit();
 	}
-	
+
 	/**
 	 * Sets the selected index
+	 * 
 	 * @param selectedIndex is the index
 	 */
 	private void setSelectedIndex(int selectedIndex) {
