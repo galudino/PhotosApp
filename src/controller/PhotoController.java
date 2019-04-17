@@ -588,7 +588,7 @@ public class PhotoController {
 	public void doHelp() throws IOException {
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("/view/help.fxml"));
+		loader.setLocation(getClass().getResource("/view/help_import.fxml"));
 		loader.setController(this);
 		Parent root = loader.load();
 		window.initModality(Modality.NONE);

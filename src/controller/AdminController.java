@@ -140,6 +140,24 @@ public class AdminController {
 		window.setResizable(false);
 		window.show();
 	}
+	
+	/**
+	 * Executes upon visiting help option
+	 * @throws IOException if help_admin.fxml not found
+	 */
+	public void doHelp() throws IOException {
+		Stage window = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/help_admin.fxml"));
+		loader.setController(this);
+		Parent root = loader.load();
+		window.initModality(Modality.NONE);
+		Scene scene = new Scene(root);
+		window.setScene(scene);
+		window.setTitle("Photos V1.0 -- About");
+		window.setResizable(false);
+		window.show();
+	}
 
 	/**
 	 * Saves the current model, and returns back to the login screen.
