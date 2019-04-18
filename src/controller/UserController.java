@@ -163,12 +163,14 @@ public class UserController {
 		fileImportImagesSelectedAlbum.setDisable(true);
 		albumView.setItems(currentUser.getAlbumList());
 		updateInfoData();
+		
+		checkBoxPromptBeforeDelete.setSelected(true);
 
-		/*
-		 * menuAlbums.getItems().clear(); for(Album a : albumView.getItems()) {
-		 * menuAlbums.getItems().add(new MenuItem(a.getAlbumName()));
-		 * a.setCounterDatetime(); }
-		 */
+		
+		  for(Album a : albumView.getItems()) {
+
+		 a.setCounterDatetime(); }
+		 
 	}
 
 	/**
@@ -177,8 +179,6 @@ public class UserController {
 	 * @throws IOException if viewer.fxml is not found
 	 */
 	public void doOpenSelectedPhotoInViewer() throws IOException {
-		debugLog("Open selected photo in viewer");
-
 		PhotoController.currentSelectedPhoto = null;
 		UserController.currentSelectedPhoto = currentPhoto;
 		SearchController.currentSelectedPhoto = null;

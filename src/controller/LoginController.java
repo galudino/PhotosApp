@@ -53,9 +53,10 @@ public class LoginController {
 	/**
 	 * Initialization process to ensure everything is set to null including user
 	 * model.
+	 * @throws IOException 
 	 */
 	@FXML
-	public void initialize() {
+	public void initialize() throws IOException {
 		model = new PhotoModel();
 		textFieldUsername.clear();
 		textFieldPassword.clear();

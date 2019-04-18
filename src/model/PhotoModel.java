@@ -13,6 +13,7 @@ package model;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,8 +45,9 @@ public class PhotoModel implements Serializable {
 	/**
 	 * Default constructor which reads data from the DAT file and loads all the user
 	 * data.
+	 * @throws IOException 
 	 */
-	public PhotoModel() {
+	public PhotoModel() throws IOException {
 		userList = read();
 		userMap = new TreeMap<String, User>();
 		currentUser = null;
@@ -124,9 +126,19 @@ public class PhotoModel implements Serializable {
 	 * 
 	 * @return an observable list that has all the old data, or a new list with
 	 *         admin/stock preloaded.
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("resource")
-	public ObservableList<User> read() {
+	public ObservableList<User> read() throws IOException {
+		File file = new File(DAT_FILE_PATH);
+		
+		if (file.exists() == false) {
+			byte[] data = { 0x00 };
+			FileOutputStream out = new FileOutputStream(DAT_FILE_PATH);
+			out.write(data);
+			out.close();
+		}
+				
 		try {
 			FileInputStream fIn = new FileInputStream(DAT_FILE_PATH);
 			ObjectInputStream in = new ObjectInputStream(fIn);
@@ -134,9 +146,9 @@ public class PhotoModel implements Serializable {
 			List<User> readList = (List<User>) in.readObject();
 			return FXCollections.observableArrayList(readList);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IOException i) {
-			i.printStackTrace();
+			//i.printStackTrace();
 		}
 
 		User admin = new User("admin", "admin");
@@ -169,7 +181,6 @@ public class PhotoModel implements Serializable {
 			FileOutputStream fOut = new FileOutputStream(DAT_FILE_PATH);
 			ObjectOutputStream out = new ObjectOutputStream(fOut);
 			out.writeObject(new ArrayList<User>(userList));
-			System.out.println("Saving..." + this);
 			out.close();
 			fOut.close();
 		} catch (IOException e) {

@@ -137,7 +137,7 @@ public class SearchController {
 	@FXML CheckBox checkBoxDeleteFromDisk;
 	@FXML CheckBox checkBoxPromptBeforeDelete;
 	
-	@FXML ChoiceBox<Album> albumList;
+	@FXML ChoiceBox<String> albumList;
 	
 	@FXML DatePicker datePickerFrom;
 	@FXML DatePicker datePickerTo;
@@ -221,6 +221,8 @@ public class SearchController {
 		}
 
 		resetAndOrNot();
+		
+		checkBoxPromptBeforeDelete.setSelected(true);
 
 		Album possibleAlbum = currentUser.getCurrentAlbum();
 		currentAlbum = possibleAlbum != null ? possibleAlbum : null;
@@ -229,6 +231,8 @@ public class SearchController {
 
 		tagConditionalList = new ArrayList<TagConditional>();
 		photoMapSearchResults = new TreeMap<String, Photo>();
+		
+
 
 		updateInfoData();
 
@@ -236,7 +240,6 @@ public class SearchController {
 		 * CONSOLE DIAGNOSTICS
 		 */
 		System.out.println();
-		debugLog("Entering " + getClass().getSimpleName());
 	}
 
 	/**
@@ -247,25 +250,26 @@ public class SearchController {
 
 		ObservableList<Album> currentAlbumList = model.getCurrentUser().getAlbumList();
 
-		for (Album a : currentAlbumList) {
-			albumList.getItems().add(a);
+		//for (Album a : currentAlbumList) {
+		//	albumList.getItems().add(a);
+		//}
+		
+		for (Album a : model.getCurrentUser().getAlbumList()) {
+			albumList.getItems().add(a.getAlbumName());
 		}
 
 		albumList.setOnAction(event -> {
 			radioButtonSelectedAlbum.setSelected(true);
 			doRadioButtonSelectedAlbum();
-			Album test = albumList.getValue();
+			String aName = albumList.getValue();
+			Album test = new Album(aName);
 
 			for (Album a : currentAlbumList) {
 				if (a.equals(test)) {
-					debugLog(a + " == " + test);
-
 					model.getCurrentUser().setCurrentAlbum(test);
 					currentAlbum = test;
 				}
 			}
-
-			debugLog("selected album: " + currentAlbum.getAlbumName());
 		});
 
 	}
@@ -282,17 +286,27 @@ public class SearchController {
 		// get the newly assigned album from here
 		// @FXML ChoiceBox<Album> albumList;
 
-		Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+		/*
+		String aName = albumList.getSelectionModel().getSelectedItem();
+		Album selectedAlbum = new Album(aName);
+		model.getCurrentUser().setCurrentAlbum(selectedAlbum);
+		//Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
 		currentAlbum = selectedAlbum != null ? selectedAlbum : null;
-
-		debugLog("[doAlbumList]" + " newly selected album: " + currentAlbum);
+		*/
+		albumList.setOnAction(event -> {
+			Album test = new Album(albumList.getValue());
+			for (Album a : model.getCurrentUser().getAlbumList()) {
+				if (a.equals(test)) {
+					model.getCurrentUser().setCurrentAlbum(test);
+				}
+			}
+		});
 	}
 
 	/**
 	 * Invokes search functionality
 	 */
 	public void doButtonSearchNow() {
-		debugLog("[doButtonSearchNow]");
 		photoMapSearchResults.clear();
 		photoListSearchResults.clear();
 
@@ -305,9 +319,6 @@ public class SearchController {
 		for (Photo photo : photoMapSearchResults.values()) {
 			photoListSearchResults.add(photo);
 		}
-
-		debugLog("map: " + photoMapSearchResults);
-		debugLog("list: " + photoListSearchResults);
 
 		tilePaneImages.getChildren().clear();
 
@@ -336,7 +347,7 @@ public class SearchController {
 
 			iv.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isSecondaryButtonDown()) {
-					debugLog("Image " + p.getFilename() + " right clicked");
+
 				} else {
 
 					if (iv.getBoundsInParent() != null) {
@@ -346,8 +357,6 @@ public class SearchController {
 					setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
 					currentPhoto = p;
 					currentSelectedPhoto = currentPhoto;
-
-					debugLog("Image " + p.getFilename() + " selected");
 
 					System.out.println(currentImageViewList.size());
 
@@ -421,7 +430,6 @@ public class SearchController {
 				if (photo.isInDateRange(dateFrom, dateTo)) {
 					if (tagConditionalList.isEmpty()) {
 						// add all photos in date range to results
-						debugLog("FOUND: " + photo + " " + currentAlbum);
 						String key = photo.getKey();
 						results.put(key, photo);
 					} else {
@@ -429,7 +437,6 @@ public class SearchController {
 							if (photo.matchesTagConditional(conditional)) {
 								// add all photos in date range
 								// and matched conditional to results
-								debugLog("FOUND: " + photo + " " + currentAlbum);
 								String key = photo.getKey();
 								results.put(key, photo);
 							}
@@ -442,7 +449,7 @@ public class SearchController {
 				for (Photo photo : album.getPhotoMap().values()) {
 					if (tagConditionalList.isEmpty()) {
 						// add all photos in date range to results
-						debugLog("FOUND: " + photo + " " + currentAlbum);
+
 						String key = photo.getKey();
 						results.put(key, photo);
 					} else {
@@ -451,7 +458,7 @@ public class SearchController {
 								if (photo.matchesTagConditional(conditional)) {
 									// add all photos in date range
 									// and matched conditional to results
-									debugLog("FOUND: " + photo + " " + currentAlbum);
+
 									String key = photo.getKey();
 									results.put(key, photo);
 								}
@@ -483,8 +490,6 @@ public class SearchController {
 			String errorStr = String.format("%s\n%s", "ERROR: See DATE RANGE.",
 					"FROM must be chronologically before TO.");
 
-			debugLog("[checkDateFromTo]" + errorStr);
-
 			Alert error = new Alert(Alert.AlertType.ERROR, errorStr);
 			error.showAndWait();
 
@@ -498,8 +503,6 @@ public class SearchController {
 	 * Removes a TagConditional from the tag selection queue
 	 */
 	public void doMenuItemRemoveTagFromSearch() {
-		debugLog("[doMenuItemRemoveTagFromSearch]");
-
 		// menuItemRemoveTagFromSearch
 
 		// Remove the tag conditional from these three:
@@ -510,7 +513,7 @@ public class SearchController {
 		int selectedIndex = listViewTagSearch.getSelectionModel().getSelectedIndex();
 
 		if (selectedIndex < 0) {
-			debugLog("No TagConditional to remove.");
+	
 			return;
 		}
 
@@ -524,8 +527,6 @@ public class SearchController {
 	 * Adds a TagConditional to the tag selection queue
 	 */
 	public void doButtonAddTagPair() {
-		debugLog("[doButtonAddTagPair]");
-
 		Tag tag1 = null;
 		Tag tag2 = null;
 
@@ -610,7 +611,6 @@ public class SearchController {
 
 		resetTextFields();
 		resetAndOrNot();
-		debugLog(conditional + "was added");
 	}
 
 	/**
@@ -730,8 +730,6 @@ public class SearchController {
 		} else {
 			resetAndOrNot();
 		}
-
-		debugLog("[doRadioButtonAnd]");
 	}
 
 	/**
@@ -752,8 +750,6 @@ public class SearchController {
 		} else {
 			resetAndOrNot();
 		}
-
-		debugLog("[doRadioButtonOr]");
 	}
 
 	/**
@@ -774,8 +770,6 @@ public class SearchController {
 		} else {
 			resetAndOrNot();
 		}
-
-		debugLog("[doRadioButtonNot]");
 	}
 
 	/*
@@ -808,22 +802,14 @@ public class SearchController {
 	 * Stores date (from) from DatePicker into a LocalDate
 	 */
 	public void doDatePickerFrom() {
-		debugLog("[doDatePickerFrom]");
-
 		dateFrom = datePickerFrom.getValue();
-
-		debugLog(dateFrom + " was retrieved");
 	}
 
 	/**
 	 * Stores date (to) from DatePicker into a LocalDate
 	 */
 	public void doDatePickerTo() {
-		debugLog("[doDatePickerTo]");
-
 		dateTo = datePickerTo.getValue();
-
-		debugLog(dateFrom + " was retrieved" + " (long value) ");
 	}
 
 	/**
@@ -838,8 +824,6 @@ public class SearchController {
 			searchScopeSelectedAlbum = false;
 			searchScopeAllAlbums = false;
 		}
-
-		debugLog("[doRadioButtonThisAlbum]");
 	}
 
 	/**
@@ -854,8 +838,6 @@ public class SearchController {
 			searchScopeThisAlbum = false;
 			searchScopeAllAlbums = false;
 		}
-
-		debugLog("[doRadioButtonSelectedAlbum]");
 	}
 
 	/**
@@ -870,8 +852,6 @@ public class SearchController {
 			searchScopeThisAlbum = false;
 			searchScopeSelectedAlbum = false;
 		}
-
-		debugLog("[doRadioButtonAllAlbums]");
 	}
 
 	/**
@@ -880,8 +860,6 @@ public class SearchController {
 	 * @throws IOException if viewer.fxml is not found
 	 */
 	public void doOpenSelectedPhotoInViewer() throws IOException {
-		debugLog("Open selected photo in viewer");
-
 		PhotoController.currentSelectedPhoto = null;
 		UserController.currentSelectedPhoto = null;
 		SearchController.currentSelectedPhoto = currentPhoto;
@@ -913,11 +891,6 @@ public class SearchController {
 			if (selectedIndex < 0) {
 				Alert error = new Alert(Alert.AlertType.ERROR, "There are no photos to be deleted.", ButtonType.OK);
 
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("There are no photos to be deleted.");
-
 				error.showAndWait();
 				return;
 			}
@@ -936,18 +909,11 @@ public class SearchController {
 			 * Photo is found within list
 			 */
 			if (selectedIndex >= 0) {
-				debugLog("Selected Index (Photo to be deleted): " + selectedIndex);
-
 				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Photo successfully removed!", ButtonType.OK);
 
 				tilePaneImages.getChildren().remove(selectedIndex);
 
 				photoListSearchResults.remove(selectedIndex);
-
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("Photo successfully removed!");
 
 				updateInfoData();
 
@@ -955,9 +921,6 @@ public class SearchController {
 			}
 		} else {
 			Alert error = new Alert(AlertType.ERROR, "Please select a photo to delete.", ButtonType.OK);
-
-			debugLog("ERROR: Please select a photo.");
-
 			error.showAndWait();
 		}
 
@@ -976,8 +939,6 @@ public class SearchController {
 	 */
 	public void doCheckBoxPromptBeforeDelete() {
 		promptBeforeDelete = promptBeforeDelete ? false : true;
-
-		debugLog("Prompt before delete checked -- prompt before delete enabled: " + promptBeforeDelete);
 	}
 	
 
@@ -989,11 +950,6 @@ public class SearchController {
 
 		if (selectedIndex < 0) {
 			Alert error = new Alert(Alert.AlertType.ERROR, "There are no tags to be deleted.", ButtonType.OK);
-
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("There are no tags to be deleted.");
 
 			error.showAndWait();
 			return;
@@ -1008,10 +964,6 @@ public class SearchController {
 		 * User no longer wants to delete the selected tag
 		 */
 		if (alert.getResult() != ButtonType.YES) {
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Quit from deleting tag.");
 			return;
 		}
 
@@ -1019,16 +971,10 @@ public class SearchController {
 		 * Tag is found within list
 		 */
 		if (selectedIndex >= 0) {
-			debugLog("Selected Index (tag to be deleted): " + selectedIndex);
 			currentPhoto.deleteTag(selectedIndex);
 
 			Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully removed!", ButtonType.OK);
-
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("ATag successfully removed!");
-
+ 
 			success.showAndWait();
 		}
 	}
@@ -1132,7 +1078,6 @@ public class SearchController {
 
 			for (Photo p : a.getPhotoMap().values()) {
 				totalByteCount += p.getFileSize();
-				debugLog("" + totalByteCount);
 			}
 		}
 
@@ -1156,13 +1101,6 @@ public class SearchController {
 					 */
 					Alert error = new Alert(AlertType.ERROR, "Duplicate tag found. Tag not added!", ButtonType.OK);
 
-					/**
-					 * CONSOLE DIAGNOSTICS
-					 */
-					debugLog("Duplicate tag found. Tag not added!");
-
-					debugLog(tagName.getText().trim() + " " + tagValue.getText().trim());
-
 					error.showAndWait();
 				} else {
 					/**
@@ -1170,8 +1108,6 @@ public class SearchController {
 					 */
 
 					Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully added!", ButtonType.OK);
-
-					debugLog("Tag " + tagName.getText() + " was successfully added!");
 
 					success.showAndWait();
 				}
@@ -1181,15 +1117,10 @@ public class SearchController {
 				 */
 				Alert error = new Alert(AlertType.ERROR, "Please provide a tag name and value.", ButtonType.OK);
 
-				debugLog("ERROR: Please provide a tag name and value.");
-
 				error.showAndWait();
 			}
 		} else {
 			Alert error = new Alert(AlertType.ERROR, "Please select a photo to create a tag for.", ButtonType.OK);
-
-			debugLog("ERROR: Please select a photo.");
-
 			error.showAndWait();
 		}
 	}
@@ -1206,28 +1137,16 @@ public class SearchController {
 				currentPhoto.setCaption(captionField.getText().trim());
 				displayCaption.setText(captionField.getText().trim());
 
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("caption - \"" + captionField.getText() + "\" was set");
 			} else {
 				/**
 				 * SCENARIO 2: captionField is an empty string.
 				 */
 				Alert error = new Alert(AlertType.ERROR, "Please provide a caption.", ButtonType.OK);
 
-				/**
-				 * CONSOLE DIAGNOSTICS
-				 */
-				debugLog("caption provided was an empty string.");
-
 				error.showAndWait();
 			}
 		} else {
 			Alert error = new Alert(AlertType.ERROR, "Please select a photo to create a caption for.", ButtonType.OK);
-
-			debugLog("ERROR: Please select a photo.");
-
 			error.showAndWait();
 		}
 	}
@@ -1286,16 +1205,17 @@ public class SearchController {
 	 * @throws IOException if login.fxml is not found
 	 */
 	public void doLogOut() throws IOException {
-		// model.write();
+		model.write();
+		
+		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		Scene loginScene = new Scene(login);
+		Stage currentStage = (Stage) (tilePaneImages.getScene().getWindow());
 
-		//Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-		//Scene loginScene = new Scene(login);
-		// Stage currentStage = (Stage) (imageQueueList.getScene().getWindow());
-
-		// currentStage.hide();
-		// currentStage.setScene(loginScene);
-		// currentStage.setTitle("Photos -- V1.0");
-		// currentStage.show();
+		currentStage.hide();
+		currentStage.setScene(loginScene);
+		currentStage.setTitle("Photos -- V1.0");
+		currentStage.show();
+		
 	}
 
 	/**
@@ -1348,12 +1268,6 @@ public class SearchController {
 					iv.setFitWidth(imageWidthValue);
 					iv.setPreserveRatio(true);
 				}
-
-				debugLog("" + newValue.doubleValue());
-
-				debugLog(imageInsetValue + " inset");
-				debugLog(imageHeightValue + " height");
-				debugLog(imageWidthValue + " width");
 			}
 
 		});
@@ -1417,8 +1331,6 @@ public class SearchController {
 			 */
 			navigatorButtonBack.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isPrimaryButtonDown()) {
-					debugLog("[navigatorButtonBack] Selected index field reads: " + index);
-
 					old.setStyle(null);
 					if (iv.getBoundsInParent() != null) {
 						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
@@ -1468,16 +1380,6 @@ public class SearchController {
 
 				}
 			});
-
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("[navigatorButtonBack] Image " + currentPhoto.getFilename() + " was selected");
-
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Clicked navigator button back");
 		} else {
 
 		}
@@ -1531,8 +1433,6 @@ public class SearchController {
 			 */
 			navigatorButtonNext.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 				if (e.isPrimaryButtonDown()) {
-					debugLog("[navigatorButtonNext] Selected index field reads: " + index);
-
 					old.setStyle(null);
 					if (iv.getBoundsInParent() != null) {
 						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
@@ -1582,16 +1482,6 @@ public class SearchController {
 
 				}
 			});
-
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("[navigatorButtonNext] Image " + currentPhoto.getFilename() + " was selected");
-
-			/**
-			 * CONSOLE DIAGNOSTICS
-			 */
-			debugLog("Clicked navigator button next");
 		}
 
 	}

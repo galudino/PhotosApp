@@ -129,8 +129,6 @@ public class PhotoController {
 	 * @throws IOException if viewer.fxml not found
 	 */
 	public void doOpenSelectedPhotoInViewer() throws IOException {
-		debugLog("Open selected photo in viewer");
-
 		PhotoController.currentSelectedPhoto = currentPhoto;
 		UserController.currentSelectedPhoto = null;
 		SearchController.currentSelectedPhoto = null;
@@ -161,6 +159,7 @@ public class PhotoController {
 		radioButtonThisAlbum.setSelected(true);
 		updateInfoData();
 		albumList.getItems().clear();
+		
 		for (Album a : model.getCurrentUser().getAlbumList()) {
 			albumList.getItems().add(a.getAlbumName());
 		}
