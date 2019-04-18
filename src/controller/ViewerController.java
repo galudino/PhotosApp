@@ -17,10 +17,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import model.Photo;
-import model.PhotoModel;
 
+/**
+ * Controller class to manage functionality for viewer.fxml
+ * 
+ * @version Apr 17, 2019
+ * @author Patrick Nogaj, Gemuele Aludino
+ */
 public class ViewerController extends Canvas {
-	
+
 	//@formatter:off
 	@FXML Button buttonFlipHorizontal;
 	@FXML Button buttonFlipVertical;
@@ -38,8 +43,8 @@ public class ViewerController extends Canvas {
 	@FXML MenuItem menuItemRotate180;
 	@FXML MenuItem menuItemRotate270;
 	@FXML MenuItem menuItemRotate90;
-	@FXML MenuItem menuItemSavePhoto;
-	@FXML MenuItem menuItemSavePhotoAs;
+	//@FXML MenuItem menuItemSavePhoto;
+	//@FXML MenuItem menuItemSavePhotoAs;
 	@FXML MenuItem menuItemUndo;
 	
 	@FXML Slider sliderBrightness;
@@ -54,94 +59,114 @@ public class ViewerController extends Canvas {
 	@FXML TextField textFieldSaturation;
 	
 	@FXML TilePane tilePaneImage;
-	
 	//@formatter:on
-	
-	private PhotoModel model = LoginController.getModel();
+
+	//private PhotoModel model = LoginController.getModel();
 	private Photo currentPhoto = null;
-	
+
 	double DEFAULT_HEIGHT_VALUE = 0.0;
 	double DEFAULT_WIDTH_VALUE = 0.0;
 	double imageHeightValue = 0.0;
 	double imageWidthValue = 0.0;
-	
+
 	Image originalImage;
-	
+
 	@FXML
 	public void initialize() {
-		
+
 		if (UserController.currentSelectedPhoto != null) {
 			currentPhoto = UserController.currentSelectedPhoto;
 		}
-		
+
 		if (PhotoController.currentSelectedPhoto != null) {
 			currentPhoto = PhotoController.currentSelectedPhoto;
 		}
-		
+
 		if (SearchController.currentSelectedPhoto != null) {
 			currentPhoto = SearchController.currentSelectedPhoto;
 		}
-		
+
 		System.out.println("Now in viewer: " + currentPhoto);
-		
+
 		displayImage();
 	}
-	
+
+	/**
+	 * Displays image in viewer
+	 */
 	private void displayImage() {
 		File test = new File(currentPhoto.getFilepath());
 		originalImage = new Image(test.toURI().toString());
-        imageViewMain.setImage(originalImage);
-		
+		imageViewMain.setImage(originalImage);
+
 		DEFAULT_HEIGHT_VALUE = originalImage.getHeight();
 		DEFAULT_WIDTH_VALUE = originalImage.getWidth();
-		
+
 		imageHeightValue = DEFAULT_HEIGHT_VALUE;
 		imageWidthValue = DEFAULT_WIDTH_VALUE;
 	}
-	
+
+	/**
+	 * Actions for clicking tilePaneImage area
+	 */
 	public void doTilePaneImage() {
-		
-	}
 	
+	}
+
+	/**
+	 * Actions for clicking imageViewMain area
+	 */
 	public void doImageViewMain() {
-		
+
 	}
-	
+
+	/**
+	 * imageViewMain is flipped horizontally
+	 */
 	public void doFlipHorizontal() {
-        imageViewMain.setScaleX(imageViewMain.getScaleX() * -1);
-    }
+		imageViewMain.setScaleX(imageViewMain.getScaleX() * -1);
+	}
 
-    public void doFlipVertical() {
-        imageViewMain.setScaleY(imageViewMain.getScaleY() * -1);
-    }
-		
+	/**
+	 * imageViewMain is flipped vertically
+	 */
+	public void doFlipVertical() {
+		imageViewMain.setScaleY(imageViewMain.getScaleY() * -1);
+	}
+
+	/**
+	 * imageViewMain is rotated 180 degrees
+	 */
 	public void doRotate180() {
-        imageViewMain.setRotate(imageViewMain.getRotate() + 180);
-    }
+		imageViewMain.setRotate(imageViewMain.getRotate() + 180);
+	}
 
-    public void doRotate270() {
-        imageViewMain.setRotate(imageViewMain.getRotate() + 270);
-    }
+	/**
+	 * imageViewMain is rotated 270 degrees
+	 */
+	public void doRotate270() {
+		imageViewMain.setRotate(imageViewMain.getRotate() + 270);
+	}
 
-    public void doRotate90() {
-        imageViewMain.setRotate(imageViewMain.getRotate() + 90);
-    }
-	
+	/**
+	 * imageViewMain is rotated 90 degrees
+	 */
+	public void doRotate90() {
+		imageViewMain.setRotate(imageViewMain.getRotate() + 90);
+	}
+
+	/**
+	 * imageViewMain is used to close the viewer
+	 */
 	public void doCloseViewer() {
 		imageViewMain.getScene().getWindow().hide();
 	}
-	
-	public void doSavePhoto() {
-		
-	}
-	
-	public void doSavePhotoAs() {
-		
-	}
-	
-	
+
+	/**
+	 * Actions for slider brightness
+	 */
 	public void doSliderBrightness() {
-	    sliderBrightness.valueProperty().addListener(new ChangeListener<Number>() {
+		sliderBrightness.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -151,12 +176,15 @@ public class ViewerController extends Canvas {
 				brightness.setContrast(factor);
 				imageViewMain.setEffect(brightness);
 			}
-	    	
-	    });
+
+		});
 	}
-	
+
+	/**
+	 * Actions for slider contrast
+	 */
 	public void doSliderContrast() {
-	    sliderContrast.valueProperty().addListener(new ChangeListener<Number>() {
+		sliderContrast.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -166,12 +194,15 @@ public class ViewerController extends Canvas {
 				contrast.setContrast(factor);
 				imageViewMain.setEffect(contrast);
 			}
-	    	
-	    });
+
+		});
 	}
-	
+
+	/**
+	 * Actions for slider hue
+	 */
 	public void doSliderHue() {
-	    sliderHue.valueProperty().addListener(new ChangeListener<Number>() {
+		sliderHue.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -181,12 +212,15 @@ public class ViewerController extends Canvas {
 				hue.setHue(factor);
 				imageViewMain.setEffect(hue);
 			}
-	    	
-	    });
+
+		});
 	}
-	
-	public void doSliderSaturation() {	    
-	    sliderSaturation.valueProperty().addListener(new ChangeListener<Number>() {
+
+	/**
+	 * Actions for slider saturation
+	 */
+	public void doSliderSaturation() {
+		sliderSaturation.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -196,34 +230,39 @@ public class ViewerController extends Canvas {
 				desaturation.setSaturation(factor);
 				imageViewMain.setEffect(desaturation);
 			}
-	    	
-	    });
+
+		});
 	}
-	
-	public void doSliderViewerZoom() {		
+
+	/**
+	 * Actions for slider zoom
+	 */
+	public void doSliderViewerZoom() {
 		sliderViewerZoom.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				double factor = newValue.doubleValue();
-				
+
 				imageHeightValue = factor * DEFAULT_HEIGHT_VALUE;
 				imageWidthValue = factor * DEFAULT_WIDTH_VALUE;
-				
+
 				imageViewMain.setFitHeight(imageHeightValue);
 				imageViewMain.setFitWidth(imageWidthValue);
 				imageViewMain.setPreserveRatio(true);
-				
+
 			}
-			
+
 		});
 	}
-	
+
+	/**
+	 * Actions for brightness
+	 */
 	public void doTextFieldBrightness() {
 		double input = Double.parseDouble(textFieldBrightness.getText());
-		
-		if(input < -1 || input > 1) {
+
+		if (input < -1 || input > 1) {
 			textFieldBrightness.setText(null);
 			Alert error = new Alert(AlertType.ERROR, "Brightness values range from -1.0 to 1.0.");
 			error.showAndWait();
@@ -234,11 +273,14 @@ public class ViewerController extends Canvas {
 			imageViewMain.setEffect(brightness);
 		}
 	}
-	
+
+	/**
+	 * Actions for contrast
+	 */
 	public void doTextFieldContrast() {
 		double input = Double.parseDouble(textFieldContrast.getText());
-		
-		if(input < -1 || input > 1) {
+
+		if (input < -1 || input > 1) {
 			textFieldContrast.setText(null);
 			Alert error = new Alert(AlertType.ERROR, "Contrast values range from -1.0 to 1.0.");
 			error.showAndWait();
@@ -249,11 +291,14 @@ public class ViewerController extends Canvas {
 			imageViewMain.setEffect(contrast);
 		}
 	}
-	
+
+	/**
+	 * Actions for hue
+	 */
 	public void doTextFieldHue() {
 		double input = Double.parseDouble(textFieldHue.getText());
-		
-		if(input < -1 || input > 1) {
+
+		if (input < -1 || input > 1) {
 			textFieldHue.setText(null);
 			Alert error = new Alert(AlertType.ERROR, "Hue values range from -1.0 to 1.0.");
 			error.showAndWait();
@@ -264,11 +309,14 @@ public class ViewerController extends Canvas {
 			imageViewMain.setEffect(hue);
 		}
 	}
-	
+
+	/**
+	 * Actions for saturation
+	 */
 	public void doTextFieldSaturation() {
 		double input = Double.parseDouble(textFieldSaturation.getText());
-		
-		if(input < -1 || input > 1) {
+
+		if (input < -1 || input > 1) {
 			textFieldSaturation.setText(null);
 			Alert error = new Alert(AlertType.ERROR, "Saturation values range from -1.0 to 1.0.");
 			error.showAndWait();
@@ -279,5 +327,5 @@ public class ViewerController extends Canvas {
 			imageViewMain.setEffect(desaturation);
 		}
 	}
-	
+
 }

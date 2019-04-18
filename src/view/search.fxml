@@ -129,7 +129,7 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="searchTagNameOne" layoutX="66.0" layoutY="44.0" onAction="#doSearchTagNameOne" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagNameOne" layoutX="66.0" layoutY="44.0" prefHeight="27.0" prefWidth="97.0" />
                         <Label layoutX="66.0" layoutY="30.0" text="TAG 1 (key1, value1)" textFill="#aeaeae">
                            <font>
                               <Font size="11.0" />
@@ -140,13 +140,13 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="searchTagNameTwo" layoutX="66.0" layoutY="123.0" onAction="#doSearchTagNameTwo" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagNameTwo" layoutX="66.0" layoutY="123.0" prefHeight="27.0" prefWidth="97.0" />
                         <RadioButton fx:id="radioButtonAnd" layoutX="66.0" layoutY="81.0" mnemonicParsing="false" onAction="#doRadioButtonAnd" text="and" />
                         <RadioButton fx:id="radioButtonOr" layoutX="131.0" layoutY="81.0" mnemonicParsing="false" onAction="#doRadioButtonOr" text="or" />
                         <RadioButton fx:id="radioButtonNot" layoutX="189.0" layoutY="81.0" mnemonicParsing="false" onAction="#doRadioButtonNot" text="not" />
                         <Button fx:id="buttonAddTagPair" layoutX="115.0" layoutY="154.0" mnemonicParsing="false" onAction="#doButtonAddTagPair" text="Add Tag Pair" />
-                        <TextField fx:id="searchTagValueOne" layoutX="166.0" layoutY="44.0" onAction="#doSearchTagValueOne" prefHeight="27.0" prefWidth="97.0" />
-                        <TextField fx:id="searchTagValueTwo" layoutX="166.0" layoutY="123.0" onAction="#doSearchTagValueTwo" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagValueOne" layoutX="166.0" layoutY="44.0" prefHeight="27.0" prefWidth="97.0" />
+                        <TextField fx:id="searchTagValueTwo" layoutX="166.0" layoutY="123.0" prefHeight="27.0" prefWidth="97.0" />
                      </children>
                   </Pane>
                   <Pane layoutY="429.0" prefHeight="150.0" prefWidth="336.0">

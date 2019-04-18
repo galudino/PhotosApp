@@ -56,7 +56,6 @@ import model.Tag;
  * @version Apr 12, 2019
  * @author Gemuele Aludino
  */
-
 public class PhotoController {
 
 	final double DEFAULT_INSET_VALUE = 10.0;
@@ -78,7 +77,7 @@ public class PhotoController {
 	ObservableList<Tag> tList;
 
 	PhotoModel model = LoginController.getModel();
-	
+
 	public static Photo currentSelectedPhoto;
 
 	int index = 0;
@@ -124,27 +123,23 @@ public class PhotoController {
 	@FXML TilePane tilePaneImages;
 	//@formatter:on
 
-	public void doViewModeThumbnail() {
-
-	}
-
-	public void doViewModeSingleImage() {
-
-	}
-
+	/**
+	 * Opens a new window to examine a user-selected photo within a separate Viewer window
+	 * 
+	 * @throws IOException if viewer.fxml not found
+	 */
 	public void doOpenSelectedPhotoInViewer() throws IOException {
 		debugLog("Open selected photo in viewer");
-		
+
 		PhotoController.currentSelectedPhoto = currentPhoto;
 		UserController.currentSelectedPhoto = null;
 		SearchController.currentSelectedPhoto = null;
-		
-		if (PhotoController.currentSelectedPhoto == null
-				&& UserController.currentSelectedPhoto == null
+
+		if (PhotoController.currentSelectedPhoto == null && UserController.currentSelectedPhoto == null
 				&& SearchController.currentSelectedPhoto == null) {
 			return;
 		}
-		
+
 		Stage window = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/viewer.fxml"));
@@ -162,8 +157,7 @@ public class PhotoController {
 	 */
 	@FXML
 	public void initialize() {
-		radioButtonThisAlbum.setText("Current album: "
-				+ model.getCurrentUser().getCurrentAlbum().getAlbumName());
+		radioButtonThisAlbum.setText("Current album: " + model.getCurrentUser().getCurrentAlbum().getAlbumName());
 		radioButtonThisAlbum.setSelected(true);
 		updateInfoData();
 		albumList.getItems().clear();
@@ -188,8 +182,7 @@ public class PhotoController {
 			}
 		}
 
-		String output = String.format("%d albums - %d photos - %d KB",
-				albumCount, totalPhotoCount, totalByteCount);
+		String output = String.format("%d albums - %d photos - %d KB", albumCount, totalPhotoCount, totalByteCount);
 		infoData.setText(output);
 	}
 
@@ -201,14 +194,12 @@ public class PhotoController {
 			int selectedIndex = index;
 
 			if (selectedIndex < 0) {
-				Alert error = new Alert(Alert.AlertType.ERROR,
-						"There are no photos to be deleted.", ButtonType.OK);
+				Alert error = new Alert(Alert.AlertType.ERROR, "There are no photos to be deleted.", ButtonType.OK);
 				error.showAndWait();
 				return;
 			}
 
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-					"Are you sure you want to delete this photo?",
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this photo?",
 					ButtonType.YES, ButtonType.NO);
 			alert.showAndWait();
 
@@ -217,8 +208,7 @@ public class PhotoController {
 			}
 
 			if (selectedIndex >= 0) {
-				Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-						"Photo successfully removed!", ButtonType.OK);
+				Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Photo successfully removed!", ButtonType.OK);
 				success.showAndWait();
 
 				tilePaneImages.getChildren().remove(selectedIndex);
@@ -226,16 +216,15 @@ public class PhotoController {
 				updateInfoData();
 			}
 		} else {
-			Alert error = new Alert(AlertType.ERROR,
-					"Please select a photo to delete.", ButtonType.OK);
+			Alert error = new Alert(AlertType.ERROR, "Please select a photo to delete.", ButtonType.OK);
 			error.showAndWait();
 		}
 
 	}
 
 	/**
-	 * Selects the album list from menuItems and sets it to the current album
-	 * for the current user.
+	 * Selects the album list from menuItems and sets it to the current album for
+	 * the current user.
 	 */
 	public void doAlbumList() {
 		albumList.setOnAction(event -> {
@@ -253,31 +242,23 @@ public class PhotoController {
 	 */
 	public void createTag() {
 		if (currentPhoto != null) {
-			if (tagName.getText().isEmpty() == false
-					&& tagValue.getText().isEmpty() == false) {
-				if (currentPhoto.addTag(tagName.getText().trim(),
-						tagValue.getText().trim()) == -1) {
-					Alert error = new Alert(AlertType.ERROR,
-							"Duplicate tag found. Tag not added!",
-							ButtonType.OK);
+			if (tagName.getText().isEmpty() == false && tagValue.getText().isEmpty() == false) {
+				if (currentPhoto.addTag(tagName.getText().trim(), tagValue.getText().trim()) == -1) {
+					Alert error = new Alert(AlertType.ERROR, "Duplicate tag found. Tag not added!", ButtonType.OK);
 					error.showAndWait();
 				} else {
 					tagName.setText(null);
 					tagValue.setText(null);
 
-					Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-							"Tag successfully added!", ButtonType.OK);
+					Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully added!", ButtonType.OK);
 					success.showAndWait();
 				}
 			} else {
-				Alert error = new Alert(AlertType.ERROR,
-						"Please provide a tag name and value.", ButtonType.OK);
+				Alert error = new Alert(AlertType.ERROR, "Please provide a tag name and value.", ButtonType.OK);
 				error.showAndWait();
 			}
 		} else {
-			Alert error = new Alert(AlertType.ERROR,
-					"Please select a photo to create a tag for.",
-					ButtonType.OK);
+			Alert error = new Alert(AlertType.ERROR, "Please select a photo to create a tag for.", ButtonType.OK);
 			error.showAndWait();
 		}
 	}
@@ -289,15 +270,13 @@ public class PhotoController {
 		int selectedIndex = tagList.getSelectionModel().getSelectedIndex();
 
 		if (selectedIndex < 0) {
-			Alert error = new Alert(Alert.AlertType.ERROR,
-					"There are no tags to be deleted.", ButtonType.OK);
+			Alert error = new Alert(Alert.AlertType.ERROR, "There are no tags to be deleted.", ButtonType.OK);
 			error.showAndWait();
 			return;
 		}
 
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-				"Are you sure you want to delete this tag?", ButtonType.YES,
-				ButtonType.NO);
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this tag?",
+				ButtonType.YES, ButtonType.NO);
 		alert.showAndWait();
 
 		if (alert.getResult() != ButtonType.YES) {
@@ -307,8 +286,7 @@ public class PhotoController {
 		if (selectedIndex >= 0) {
 			currentPhoto.deleteTag(selectedIndex);
 
-			Alert success = new Alert(Alert.AlertType.CONFIRMATION,
-					"Tag successfully removed!", ButtonType.OK);
+			Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Tag successfully removed!", ButtonType.OK);
 			success.showAndWait();
 		}
 	}
@@ -339,8 +317,7 @@ public class PhotoController {
 	public void doZoomSlider() {
 		zoomSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				double factor = newValue.doubleValue();
 
 				imageInsetValue = factor * DEFAULT_INSET_VALUE; // default 10.00
@@ -383,42 +360,35 @@ public class PhotoController {
 					old.setStyle(null);
 
 					if (iv.getBoundsInParent() != null) {
-						iv.setStyle(
-								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
-					
+
 					// everything up to here is fine
-					
-					
+
 					currentPhoto = imageQueueList.getItems().get(index);
 					// currentPhoto = pList.get(index);
 					currentSelectedPhoto = currentPhoto;
-					
 
-					detailView.setImage(
-							currentImageViewList.get(index).getImage());
+					detailView.setImage(currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
 					detailView.setPreserveRatio(true);
-					
-					
+
 					nameField.setText(currentPhoto.getFilename());
 					pathField.setText(currentPhoto.getFilepath());
 					sizeField.setText("(size)" + " KB");
 					createdField.setText(currentPhoto.getDatePhoto());
 
-					ObservableList<Tag> tList = FXCollections
-							.observableArrayList();
+					ObservableList<Tag> tList = FXCollections.observableArrayList();
 
-					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
-							.entrySet()) {
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
 						tList.add(tag.getValue());
 					}
 
 					currentPhoto.setTagList(tList);
 					tagList.setItems(tList);
-					
+
 				}
 			});
 		} else {
@@ -450,17 +420,15 @@ public class PhotoController {
 
 					old.setStyle(null);
 					if (iv.getBoundsInParent() != null) {
-						iv.setStyle(
-								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
 
 					currentPhoto = imageQueueList.getItems().get(index);
-					//currentPhoto = photoList.get(index);
+					// currentPhoto = photoList.get(index);
 					// currentPhoto = pList.get(index);
 					currentSelectedPhoto = currentPhoto;
 
-					detailView.setImage(
-							currentImageViewList.get(index).getImage());
+					detailView.setImage(currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
@@ -471,11 +439,9 @@ public class PhotoController {
 					sizeField.setText("(size)" + " KB");
 					createdField.setText(currentPhoto.getDatePhoto());
 
-					ObservableList<Tag> tList = FXCollections
-							.observableArrayList();
+					ObservableList<Tag> tList = FXCollections.observableArrayList();
 
-					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
-							.entrySet()) {
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
 						tList.add(tag.getValue());
 					}
 
@@ -492,10 +458,9 @@ public class PhotoController {
 	 */
 	public void selectFile() {
 		fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters()
-				.addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg",
-						"*.jpeg", "*.gif"),
-						new ExtensionFilter("All Files", "*.*"));
+		fileChooser.getExtensionFilters().addAll(
+				new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"),
+				new ExtensionFilter("All Files", "*.*"));
 
 		file = fileChooser.showOpenDialog(null);
 
@@ -507,8 +472,7 @@ public class PhotoController {
 
 		tilePaneImages.getChildren().clear();
 		tilePaneImages.setStyle("-fx-focus-color: transparent;");
-		tilePaneImages.setPadding(new Insets(imageInsetValue, imageInsetValue,
-				imageInsetValue, imageInsetValue));
+		tilePaneImages.setPadding(new Insets(imageInsetValue, imageInsetValue, imageInsetValue, imageInsetValue));
 		tilePaneImages.setHgap(imageInsetValue);
 
 		currentImageViewList = new ArrayList<ImageView>();
@@ -530,16 +494,14 @@ public class PhotoController {
 
 				} else {
 					if (iv.getBoundsInParent() != null) {
-						iv.setStyle(
-								"-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
+						iv.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 4, 2.0, 0, 0);");
 					}
 
 					setSelectedIndex(tilePaneImages.getChildren().indexOf(iv));
 					currentPhoto = p;
 					currentSelectedPhoto = currentPhoto;
-					
-					detailView.setImage(
-							currentImageViewList.get(index).getImage());
+
+					detailView.setImage(currentImageViewList.get(index).getImage());
 					detailView.setFitHeight(150);
 					detailView.setFitWidth(200);
 					detailView.setVisible(true);
@@ -552,8 +514,7 @@ public class PhotoController {
 
 					tList = FXCollections.observableArrayList();
 
-					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap()
-							.entrySet()) {
+					for (Map.Entry<String, Tag> tag : currentPhoto.getTagMap().entrySet()) {
 						tList.add(tag.getValue());
 					}
 
@@ -584,8 +545,8 @@ public class PhotoController {
 	}
 
 	/**
-	 * This goes through the imageQueueList (ListView<User>) and adds the photos
-	 * to the current album or selected album.
+	 * This goes through the imageQueueList (ListView<User>) and adds the photos to
+	 * the current album or selected album.
 	 */
 	public void addSelectedPhotos() {
 		Album currentAlbum = model.getCurrentUser().getCurrentAlbum();
@@ -597,19 +558,16 @@ public class PhotoController {
 				Photo p = imageQueueList.getItems().get(i);
 
 				if (currentAlbum.addPhoto(p) == -1) {
-					Alert error = new Alert(AlertType.ERROR,
-							"Photo not added, duplicate photo.", ButtonType.OK);
+					Alert error = new Alert(AlertType.ERROR, "Photo not added, duplicate photo.", ButtonType.OK);
 					error.showAndWait();
 				} else {
 					Alert success = new Alert(AlertType.INFORMATION,
-							"Photos successfully added to: "
-									+ currentAlbum.getAlbumName());
+							"Photos successfully added to: " + currentAlbum.getAlbumName());
 					success.showAndWait();
 				}
 
 				for (Tag t : p.getTagList()) {
-					currentAlbum.getPhotoMap().get(p.getKey())
-							.addTag(t.getTagName(), t.getTagValue());
+					currentAlbum.getPhotoMap().get(p.getKey()).addTag(t.getTagName(), t.getTagValue());
 				}
 
 				imageQueueList.getItems().remove(p);
@@ -640,8 +598,7 @@ public class PhotoController {
 		Scene scene = new Scene(root);
 		imageQueueList.getScene().getWindow().hide();
 		window.setScene(scene);
-		window.setTitle("Photos V1.0 - Welcome "
-				+ model.getCurrentUser().getUsername());
+		window.setTitle("Photos V1.0 - Welcome " + model.getCurrentUser().getUsername());
 		window.setResizable(false);
 		window.show();
 	}
@@ -691,8 +648,7 @@ public class PhotoController {
 	 */
 	public void doLogOut() throws IOException {
 		model.write();
-		Parent login = FXMLLoader
-				.load(getClass().getResource("/view/login.fxml"));
+		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene loginScene = new Scene(login);
 		Stage currentStage = (Stage) (imageQueueList.getScene().getWindow());
 		currentStage.hide();
@@ -723,7 +679,6 @@ public class PhotoController {
 	 * @param message String that denotes a message for the console
 	 */
 	public void debugLog(String message) {
-		System.out.println(
-				"[" + this.getClass().getSimpleName() + "] " + message);
+		System.out.println("[" + this.getClass().getSimpleName() + "] " + message);
 	}
 }

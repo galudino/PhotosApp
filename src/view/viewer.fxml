@@ -22,8 +22,6 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem fx:id="menuItemSavePhoto" mnemonicParsing="false" onAction="#doSavePhoto" text="Save Photo" />
-            <MenuItem fx:id="menuItemSavePhotoAs" mnemonicParsing="false" onAction="#doSavePhotoAs" text="Save Photo As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="menuItemCloseViewer" mnemonicParsing="false" onAction="#doCloseViewer" text="Close Viewer" />
           </items>

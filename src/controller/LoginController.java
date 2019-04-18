@@ -38,7 +38,6 @@ import model.User;
  * @version Apr 12, 2019
  * @author Patrick Nogaj
  */
-
 public class LoginController {
 
 	public static final String DAT_FILE_PATH = "photos.dat";
@@ -61,32 +60,34 @@ public class LoginController {
 		textFieldUsername.clear();
 		textFieldPassword.clear();
 	}
-	
+
 	/**
 	 * Grabs the model object to pass to different scenes.
+	 * 
 	 * @return a model object
 	 */
 	public static PhotoModel getModel() {
 		return model;
 	}
-	
+
 	/**
 	 * Allows the user to press ENTER to login the program.
+	 * 
 	 * @param keyEvent: collects data on what Key is pressed.
 	 * @throws IOException in case file not found.
 	 */
 	@FXML
 	private void keyPressed(KeyEvent keyEvent) throws IOException {
-	    if (keyEvent.getCode() == KeyCode.ENTER) {
-	        doLogin();
-	    }
+		if (keyEvent.getCode() == KeyCode.ENTER) {
+			doLogin();
+		}
 	}
 
 	/**
-	 * Login method -- obtains the information from the textfields, and attempts
-	 * to map a user object.
-	 * @throws IOException: will throw an IOException if file is not found
-	 *                      (FXML).
+	 * Login method -- obtains the information from the textfields, and attempts to
+	 * map a user object.
+	 * 
+	 * @throws IOException: will throw an IOException if file is not found (FXML).
 	 */
 	public void doLogin() throws IOException {
 		final String username = textFieldUsername.getText().trim();
@@ -174,8 +175,7 @@ public class LoginController {
 	 * @param message String that denotes a message for the console
 	 */
 	public void debugLog(String message) {
-		System.out.println(
-				"[" + this.getClass().getSimpleName() + "] " + message);
+		System.out.println("[" + this.getClass().getSimpleName() + "] " + message);
 	}
-	
+
 }
